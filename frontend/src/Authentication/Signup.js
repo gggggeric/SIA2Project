@@ -22,7 +22,7 @@ const SignUpPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/auth/register', {
+      const response = await axios.post('http://localhost:5001/auth/register', {
         name,
         email,
         password
