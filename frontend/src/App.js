@@ -1,14 +1,25 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // Import Router, Routes, and Route
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Authentication/Login";
 import SignUp from "./Authentication/Signup";
+import HomePage from "./Home/Home";
+import ProtectedRoute from "./ProtectedRoute"; // Import ProtectedRoute
 
 function App() {
   return (
-    <Router> {/* Wrap the app with BrowserRouter */}
+    <Router>
       <Routes>
-        <Route path="/" element={<Login />} /> {/* Define a route for login */}
-        <Route path="/signup" element={<SignUp />} /> {/* Define a route for signup */}
+        <Route path="/" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );

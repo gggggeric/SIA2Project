@@ -1,9 +1,45 @@
-import React from 'react';
-import './Login.css'; // Import the CSS file for styling
+import React, { useState } from 'react';
+import axios from 'axios'; 
+import './Login.css'; 
 import logo from '../assets/logo.png';
-import { Link } from 'react-router-dom'; // Import Link for navigation
+import { Link } from 'react-router-dom';
 
 const SignUpPage = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:5000/auth/register', {
+        name,
+        email,
+        password
+      });
+
+      setSuccess('Account created successfully! You can now log in.');
+      setError('');
+      setName('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      console.error('Signup error:', err);
+      setError('Failed to sign up. Email may already be in use.');
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="left-side">
@@ -11,25 +47,60 @@ const SignUpPage = () => {
       </div>
       <div className="separator"></div>
       <div className="right-side">
-        {/* Back to Login button inside the right-side container */}
         <div className="back-to-login-container">
           <Link to="/" className="back-to-login-link">
             <button type="button" className="back-to-login-btn">Back to Login</button>
           </Link>
         </div>
         <h2>Create an Account</h2>
-        <form>
+        
+        {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
+        
+        <form onSubmit={handleSubmit}>
+          <div className="input-group">
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
           <div className="input-group">
             <label htmlFor="email">Email</label>
-            <input type="email" id="email" name="email" />
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
           <div className="input-group">
             <label htmlFor="password">Password</label>
-            <input type="password" id="password" name="password" />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
           <div className="input-group">
             <label htmlFor="confirm-password">Confirm Password</label>
-            <input type="password" id="confirm-password" name="confirm-password" />
+            <input
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
           </div>
           <div className="button-container">
             <button type="submit">Sign Up</button>
