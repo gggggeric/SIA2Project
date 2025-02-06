@@ -1,0 +1,47 @@
+/* Custom styles for the Reminders page */
+.reminders-box {
+    background-color: #38b6ff; /* Set the background color to #38b6ff */
+    border-radius: 8px; /* Rounded corners for the box */
+    padding: 40px 20px; /* Increased padding to prevent text and button from overlapping */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for a 3D effect */
+    color: black; /* Set text color to black for better readability */
+    position: relative; /* To position the Next button */
+    min-height: 350px; /* Increased height of the box to prevent overlap */
+    padding-bottom: 50px; /* Added extra padding at the bottom to accommodate the button */
+  }
+  
+  .reminders-box h2 {
+    font-size: 1.75rem; /* Increase font size for heading */
+    font-weight: bold; /* Bold heading */
+    margin-bottom: 16px;
+  }
+  
+  .reminders-box p,
+  .reminders-box li {
+    font-size: 1.125rem; /* Slightly larger font size for body text and list items */
+    margin-bottom: 12px;
+  }
+  
+  .reminders-box ul {
+    list-style-type: none; /* Remove bullet points from the list */
+    padding-left: 0; /* Remove padding */
+  }
+  
+  /* Next Arrow Button styling */
+  .next-btn {
+    position: absolute; /* Absolute positioning for the button */
+    bottom: 20px; /* 20px from the bottom */
+    right: 20px; /* 20px from the right */
+    background-color: #38b6ff; /* Blue background to match the box */
+    border: none;
+    padding: 8px 12px; /* Smaller padding */
+    border-radius: 50%; /* Round button */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 18px; /* Make the arrow icon smaller */
+  }
+  
+  .next-btn:hover {
+    background-color: #3399cc; /* Darker shade on hover */
+  }
+  

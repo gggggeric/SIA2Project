@@ -2,46 +2,48 @@
 
 /* Make navbar background color #38b6ff */
 .navbar {
-    background-color: #38b6ff !important;
-    padding-left: 40px; /* Increased padding */
-    padding-right: 40px; /* Increased padding */
-  }
-  
-  /* Customize the logo font */
-  .navbar-brand {
-    font-size: 24px;
-    font-weight: bold;
-  }
-  
-  /* Navbar links */
-  .nav-link {
-    font-size: 18px;
-    font-weight: 500;
-    margin-right: 15px;
-  }
-  
-  .nav-link:hover {
-    text-decoration: underline;
-  }
-  
-  /* Logout button */
-  .btn-light {
-    background-color: white;
-    color: #38b6ff;
-    font-weight: 500;
-  }
-  
-  /* Make the navbar a little wider */
-  .custom-container {
-    max-width: 100%;
-    padding-left: 30px;
-    padding-right: 30px;
-  }
-  
-  /* Responsive design for small screens */
-  @media (max-width: 768px) {
-    .navbar-toggler {
+  background-color: #38b6ff !important;
+  padding-left: 40px; /* Increased padding */
+  padding-right: 40px; /* Increased padding */
+  height: 80px; /* Increased height */
+  display: flex;
+  align-items: center;
+}
+
+/* Customize the logo font */
+.navbar-brand {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Navbar links */
+.nav-link {
+  font-size: 18px;
+  font-weight: 500;
+  margin-right: 15px;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+/* Logout button */
+.btn-light {
+  background-color: white;
+  color: #38b6ff;
+  font-weight: 500;
+}
+
+/* Make the navbar a little wider */
+.custom-container {
+  max-width: 100%;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+/* Responsive design for small screens */
+@media (max-width: 768px) {
+  .navbar-toggler {
       border-color: #38b6ff;
-    }
   }
-  
+}
