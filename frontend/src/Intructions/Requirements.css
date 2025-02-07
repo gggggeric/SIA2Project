@@ -8,30 +8,22 @@
   position: relative; /* To position the Next button */
   min-height: 350px; /* Increased height of the box to prevent overlap */
   padding-bottom: 50px; /* Added extra padding at the bottom to accommodate the button */
+  text-align: left; /* Align text to the left */
 }
 
-.requirements-box h2 {
-  font-size: 1.75rem; /* Increase font size for heading */
-  font-weight: bold; /* Bold heading */
-  margin-bottom: 16px;
-}
-
+/* Ensure headings, paragraphs, and list items are aligned to the left */
+.requirements-box h2,
 .requirements-box p,
+.requirements-box ul,
 .requirements-box li {
-  font-size: 1.125rem; /* Slightly larger font size for body text and list items */
-  margin-bottom: 12px;
-}
-
-.requirements-box ul {
-  list-style-type: none; /* Remove bullet points from the list */
-  padding-left: 0; /* Remove padding */
+  text-align: left; /* Left align text */
 }
 
 /* Next Arrow Button styling */
 .next-btn {
   position: absolute; /* Absolute positioning for the button */
   bottom: 20px; /* 20px from the bottom */
-  right: 20px; /* 20px from the right */
+  left: 20px; /* Move button to the left */
   background-color: #38b6ff; /* Blue background to match the box */
   border: none;
   padding: 8px 12px; /* Smaller padding */
