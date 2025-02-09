@@ -1,0 +1,25 @@
+/* LandingPage.css */
+.hero-section {
+    background: url('https://source.unsplash.com/1600x900/?glasses,vision') no-repeat center center/cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .hero-section .container {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    border-radius: 10px;
+  }
+  
+  .hero-section h1 {
+    font-size: 3rem;
+    font-weight: bold;
+  }
+  
+  .hero-section p {
+    font-size: 1.5rem;
+  }
+  

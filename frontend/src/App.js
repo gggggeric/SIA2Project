@@ -7,12 +7,13 @@ import RequirementsPage from "./Intructions/Requirements";
 import ProtectedRoute from "./ProtectedRoute"; // Import ProtectedRoute
 import RemindersPage from "./Intructions/Reminders"; // Import RemindersPage
 import BothEyePage from "./Process/BothEye"; // Import the BothEyePage
-
+import LandingPage from "./Home/Landing";
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
+      <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
 
         {/* Protect the HomePage */}
