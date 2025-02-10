@@ -1,49 +1,104 @@
-/* Custom styles for Navbar */
 
-/* Make navbar background color #38b6ff */
 .navbar {
-  background-color: #38b6ff !important;
-  padding-left: 40px; /* Increased padding */
-  padding-right: 40px; /* Increased padding */
-  height: 80px; /* Increased height */
+  background-color: #352e4b !important;
+  padding: 0 40px; /* Optimized padding */
+  height: 80px; /* Navbar height */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.navbar-brand {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.navbar-brand:hover {
+  opacity: 0.8;
+}
+
+.navbar-nav {
   display: flex;
   align-items: center;
 }
 
-/* Customize the logo font */
-.navbar-brand {
-  font-size: 24px;
-  font-weight: bold;
-}
-
-/* Navbar links */
 .nav-link {
   font-size: 18px;
   font-weight: 500;
   margin-right: 15px;
+  color: white;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
 }
 
 .nav-link:hover {
+  color: #cfcfcf;
   text-decoration: underline;
 }
 
-/* Logout button */
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out, transform 0.2s ease-in-out;
+  background: transparent;
+  border: none;
+  outline: none; 
+  box-shadow: none; 
+}
+
+
+.profile-icon:focus,
+.profile-icon:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.profile-icon:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
 .btn-light {
   background-color: white;
-  color: #38b6ff;
+  color: #352e4b;
   font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+  border: none;
 }
 
-/* Make the navbar a little wider */
-.custom-container {
-  max-width: 100%;
-  padding-left: 30px;
-  padding-right: 30px;
+.btn-light:hover {
+  background-color: #ddd;
+  color: #261d35;
 }
 
-/* Responsive design for small screens */
+
 @media (max-width: 768px) {
-  .navbar-toggler {
-      border-color: #38b6ff;
+  .navbar {
+    padding: 0 20px;
+  }
+
+  .nav-link {
+    font-size: 16px;
+    margin-right: 10px;
+  }
+
+  .profile-icon {
+    width: 35px;
+    height: 35px;
+  }
+
+  .btn-light {
+    padding: 6px 12px;
+    font-size: 14px;
   }
 }

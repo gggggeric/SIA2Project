@@ -1,38 +1,68 @@
-/* Custom styles for the Reminders page */
+.reminders-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
 .reminders-box {
-  background-color: #38b6ff; /* Set the background color to #38b6ff */
-  border-radius: 8px; /* Rounded corners for the box */
-  padding: 40px 20px; /* Increased padding to prevent text and button from overlapping */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for a 3D effect */
-  color: black; /* Set text color to black for better readability */
-  position: relative; /* To position the Next button */
-  min-height: 350px; /* Increased height of the box to prevent overlap */
-  padding-bottom: 50px; /* Added extra padding at the bottom to accommodate the button */
-  text-align: left; /* Align text to the left */
+  display: flex;
+  align-items: center;
+  width: 1000px; 
+  padding: 60px; 
+  border-radius: 15px; 
+  border: 3px solid #352e4b; 
 }
 
-/* Ensure headings, paragraphs, and list items are aligned to the left */
-.reminders-box h2,
-.reminders-box p,
-.reminders-box ul,
-.reminders-box li {
-  text-align: left; /* Left align text */
+.reminders-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-/* Next Arrow Button styling */
+.reminders-text {
+  flex: 1;
+  text-align: center;
+}
+
+.reminders-text h2 {
+  color: #352e4b;
+  font-size: 36px; 
+  margin-bottom: 30px;
+}
+
+.reminders-text p, .reminders-list, .reminders-note {
+  font-size: 22px; 
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.reminders-list {
+  list-style-type: disc;
+  margin-left: 25px;
+  text-align: left;
+}
+
 .next-btn {
-  position: absolute; /* Absolute positioning for the button */
-  bottom: 20px; /* 20px from the bottom */
-  left: 20px; /* Move button to the left */
-  background-color: #38b6ff; /* Blue background to match the box */
-  border: none;
-  padding: 8px 12px; /* Smaller padding */
-  border-radius: 50%; /* Round button */
+  font-size: 50px; 
+  color: #352e4b !important; 
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-size: 18px; /* Make the arrow icon smaller */
+  position: absolute;
+  bottom: 30px;
+  right: 30px; 
+  background: none !important;
+  border: none !important;
+  outline: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 
 .next-btn:hover {
-  background-color: #3399cc; /* Darker shade on hover */
+  color: #352e4b !important;
+  background: none !important;
 }

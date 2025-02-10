@@ -1,43 +1,46 @@
 import React from "react";
-import { FaArrowRight } from "react-icons/fa"; // Importing the right arrow icon from react-icons
-import Navbar from "../Navigation/Navbar"; // Assuming you have a Navbar component
-import { useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
-import './Reminders.css'; // Create a custom CSS file for styling
+import { FaArrowRight } from "react-icons/fa"; 
+import Navbar from "../Navigation/Navbar"; 
+import { useNavigate } from "react-router-dom"; 
+import reminderIcon from "../assets/rem.png";
+import "./Reminders.css"; 
 
 const RemindersPage = () => {
-  const navigate = useNavigate(); // Initialize navigate function
+  const navigate = useNavigate();
 
   const handleNextClick = () => {
-    // Redirect to the desired path
-    navigate("/process/both-eye"); // Redirect to the specified path
+    navigate("/process/both-eye"); 
   };
 
   return (
     <div className="min-h-screen bg-gray-100 pt-20">
-      <Navbar /> {/* Your Navbar */}
-      
+      <Navbar /> 
+
       <section className="text-center">
         <div className="container mx-auto p-5">
           <div className="reminders-box">
-            <h2 className="text-2xl font-bold mb-4">Reminders</h2>
-            <p className="text-lg mb-4">Here are some important reminders:</p>
+            <div className="reminders-content">
 
-            <ul className="text-left">
-              <li>Conduct the process in a room with good lighting (for face detection)</li>
-              <li>Proceed in a room with less noise and a comfortable place</li>
-            </ul>
+              <img src={reminderIcon} alt="Reminder Icon" className="reminder-icon" />
 
-            {/* Example of additional content */}
-            <div className="mt-4">
-              <p>These reminders will help you have a smooth experience during the session.</p>
+
+              <div className="reminders-text">
+                <h2 className="text-2xl font-bold mb-4">Reminders</h2>
+                <p className="text-lg mb-4">Here are some important reminders:</p>
+
+                <ul className="reminders-list">
+                  <li>Conduct the process in a room with good lighting (for face detection).</li>
+                  <li>Proceed in a room with less noise and a comfortable place.</li>
+                </ul>
+
+                <div className="reminders-note">
+                  <p>These reminders will help you have a smooth experience during the session.</p>
+                </div>
+              </div>
             </div>
 
-            {/* Next Arrow Button */}
-            <button 
-              className="next-btn"
-              onClick={handleNextClick} // Trigger the redirect when clicked
-            >
-              <FaArrowRight size={18} className="text-white" /> {/* Right Arrow Icon (smaller size) */}
+            <button className="next-btn" onClick={handleNextClick}>
+              <FaArrowRight size={50} /> {/* Large Icon */}
             </button>
           </div>
         </div>

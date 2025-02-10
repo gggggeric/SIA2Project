@@ -1,37 +1,41 @@
 import React from "react";
 import Navbar from "../Navigation/Navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./Landing.css"; // Import custom styles
-import { FaGlasses } from "react-icons/fa"; // Import vector icon
-import { motion } from "framer-motion"; // For animations
+import "./Landing.css";
+import { motion } from "framer-motion";
+import logo from "../assets/landing.png"; // Import the logo
 
 const LandingPage = () => {
   return (
     <>
       <Navbar />
-      <header className="hero-section d-flex align-items-center justify-content-center text-center position-relative">
-        <div className="container">
+      <header className="hero-section d-flex align-items-center justify-content-center text-center position-relative vh-100">
+        <div className="container d-flex flex-column flex-md-row align-items-center justify-content-between">
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
+            className="text-left text-md-start text-container"
           >
-            <FaGlasses className="icon text-white mb-3" size={50} />
-            <h1 className="display-4 text-white fw-bold">Welcome to EyeWear</h1>
-            <p className="lead text-white">
-              Discover the perfect glasses to enhance your vision and style.
+            <h1 className="display-4 fw-bold">Welcome to OpticAI</h1>
+            <p className="lead">
+              Empowering Vision Enhancing Care
             </p>
-            <a href="/glasses" className="btn btn-primary btn-lg mt-3 shadow-sm">
-              Shop Now
+            <a href="/login" className="btn btn-primary btn-lg mt-3 shadow-sm">
+              Get Started
             </a>
           </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1 }}
+            className="logo-container"
+          >
+            <div className="logo-box p-4 shadow-sm rounded">
+              <img src={logo} alt="EyeWear Logo" className="logo-img img-fluid" />
+            </div>
+          </motion.div>
         </div>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1 }}
-          className="vector-bg"
-        ></motion.div>
       </header>
     </>
   );

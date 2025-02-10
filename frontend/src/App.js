@@ -4,10 +4,12 @@ import Login from "./Authentication/Login";
 import SignUp from "./Authentication/Signup";
 import HomePage from "./Home/Home";
 import RequirementsPage from "./Intructions/Requirements";
-import ProtectedRoute from "./ProtectedRoute"; // Import ProtectedRoute
-import RemindersPage from "./Intructions/Reminders"; // Import RemindersPage
-import BothEyePage from "./Process/BothEye"; // Import the BothEyePage
+import ProtectedRoute from "./ProtectedRoute"; 
+import RemindersPage from "./Intructions/Reminders"; 
+import BothEyePage from "./Process/BothEye"; 
 import LandingPage from "./Home/Landing";
+import About from "./Home/About";
+
 function App() {
   return (
     <Router>
@@ -15,8 +17,8 @@ function App() {
       <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/about" element={<About />} />
 
-        {/* Protect the HomePage */}
         <Route
           path="/home"
           element={
@@ -26,7 +28,7 @@ function App() {
           }
         />
 
-        {/* Protect the RequirementsPage */}
+
         <Route
           path="/instructions/requirements"
           element={
@@ -36,7 +38,7 @@ function App() {
           }
         />
 
-        {/* Protect the RemindersPage */}
+ 
         <Route
           path="/instructions/reminders"
           element={
@@ -46,7 +48,6 @@ function App() {
           }
         />
 
-        {/* Protect the BothEyePage */}
         <Route
           path="/process/both-eye"
           element={

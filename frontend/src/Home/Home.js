@@ -5,6 +5,7 @@ import Navbar from "../Navigation/Navbar";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import placeholderImage from "../assets/placeholder.png"; // Import your local image
+import "./Home.css"; // Import CSS file
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -16,15 +17,15 @@ const HomePage = () => {
     }
   }, [navigate]);
 
-  // Slider settings (Adjusted Size)
+  // Slider settings
   const settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3, // Keep 3 images visible
+    slidesToShow: 3,
     slidesToScroll: 1,
-    centerMode: true, // Keeps the middle image centered
-    centerPadding: "5%", // Reducing padding for a more balanced width
+    centerMode: true,
+    centerPadding: "5%",
     responsive: [
       {
         breakpoint: 1024,
@@ -44,15 +45,12 @@ const HomePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 pt-20 relative overflow-hidden">
-      <Navbar /> {/* Navbar component */}
-      
+    <div className="home-container">
+      <Navbar />
+
       {/* Background Vector Graphics */}
-      <div className="absolute top-0 left-0 w-full h-full -z-10">
-        <svg
-          viewBox="0 0 1440 320"
-          className="absolute top-0 left-0 w-full h-auto opacity-30"
-        >
+      <div className="background-vector">
+        <svg viewBox="0 0 1440 320">
           <path
             fill="#3b82f6"
             fillOpacity="1"
@@ -60,27 +58,24 @@ const HomePage = () => {
           ></path>
         </svg>
       </div>
-      
-      <section className="text-center p-10 relative">
-        <div className="container-fluid px-5" style={{ maxWidth: "1200px", margin: "0 auto" }}>
+
+      <section className="slider-section">
+        <div className="slider-container">
           <Slider {...settings}>
-            <div className="px-2">
-              <img src={placeholderImage} alt="Slide 1" className="w-100 rounded-lg shadow-lg" />
+            <div className="slide">
+              <img src={placeholderImage} alt="Slide 1" className="slide-image" />
             </div>
-            <div className="px-2">
-              <img src={placeholderImage} alt="Slide 2" className="w-100 rounded-lg shadow-lg" />
+            <div className="slide">
+              <img src={placeholderImage} alt="Slide 2" className="slide-image" />
             </div>
-            <div className="px-2">
-              <img src={placeholderImage} alt="Slide 3" className="w-100 rounded-lg shadow-lg" />
+            <div className="slide">
+              <img src={placeholderImage} alt="Slide 3" className="slide-image" />
             </div>
           </Slider>
 
-          {/* Get Started Button with adjusted margin */}
-          <div className="mt-16"> {/* Increased margin-top to make it lower */}
-            <button
-              onClick={() => navigate("/instructions/requirements")} // Redirect to Requirements page
-              className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 relative z-10"
-            >
+          {/* Get Started Button */}
+          <div className="button-container">
+            <button onClick={() => navigate("/instructions/requirements")} className="get-started-btn">
               Get Started
             </button>
           </div>

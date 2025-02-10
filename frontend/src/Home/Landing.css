@@ -1,25 +1,52 @@
-/* LandingPage.css */
 .hero-section {
-    background: url('https://source.unsplash.com/1600x900/?glasses,vision') no-repeat center center/cover;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
-  
-  .hero-section .container {
-    background: rgba(0, 0, 0, 0.5);
-    padding: 2rem;
-    border-radius: 10px;
-  }
-  
-  .hero-section h1 {
-    font-size: 3rem;
-    font-weight: bold;
-  }
-  
-  .hero-section p {
-    font-size: 1.5rem;
-  }
-  
+  background-color: transparent;
+}
+
+.text-container h1,
+.text-container p {
+  color: black;
+  font-size: 36px; /* Increased font size */
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-box {
+  background: white;
+  border-radius: 10px;
+  padding: 30px; /* Increased padding */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-img {
+  max-width: 400px; /* Increased logo size */
+  height: auto;
+}
+
+button {
+  background-color: #352e4b; /* Applied color to button */
+  color: white;
+  padding: 15px 30px; /* Increased padding */
+  font-size: 18px; /* Increased font size */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #261d35; /* Darker shade on hover */
+}
+.btn-primary {
+  background-color: #352e4b !important;
+  border-color: #352e4b !important;
+}
+
+.btn-primary:hover {
+  background-color: #261d35 !important;
+  border-color: #261d35 !important;
+}
