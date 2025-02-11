@@ -9,7 +9,8 @@ import RemindersPage from "./Intructions/Reminders";
 import BothEyePage from "./Process/BothEye"; 
 import LandingPage from "./Home/Landing";
 import About from "./Home/About";
-
+import ForgotPassword from "./Authentication/ForgotPassword";
+import ResetPassword from "./Authentication/ResetPassword";
 function App() {
   return (
     <Router>
@@ -18,7 +19,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/about" element={<About />} />
-
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route
           path="/home"
           element={
