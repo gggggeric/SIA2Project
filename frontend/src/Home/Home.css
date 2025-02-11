@@ -2,110 +2,100 @@
 
 /* Main container */
 .home-container {
-    min-height: 100vh;
-    background-color: #f8fafc;
-    position: relative;
-    overflow: hidden;
-    padding-top: 80px;
-  
-    /* Centering all contents */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  /* Background Vector */
-  .background-vector svg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
-    opacity: 0.2;
-    z-index: -1;
-  }
-  
-  /* Slider Section */
-  .slider-section {
-    text-align: center;
-    padding: 40px 10px;
-    position: relative;
-  
-    /* Centering */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
-  
-  /* Slider Container */
-  .slider-container {
-    max-width: 800px;
-    width: 100%;
-    padding: 0 20px;
-  }
-  
-  /* Slider Images */
-  .slide {
-    display: flex;
-    justify-content: center;
-    padding: 0 10px;
-  }
-  
-  .slide-image {
-    width: 100%;
-    max-width: 350px;
-    height: auto;
-    border-radius: 12px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .slide-image:hover {
-    transform: scale(1.05);
-  }
-  
-  /* Slick Dots Styling */
-  .slick-dots {
-    text-align: center;
-  }
-  
-  .slick-dots li button:before {
-    color: #3b82f6;
-    font-size: 12px;
-  }
-  
-  .slick-dots li.slick-active button:before {
-    color: #2563eb;
-    font-size: 14px;
-  }
-  
-  /* Button Container */
-  .button-container {
-    margin-top: 40px;
-    display: flex;
-    justify-content: center;
-  }
-  
-  /* Get Started Button */
-  .get-started-btn {
-    padding: 12px 24px;
-    font-size: 18px;
-    font-weight: 600;
-    color: white;
-    background-color: #3b82f6;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(59, 130, 246, 0.3);
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-  }
-  
-  .get-started-btn:hover {
-    background-color: #2563eb;
-    transform: translateY(-2px);
-    box-shadow: 0px 6px 12px rgba(37, 99, 235, 0.4);
-  }
-  
+  min-height: 100vh;
+  background-color: #f8fafc;
+  position: relative;
+  overflow: hidden;
+  padding-top: 80px;
+
+  /* Centering all contents */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Background Vector - Removed Shadow */
+.background-vector svg {
+  display: none; /* Completely removes the background vector */
+}
+
+/* Slider Section */
+.slider-section {
+  text-align: center;
+  padding: 40px 10px;
+  position: relative;
+
+  /* Centering */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Slider Container */
+.slider-container {
+  max-width: 800px;
+  width: 100%;
+  padding: 0 20px;
+}
+
+/* Slider Images */
+.slide {
+  display: flex;
+  justify-content: center;
+  padding: 0 10px;
+}
+
+.slide-image {
+  width: 100%;
+  max-width: 350px;
+  height: auto;
+  border-radius: 12px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.slide-image:hover {
+  transform: scale(1.05);
+}
+
+/* Slick Dots Styling */
+.slick-dots {
+  text-align: center;
+}
+
+.slick-dots li button:before {
+  color: #352e4b; /* Updated Theme Color */
+  font-size: 12px;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #251f36; /* Darker Shade */
+  font-size: 14px;
+}
+
+/* Button Container */
+.button-container {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+/* Get Started Button */
+.get-started-btn {
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  background-color: #352e4b; /* Updated Theme Color */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.get-started-btn:hover {
+  background-color: #251f36; /* Darker Shade */
+  transform: translateY(-2px);
+}
