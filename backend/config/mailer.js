@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 const sendMail = async (to, subject, text) => {
   try {
     await transporter.sendMail({
-      from: '"Your App" <no-reply@yourapp.com>',
+      from: '"OpticAI" OpticAI@gmail.com',
       to,
       subject,
       text,
