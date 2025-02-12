@@ -10,7 +10,7 @@ const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// ✅ Register Route
+
 router.post('/register', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -32,7 +32,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// ✅ Login Route
+
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -56,7 +56,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// ✅ Token Authentication Middleware
+
 const authenticateToken = (req, res, next) => {
     const authHeader = req.header('Authorization');
 
@@ -75,7 +75,7 @@ const authenticateToken = (req, res, next) => {
     }
 };
 
-// ✅ Forgot Password Route
+
 router.post("/forgot-password", async (req, res) => {
     try {
         const { email } = req.body;
@@ -107,7 +107,7 @@ router.post("/forgot-password", async (req, res) => {
     }
 });
 
-// ✅ Reset Password Route
+
 router.post("/reset-password/:token", async (req, res) => {
     try {
         const { token } = req.params;
@@ -136,4 +136,4 @@ router.post("/reset-password/:token", async (req, res) => {
     }
 });
 
-module.exports = router; // ✅ Export router correctly
+module.exports = router; 

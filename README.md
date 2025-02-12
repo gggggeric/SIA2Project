@@ -13,9 +13,14 @@ for python (machineLearning)
 - python app.py or py app.py
 
 NOTE:
-create a seperate file for env for backend
+create a seperate file for env in backend folder
 here are the variables:
 
 MONGO_URI=
 PORT=5001
 JWT_SECRET=
+MAILTRAP_HOST=smtp.mailtrap.io
+MAILTRAP_PORT=2525
+MAILTRAP_USER=
+MAILTRAP_PASS=
+APP_URL=http://localhost:3000
