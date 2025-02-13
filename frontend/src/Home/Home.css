@@ -3,7 +3,6 @@
 /* Main container */
 .home-container {
   min-height: 100vh;
-  background-color: #f8fafc;
   position: relative;
   overflow: hidden;
   padding-top: 80px;
@@ -15,49 +14,82 @@
   justify-content: center;
 }
 
-/* Background Vector - Removed Shadow */
-.background-vector svg {
-  display: none; /* Completely removes the background vector */
+/* Hero Section */
+.hero-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.hero-section h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2d2d2d;
+}
+
+.hero-section p {
+  font-size: 1.2rem;
+  color: #555;
+  margin-top: 10px;
+}
+
+/* Primary Button */
+.primary-btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  background-color: #352e4b;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.primary-btn:hover {
+  background-color: #251f36;
+  transform: translateY(-3px);
 }
 
 /* Slider Section */
 .slider-section {
   text-align: center;
-  padding: 40px 10px;
-  position: relative;
-
-  /* Centering */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   width: 100%;
 }
 
 /* Slider Container */
 .slider-container {
-  max-width: 800px;
+  max-width: 900px;
   width: 100%;
   padding: 0 20px;
 }
 
-/* Slider Images */
+/* Slide Cards */
 .slide {
   display: flex;
   justify-content: center;
-  padding: 0 10px;
+  padding: 10px;
 }
 
+.slide.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.slide.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Slider Images */
 .slide-image {
   width: 100%;
   max-width: 350px;
   height: auto;
   border-radius: 12px;
-  transition: transform 0.3s ease-in-out;
-}
-
-.slide-image:hover {
-  transform: scale(1.05);
 }
 
 /* Slick Dots Styling */
@@ -66,36 +98,11 @@
 }
 
 .slick-dots li button:before {
-  color: #352e4b; /* Updated Theme Color */
+  color: #352e4b;
   font-size: 12px;
 }
 
 .slick-dots li.slick-active button:before {
-  color: #251f36; /* Darker Shade */
+  color: #251f36;
   font-size: 14px;
-}
-
-/* Button Container */
-.button-container {
-  margin-top: 40px;
-  display: flex;
-  justify-content: center;
-}
-
-/* Get Started Button */
-.get-started-btn {
-  padding: 12px 24px;
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-  background-color: #352e4b; /* Updated Theme Color */
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-}
-
-.get-started-btn:hover {
-  background-color: #251f36; /* Darker Shade */
-  transform: translateY(-2px);
 }
