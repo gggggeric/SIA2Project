@@ -29,8 +29,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-
         <Route
           path="/instructions/requirements"
           element={
@@ -39,8 +37,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
- 
         <Route
           path="/instructions/reminders"
           element={
