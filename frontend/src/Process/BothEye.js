@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import Navbar from "../Navigation/Navbar";
 import axios from "axios";
-import styles from "./BothEye.module.css"; // Importing CSS Module
-import eyeTestImage from "../assets/eyetest1.png"; // Importing eye test image
+import styles from "./BothEye.module.css"; // Import CSS Module
+import eyeTestImage from "../assets/eyetest1.png"; // Eye test image
 
 const BothEyePage = () => {
   const webcamRef = useRef(null);
@@ -19,7 +19,6 @@ const BothEyePage = () => {
   });
 
   const [isListening, setIsListening] = useState(false);
-  const [currentTest, setCurrentTest] = useState("bothEyes");
 
   // Capture webcam image every 5 seconds
   useEffect(() => {
@@ -50,7 +49,7 @@ const BothEyePage = () => {
     startWebcam();
   }, []);
 
-  const captureImage = async () => {
+  const captureImage = () => {
     if (webcamRef.current) {
       const video = webcamRef.current;
       const canvas = document.createElement("canvas");
@@ -105,14 +104,6 @@ const BothEyePage = () => {
   const handleSpeechRecognition = async (testType) => {
     setIsListening(true);
     try {
-      // Request microphone access
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      if (!stream) {
-        setDetectedSpeech((prev) => ({ ...prev, [testType]: "Microphone access denied." }));
-        setIsListening(false);
-        return;
-      }
-
       const response = await axios.post("http://127.0.0.1:5000/speech-to-text");
       setIsListening(false);
 
@@ -132,7 +123,7 @@ const BothEyePage = () => {
       setIsListening(false);
       setDetectedSpeech((prev) => ({
         ...prev,
-        [testType]: "An error occurred during speech recognition. Please ensure your microphone is enabled.",
+        [testType]: "An error occurred during speech recognition.",
       }));
     }
   };
@@ -141,14 +132,9 @@ const BothEyePage = () => {
     <div className={styles.pageContainer}>
       <Navbar />
       <section className={styles.contentContainer}>
+        {/* Webcam Section with LogBox Below */}
         <div className={styles.webcamContainer}>
-          <video ref={webcamRef} width="100%" height="auto" autoPlay></video>
-        </div>
-
-        <div className={styles.separator}></div>
-
-        <div className={styles.eyeTestContainer}>
-          <img src={eyeTestImage} alt="Eye Exam Chart" className={styles.eyeTestImage} />
+          <video ref={webcamRef} autoPlay></video>
 
           <div className={styles.logBox}>
             {errorMessage ? (
@@ -163,41 +149,41 @@ const BothEyePage = () => {
               )
             )}
           </div>
+        </div>
 
-          <div className={styles.testButtons}>
-            {!isListening ? (
-              <>
-                <button
-                  className={styles.speechButton}
-                  onClick={() => handleSpeechRecognition("bothEyes")}
-                >
-                  👀 Test Both Eyes
-                </button>
-                <button
-                  className={styles.speechButton}
-                  onClick={() => handleSpeechRecognition("rightEye")}
-                >
-                  👁 Test Right Eye
-                </button>
-                <button
-                  className={styles.speechButton}
-                  onClick={() => handleSpeechRecognition("leftEye")}
-                >
-                  👁 Test Left Eye
-                </button>
-              </>
-            ) : (
-              <p>Listening...</p>
-            )}
-          </div>
+        <div className={styles.separator}></div>
 
-          <div className={styles.detectedSpeechBox}>
-            <p><strong>👀 Both Eyes:</strong> {detectedSpeech.bothEyes || "Not tested yet"}</p>
-            <p><strong>👁 Right Eye:</strong> {detectedSpeech.rightEye || "Not tested yet"}</p>
-            <p><strong>👁 Left Eye:</strong> {detectedSpeech.leftEye || "Not tested yet"}</p>
-          </div>
+        {/* Eye Test Section */}
+        <div className={styles.eyeTestContainer}>
+          <img src={eyeTestImage} alt="Eye Exam Chart" className={styles.eyeTestImage} />
         </div>
       </section>
+
+      {/* Buttons Below the Eye Test Image */}
+      <div className={styles.buttonsContainer}>
+        {!isListening ? (
+          <>
+            <button className={styles.speechButton} onClick={() => handleSpeechRecognition("bothEyes")}>
+              👀 Test Both Eyes
+            </button>
+            <button className={styles.speechButton} onClick={() => handleSpeechRecognition("rightEye")}>
+              👁 Test Right Eye
+            </button>
+            <button className={styles.speechButton} onClick={() => handleSpeechRecognition("leftEye")}>
+              👁 Test Left Eye
+            </button>
+          </>
+        ) : (
+          <p>Listening...</p>
+        )}
+      </div>
+
+      {/* Detected Speech Box */}
+      <div className={styles.detectedSpeechBox}>
+        <p><strong>👀 Both Eyes:</strong> {detectedSpeech.bothEyes || "Not tested yet"}</p>
+        <p><strong>👁 Right Eye:</strong> {detectedSpeech.rightEye || "Not tested yet"}</p>
+        <p><strong>👁 Left Eye:</strong> {detectedSpeech.leftEye || "Not tested yet"}</p>
+      </div>
     </div>
   );
 };
