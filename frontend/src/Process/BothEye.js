@@ -1,26 +1,56 @@
 import React, { useRef, useState, useEffect } from "react";
 import Navbar from "../Navigation/Navbar";
 import axios from "axios";
-import styles from "./BothEye.module.css"; // Import CSS Module
-import eyeTestImage from "../assets/eyetest1.png"; // Eye test image
+import styles from "./BothEye.module.css";
+import eyeTestImage from "../assets/eyetest1.png";
 
 const BothEyePage = () => {
   const webcamRef = useRef(null);
   const [image, setImage] = useState(null);
   const [distance, setDistance] = useState(null);
-  const [eyeStatus, setEyeStatus] = useState(null);
+  const [expectedDistance, setExpectedDistance] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [distanceFeedback, setDistanceFeedback] = useState("");
 
-  const [detectedSpeech, setDetectedSpeech] = useState({
-    bothEyes: null,
-    rightEye: null,
-    leftEye: null,
+  // State for detected speech results
+  const [detectedSpeech, setDetectedSpeech] = useState(() => {
+    const savedSpeech = localStorage.getItem("detectedSpeech");
+    return savedSpeech ? JSON.parse(savedSpeech) : { bothEyes: null, rightEye: null, leftEye: null };
   });
 
-  const [isListening, setIsListening] = useState(false);
+  // State for current test level and letters to read
+  const [currentTestLevel, setCurrentTestLevel] = useState("");
 
-  // Capture webcam image every 5 seconds
+  // State for microphone permission and listening status
+  const [isListening, setIsListening] = useState(false);
+  const [micPermission, setMicPermission] = useState(false);
+
+  // State for test instructions
+  const [testInstructions, setTestInstructions] = useState("");
+
+  // State for current test distance
+  const [currentTestDistance, setCurrentTestDistance] = useState("");
+
+  // Save detected speech to localStorage
+  useEffect(() => {
+    localStorage.setItem("detectedSpeech", JSON.stringify(detectedSpeech));
+  }, [detectedSpeech]);
+
+  // Request microphone permission on component mount
+  useEffect(() => {
+    const getMicPermission = async () => {
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        setMicPermission(true);
+      } catch (err) {
+        console.error("Microphone access denied:", err);
+        setMicPermission(false);
+      }
+    };
+    getMicPermission();
+  }, []);
+
+  // Capture image from webcam every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       captureImage();
@@ -28,19 +58,21 @@ const BothEyePage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Process captured image
+  // Calculate face distance when a new image is captured
   useEffect(() => {
     if (image) {
       calculateFaceDistance();
     }
   }, [image]);
 
-  // Start webcam stream
+  // Start webcam on component mount
   useEffect(() => {
     const startWebcam = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        webcamRef.current.srcObject = stream;
+        if (webcamRef.current) {
+          webcamRef.current.srcObject = stream;
+        }
       } catch (err) {
         console.error("Error accessing webcam:", err);
         setErrorMessage("Unable to access the webcam.");
@@ -49,6 +81,7 @@ const BothEyePage = () => {
     startWebcam();
   }, []);
 
+  // Capture image from webcam
   const captureImage = () => {
     if (webcamRef.current) {
       const video = webcamRef.current;
@@ -65,21 +98,23 @@ const BothEyePage = () => {
     }
   };
 
+  // Calculate face distance using the backend API
   const calculateFaceDistance = async () => {
     if (image) {
       try {
         const response = await axios.post("http://127.0.0.1:5000/calculate-distance", {
-          image: image.split(",")[1],
+          image: image.split(",")[1], // Send base64 encoded image data
         });
+
+        console.log("Face distance response:", response.data);
 
         if (response.data.error) {
           setErrorMessage(response.data.error);
           setDistance(null);
-          setEyeStatus(null);
           setDistanceFeedback("");
         } else {
           setDistance(response.data.distance_cm);
-          setEyeStatus(response.data.eye_status);
+          setExpectedDistance(response.data.expected_distance_cm);
           setErrorMessage(null);
 
           if (response.data.distance_cm < 20) {
@@ -94,37 +129,67 @@ const BothEyePage = () => {
         console.error("Error calculating distance:", error);
         setErrorMessage("An error occurred while processing the image.");
         setDistance(null);
-        setEyeStatus(null);
         setDistanceFeedback("");
       }
     }
   };
 
-  // Function to start speech recognition
   const handleSpeechRecognition = async (testType) => {
-    setIsListening(true);
-    try {
-      const response = await axios.post("http://127.0.0.1:5000/speech-to-text");
-      setIsListening(false);
+    if (!micPermission) {
+      alert("Microphone access is required for speech recognition.");
+      return;
+    }
 
-      if (response.data.error) {
-        setDetectedSpeech((prev) => ({
-          ...prev,
-          [testType]: "Error: " + response.data.error,
-        }));
-      } else {
-        setDetectedSpeech((prev) => ({
-          ...prev,
-          [testType]: response.data.text,
-        }));
-      }
-    } catch (error) {
-      console.error("Speech recognition error:", error);
-      setIsListening(false);
+    setIsListening(true);
+
+    try {
+      let endpoint = "";
+      if (testType === "bothEyes") endpoint = "/vision-test/both-eyes";
+      else if (testType === "rightEye") endpoint = "/vision-test/right-eye";
+      else if (testType === "leftEye") endpoint = "/vision-test/left-eye";
+
+      // Start the near vision test (40-50 cm)
+      setCurrentTestDistance("40-50 cm"); // Set current test distance
+      setTestInstructions("Testing at 40-50 cm... Please read the following letters:");
+      const nearResponse = await axios.post(`http://127.0.0.1:5000${endpoint}`, {}, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      console.log("✅ Near vision test response:", nearResponse.data);
+
+      // Update test instructions
+      setTestInstructions(`Say these letters: ${nearResponse.data.near_test_characters.join(", ")}`);
+
+      // Update detected speech results
       setDetectedSpeech((prev) => ({
         ...prev,
-        [testType]: "An error occurred during speech recognition.",
+        [testType]: {
+          near: nearResponse.data,
+          diagnosis: nearResponse.data.diagnosis,
+        },
       }));
+
+      // Delay before starting the far test (80-100 cm)
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      // Start the far vision test (80-100 cm)
+      setCurrentTestDistance("80-100 cm"); // Set current test distance
+      setTestInstructions("Testing at 80-100 cm... Please read the following letters:");
+      const farResponse = await axios.post(`http://127.0.0.1:5000${endpoint}`, {}, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      console.log("✅ Far vision test response:", farResponse.data);
+
+      setDetectedSpeech((prev) => ({
+        ...prev,
+        [testType]: { error: "An error occurred during speech recognition." },
+      }));
+
+      setIsListening(false);
+    } catch (error) {
+      console.error("❌ Speech recognition error:", error);
+      setIsListening(false);
     }
   };
 
@@ -132,10 +197,8 @@ const BothEyePage = () => {
     <div className={styles.pageContainer}>
       <Navbar />
       <section className={styles.contentContainer}>
-        {/* Webcam Section with LogBox Below */}
         <div className={styles.webcamContainer}>
           <video ref={webcamRef} autoPlay></video>
-
           <div className={styles.logBox}>
             {errorMessage ? (
               <p className={styles.errorMessage}>{errorMessage}</p>
@@ -143,7 +206,7 @@ const BothEyePage = () => {
               distance && (
                 <p>
                   <strong>Face Distance:</strong> {distance} cm <br />
-                  <strong>Eye Status:</strong> {eyeStatus} <br />
+                  <strong>Expected Distance:</strong> {expectedDistance} cm <br />
                   <strong>Distance Feedback:</strong> {distanceFeedback}
                 </p>
               )
@@ -153,36 +216,17 @@ const BothEyePage = () => {
 
         <div className={styles.separator}></div>
 
-        {/* Eye Test Section */}
         <div className={styles.eyeTestContainer}>
           <img src={eyeTestImage} alt="Eye Exam Chart" className={styles.eyeTestImage} />
         </div>
       </section>
 
-      {/* Buttons Below the Eye Test Image */}
-      <div className={styles.buttonsContainer}>
-        {!isListening ? (
-          <>
-            <button className={styles.speechButton} onClick={() => handleSpeechRecognition("bothEyes")}>
-              👀 Test Both Eyes
-            </button>
-            <button className={styles.speechButton} onClick={() => handleSpeechRecognition("rightEye")}>
-              👁 Test Right Eye
-            </button>
-            <button className={styles.speechButton} onClick={() => handleSpeechRecognition("leftEye")}>
-              👁 Test Left Eye
-            </button>
-          </>
-        ) : (
-          <p>Listening...</p>
-        )}
-      </div>
+   
 
-      {/* Detected Speech Box */}
-      <div className={styles.detectedSpeechBox}>
-        <p><strong>👀 Both Eyes:</strong> {detectedSpeech.bothEyes || "Not tested yet"}</p>
-        <p><strong>👁 Right Eye:</strong> {detectedSpeech.rightEye || "Not tested yet"}</p>
-        <p><strong>👁 Left Eye:</strong> {detectedSpeech.leftEye || "Not tested yet"}</p>
+      <div className={styles.buttons}>
+        <button onClick={() => handleSpeechRecognition("bothEyes")}>Test Both Eyes</button>
+        <button onClick={() => handleSpeechRecognition("rightEye")}>Test Right Eye</button>
+        <button onClick={() => handleSpeechRecognition("leftEye")}>Test Left Eye</button>
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import LandingPage from "./Home/Landing";
 import About from "./Home/About";
 import ForgotPassword from "./Authentication/ForgotPassword";
 import ResetPassword from "./Authentication/ResetPassword";
+import FaceShapeDetector from "./Process/FaceShapeDetector";
 function App() {
   return (
     <Router>
@@ -54,7 +55,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+         <Route
+          path="/process/faceshape-detector"
+          element={
+            <ProtectedRoute>
+              <FaceShapeDetector />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
+      
     </Router>
   );
 }

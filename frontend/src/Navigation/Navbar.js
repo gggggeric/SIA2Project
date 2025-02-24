@@ -44,7 +44,7 @@ const Navbar = () => {
               </li>
             )}
             <li className="nav-item">
-              <Link className="nav-link text-white" to="/glasses">
+              <Link className="nav-link text-white" to="/process/faceshape-detector">
                 Glasses
               </Link>
             </li>

@@ -7,54 +7,53 @@ from io import BytesIO
 from PIL import Image
 from flask_cors import CORS
 import speech_recognition as sr
-from werkzeug.utils import secure_filename
+import tensorflow as tf
 
-# Set up basic logging configuration
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+# Set up logging
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
 
-# Load HaarCascade face and eye detectors
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
+# Load HaarCascade face detector
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
-# Constants for distance calculation
+# Load the trained face shape model
+model_path = r"C:\Users\morit\Desktop\3RD YR PROJECTS\2nd\SIA2_System\machineLearning\learning\face_shape_model2.h5"
+model = tf.keras.models.load_model(model_path)
+
+# Define face shape labels
+face_shape_labels = ["Heart", "Oblong", "Oval", "Round", "Square"]
+
+# Constants
 REAL_FACE_WIDTH = 14.0  # cm
-FOCAL_LENGTH = 500  # Can be adjusted based on camera calibration
+FOCAL_LENGTH = 500  # Adjust based on camera calibration
 
-# Eye chart mapping
+# Vision chart
 eye_chart = {
-    "E": 200,
-    "F": 100, "P": 100,
-    "T": 70, "O": 70, "Z": 70,
-    "L": 50, "P": 50, "E": 50, "D": 50,
-    "P": 40, "E": 40, "C": 40, "F": 40, "D": 40,
-    "E": 30, "D": 30, "F": 30, "C": 30, "Z": 30, "P": 30,
-    "F": 25, "E": 25, "L": 25, "O": 25, "P": 25, "Z": 25, "D": 25,
-    "D": 20, "E": 20, "F": 20, "P": 20, "O": 20, "T": 20, "E": 20, "C": 20
+    "20/25": ["F", "E", "L", "O", "P", "Z", "D"],
+    "20/20": ["D", "E", "F", "P", "O", "T", "C"]
 }
 
+def diagnose_vision(near_accuracy, far_accuracy):
+    if near_accuracy >= 50 and far_accuracy < 50:
+        return "Nearsighted (Myopia)"
+    elif near_accuracy < 50 and far_accuracy >= 50:
+        return "Farsighted (Hyperopia)"
+    elif near_accuracy >= 50 and far_accuracy >= 50:
+        return "Vision is Normal"
+    else:
+        return "Severely Impaired"
 
-def diagnose_vision(letters):
-    grades = [eye_chart.get(letter.upper(), None) for letter in letters if letter.upper() in eye_chart]
-    if not grades:
-        return "Unable to determine vision grade"
-    avg_grade = sum(grades) / len(grades)
-    diagnosis = "Nearsighted" if avg_grade > 40 else "Farsighted"
-    return f"{diagnosis}, Approximate Grade: 20/{int(avg_grade)}"
-
-
-@app.route('/calculate-distance', methods=['POST'])
+@app.route("/calculate-distance", methods=["POST"])
 def calculate_distance():
     data = request.json
-    if 'image' not in data:
-        logger.error("No image data provided in the request")
+    if "image" not in data:
         return jsonify({"error": "No image data provided"}), 400
 
     try:
-        img_data = base64.b64decode(data['image'])
+        img_data = base64.b64decode(data["image"])
         img = Image.open(BytesIO(img_data))
         img_np = np.array(img)
         img_np = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
@@ -62,90 +61,122 @@ def calculate_distance():
 
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5)
         if len(faces) == 0:
-            logger.warning("No face detected")
             return jsonify({"error": "No face detected"}), 400
         if len(faces) > 1:
-            logger.warning("Multiple faces detected")
             return jsonify({"error": "Multiple faces detected. Ensure only one person is in the frame."}), 400
 
         (x, y, w, h) = faces[0]
-        roi_gray = gray[y:y+h, x:x+w]
-        eyes = eye_cascade.detectMultiScale(roi_gray, scaleFactor=1.1, minNeighbors=5)
-
-        left_eye_visible = any(ex + ew // 2 < w // 2 for (ex, ey, ew, eh) in eyes)
-        right_eye_visible = any(ex + ew // 2 >= w // 2 for (ex, ey, ew, eh) in eyes)
-
-        eye_status = "Both eyes visible" if left_eye_visible and right_eye_visible else \
-                     "Left eye only visible" if left_eye_visible else \
-                     "Right eye only visible" if right_eye_visible else \
-                     "Both eyes not visible"
-
         face_width_in_pixels = w
         distance = (FOCAL_LENGTH * REAL_FACE_WIDTH) / face_width_in_pixels
-        logger.info(f"Face detected. Distance calculated: {distance:.2f} cm. Eye status: {eye_status}")
-        return jsonify({"distance_cm": round(distance, 2), "eye_status": eye_status})
+
+        if not (30 <= distance <= 100):
+            return jsonify({"error": "Please position yourself between 30-100 cm from the screen."}), 400
+
+        return jsonify({"distance_cm": round(distance, 2), "message": "Correct distance. Proceed with the test."})
     except Exception as e:
-        logger.error(f"Error processing image: {str(e)}")
+        return jsonify({"error": f"Processing error: {str(e)}"}), 500
+@app.route("/predict-face-shape", methods=["POST"])
+def predict_face_shape():
+    data = request.json
+    if "image" not in data:
+        return jsonify({"error": "No image data provided"}), 400
+
+    try:
+        img_data = base64.b64decode(data["image"])
+        img = Image.open(BytesIO(img_data)).convert("RGB")
+        img = img.resize((224, 224))  # Match MobileNetV2 input size
+        img_array = np.array(img) / 255.0  # Normalize
+        img_array = np.expand_dims(img_array, axis=0)  # Expand batch dimension
+
+        predictions = model.predict(img_array)
+        predicted_class = np.argmax(predictions)
+        confidence = round(float(np.max(predictions)) * 100, 2)
+
+        # Face Shape Labels
+        face_shape_labels = [
+            "Oval", "Round", "Square", "Heart", "Diamond", "Oblong"
+        ]
+
+        # Recommended Glasses for Each Face Shape
+        glasses_recommendations = {
+            "Oval": "Most frame styles work well! Try square, rectangular, or round glasses.",
+            "Round": "Opt for angular frames like rectangular or square glasses to add definition.",
+            "Square": "Round or oval frames soften sharp facial features.",
+            "Heart": "Bottom-heavy frames, aviators, or round glasses balance the wider forehead.",
+            "Diamond": "Oval or rimless glasses complement high cheekbones and narrow jawlines.",
+            "Oblong": "Oversized, tall frames or round glasses add width and balance the face."
+        }
+
+        # Get detected face shape
+        detected_shape = face_shape_labels[predicted_class]
+        recommended_glasses = glasses_recommendations.get(detected_shape, "No specific recommendation.")
+
+        # Debugging prints
+        print("Predicted Probabilities:", predictions)
+        print("Predicted Class Index:", predicted_class)
+        print("Mapped Face Shape:", detected_shape)
+        print("Recommended Glasses:", recommended_glasses)
+
+        return jsonify({
+            "face_shape": detected_shape,
+            "confidence": f"{confidence}%",
+            "recommended_glasses": recommended_glasses
+        })
+    except Exception as e:
         return jsonify({"error": f"Processing error: {str(e)}"}), 500
 
-@app.route('/speech-to-text', methods=['POST'])
-def speech_to_text():
+def run_vision_test(eye_type):
     recognizer = sr.Recognizer()
-    
-    with sr.Microphone() as source:
-        print("Adjusting for ambient noise...")  
-        recognizer.adjust_for_ambient_noise(source, duration=1)  # Noise cancellation
-        
-        print("Listening...")
-        audio = recognizer.listen(source)
-
-        try:
-            text = recognizer.recognize_google(audio)
-            return jsonify({"text": text})
-        except sr.UnknownValueError:
-            return jsonify({"error": "Could not understand the audio"}), 400
-        except sr.RequestError:
-            return jsonify({"error": "Speech recognition service is unavailable"}), 500
-
-    recognizer = sr.Recognizer()
+    test_results = {}
 
     try:
         with sr.Microphone() as source:
-            print("Listening...")
-            audio = recognizer.listen(source)
+            print("Adjusting for ambient noise...")
+            recognizer.adjust_for_ambient_noise(source, duration=1)
 
-        print("Processing speech...")
-        text = recognizer.recognize_google(audio)
-        print("Recognized text:", text)
-        return jsonify({"text": text})
+            # Test at 40-50 cm (near test)
+            print(f"Testing {eye_type} at 40-50 cm...")
+            near_accuracy, near_text, near_vision_score, near_test_characters = test_vision(recognizer, source)
 
-    except sr.UnknownValueError:
-        print("Error: Could not understand the audio")
-        return jsonify({"error": "Could not understand the audio"}), 400
-    except sr.RequestError as e:
-        print("Error: Speech recognition service unavailable", str(e))
-        return jsonify({"error": "Speech recognition service unavailable"}), 500
-    except Exception as e:
-        print("Unexpected Error:", str(e))
-        return jsonify({"error": str(e)}), 500
+            # Test at 80-100 cm (far test)
+            print(f"Testing {eye_type} at 80-100 cm...")
+            far_accuracy, far_text, far_vision_score, far_test_characters = test_vision(recognizer, source)
 
-    recognizer = sr.Recognizer()
+            # Determine final diagnosis
+            diagnosis = diagnose_vision(near_accuracy, far_accuracy)
 
-    try:
-        with sr.Microphone() as source:
-            print("Listening for speech...")
-            audio = recognizer.listen(source)
+            test_results = {
+                "eye": eye_type,
+                "near_distance": "40-50 cm",
+                "near_spoken_text": near_text,
+                "near_accuracy": f"{near_accuracy:.2f}%",
+                "near_vision_score": near_vision_score,
+                "near_test_characters": near_test_characters,
+                "far_distance": "80-100 cm",
+                "far_spoken_text": far_text,
+                "far_accuracy": f"{far_accuracy:.2f}%",
+                "far_vision_score": far_vision_score,
+                "far_test_characters": far_test_characters,
+                "diagnosis": diagnosis,
+                "distance_message": "Position yourself correctly at 40-50 cm or 80-100 cm"
+            }
 
-        # Recognize speech
-        text = recognizer.recognize_google(audio)
-        return jsonify({"text": text})
-
-    except sr.UnknownValueError:
-        return jsonify({"error": "Could not understand the audio"}), 400
-    except sr.RequestError as e:
-        return jsonify({"error": f"Speech recognition service unavailable: {str(e)}"}), 500
+        return jsonify(test_results)
     except Exception as e:
         return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True)
+@app.route("/vision-test/both-eyes", methods=["POST"])
+def vision_test_both():
+    return run_vision_test("both_eyes") 
+
+@app.route("/vision-test/left-eye", methods=["POST"])
+def vision_test_left():
+    return run_vision_test("left_eye")
+
+@app.route("/vision-test/right-eye", methods=["POST"])
+def vision_test_right():
+    return run_vision_test("right_eye")
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
+
