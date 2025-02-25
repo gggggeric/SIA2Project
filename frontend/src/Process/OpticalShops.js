@@ -123,13 +123,16 @@ const OpticalShops = () => {
               {/* Optical shop markers (Classic Red Pin) */}
               {shops.map((shop, index) => (
                 <Marker key={index} position={[shop.lat, shop.lon]} icon={shopIcon}>
-                  <Popup>
-                    <b>{shop.name}</b>
-                    <br />
-                    <button className="direction-btn" onClick={() => handleGetDirections(shop)}>
-                      Get Directions
-                    </button>
-                  </Popup>
+                <Popup>
+  <div className="popup-content">
+    <b>{shop.name}</b>
+    <br />
+    <button className="direction-btn" onClick={() => handleGetDirections(shop)}>
+      Get Directions
+    </button>
+  </div>
+</Popup>
+
                 </Marker>
               ))}
             </MapContainer>

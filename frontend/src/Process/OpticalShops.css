@@ -106,3 +106,28 @@
 .direction-btn:hover {
     background: #4B0082;
 }
+
+/* Popup Content Fix */
+.popup-content {
+    min-width: 160px; /* Ensures enough space for text */
+    text-align: center;
+    padding: 5px;
+}
+
+/* Fix for squished buttons inside popups */
+.popup-content .direction-btn {
+    display: block;
+    width: 100%; /* Makes button take full width */
+    padding: 6px 10px;
+    margin-top: 5px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.popup-content .direction-btn:hover {
+    background-color: #0056b3;
+}
