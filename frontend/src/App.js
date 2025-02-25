@@ -12,6 +12,7 @@ import About from "./Home/About";
 import ForgotPassword from "./Authentication/ForgotPassword";
 import ResetPassword from "./Authentication/ResetPassword";
 import FaceShapeDetector from "./Process/FaceShapeDetector";
+import OpticalShops from "./Process/OpticalShops";
 function App() {
   return (
     <Router>
@@ -60,6 +61,14 @@ function App() {
           element={
             <ProtectedRoute>
               <FaceShapeDetector />
+            </ProtectedRoute>
+          }
+        />
+         <Route
+          path="/process/near-opticalshops"
+          element={
+            <ProtectedRoute>
+              <OpticalShops />
             </ProtectedRoute>
           }
         />

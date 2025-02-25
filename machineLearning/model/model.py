@@ -6,22 +6,23 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.applications import MobileNetV2
+from tensorflow.keras.callbacks import ReduceLROnPlateau
 from sklearn.utils.class_weight import compute_class_weight
 from PIL import Image, ImageFile
 import collections
 
-# Fix truncated image loading
+# Fix truncated images
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-# Define dataset paths
+# Dataset Paths
 train_dir = r"C:\Users\morit\Desktop\3RD YR PROJECTS\2nd\SIA2_System\machineLearning\dataset\training_set"
 test_dir = r"C:\Users\morit\Desktop\3RD YR PROJECTS\2nd\SIA2_System\machineLearning\dataset\testing_set"
 
-# Image dimensions (increased for better accuracy)
-img_size = 224
-batch_size = 16
+# Optimized Image Size (smaller = faster)
+img_size = 160  
+batch_size = 32  # Increase batch size for fewer updates per epoch
 
-# Function to remove corrupted images
+# Function to remove corrupt images
 def remove_corrupt_images(directory):
     for category in os.listdir(directory):
         category_path = os.path.join(directory, category)
@@ -35,20 +36,19 @@ def remove_corrupt_images(directory):
                     print(f"🛑 Corrupt image removed: {img_path}")
                     os.remove(img_path)
 
-# Remove corrupted images
+# Remove corrupt images
 remove_corrupt_images(train_dir)
 remove_corrupt_images(test_dir)
 
-# Data Augmentation
+# Faster Data Augmentation
 train_datagen = ImageDataGenerator(
     rescale=1.0/255,
-    rotation_range=45,
-    width_shift_range=0.3,
-    height_shift_range=0.3,
-    shear_range=0.3,
-    zoom_range=0.3,
+    rotation_range=30,  # Reduced for speed
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
     horizontal_flip=True,
-    brightness_range=[0.6, 1.4],  # Increased contrast
     fill_mode="nearest"
 )
 
@@ -65,44 +65,45 @@ test_generator = test_datagen.flow_from_directory(
     batch_size=batch_size, class_mode="categorical"
 )
 
-# Check dataset balance
-class_counts = collections.Counter(train_generator.classes)
-print(f"Class Distribution: {class_counts}")
-
-# Compute Class Weights
+# Compute Class Weights for Balanced Training
 class_weights = compute_class_weight(
     class_weight="balanced",
     classes=np.unique(train_generator.classes),
     y=train_generator.classes
 )
 class_weights_dict = {i: class_weights[i] for i in range(len(class_weights))}
-print(f"Class Weights: {class_weights_dict}")
 
-# Use Pretrained Model (MobileNetV2) for better accuracy
+# Use MobileNetV2 with Some Trainable Layers
 base_model = MobileNetV2(input_shape=(img_size, img_size, 3), include_top=False, weights="imagenet")
-base_model.trainable = False  # Freeze initial layers
+for layer in base_model.layers[:100]:  # Freeze first 100 layers (train only the last few)
+    layer.trainable = False
 
 # Define Model
 model = Sequential([
     base_model,
     GlobalAveragePooling2D(),
     Dense(512, activation="relu"),
-    Dropout(0.3),  # Reduced dropout for better learning
+    Dropout(0.2),  # Reduced dropout for faster convergence
     Dense(256, activation="relu"),
-    Dropout(0.3),
     Dense(5, activation="softmax")  # 5 classes
 ])
 
-# Compile Model
-model.compile(loss="categorical_crossentropy",
-              optimizer=Adam(learning_rate=0.0001),  # Lower learning rate for better convergence
-              metrics=["accuracy"])
+# Compile Model with Dynamic Learning Rate
+model.compile(
+    loss="categorical_crossentropy",
+    optimizer=Adam(learning_rate=0.0005),  # Slightly higher learning rate
+    metrics=["accuracy"]
+)
 
-# Train Model
-epochs = 25
-history = model.fit(train_generator, epochs=epochs, validation_data=test_generator, class_weight=class_weights_dict)
+# Learning Rate Reduction (Speeds Up Convergence)
+lr_scheduler = ReduceLROnPlateau(monitor="val_loss", patience=2, factor=0.5, verbose=1)
+
+# Train Model Faster 🚀
+epochs = 20  # Fewer epochs but better learning
+history = model.fit(train_generator, epochs=epochs, validation_data=test_generator,
+                    class_weight=class_weights_dict, callbacks=[lr_scheduler])
 
 # Save Model
-model_save_path = r"C:\Users\morit\Desktop\3RD YR PROJECTS\2nd\SIA2_System\machineLearning\learning\face_shape_model2.h5"
+model_save_path = r"C:\Users\morit\Desktop\3RD YR PROJECTS\2nd\SIA2_System\machineLearning\learning\face_shape_model3.h5"
 model.save(model_save_path)
 print(f"✅ Model training complete and saved as '{model_save_path}'")

@@ -1,13 +1,14 @@
 import logging
-from flask import Flask, request, jsonify
 import base64
 import cv2
 import numpy as np
+import tensorflow as tf
+import speech_recognition as sr
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from io import BytesIO
 from PIL import Image
-from flask_cors import CORS
-import speech_recognition as sr
-import tensorflow as tf
+from threading import Thread
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -25,26 +26,17 @@ model = tf.keras.models.load_model(model_path)
 
 # Define face shape labels
 face_shape_labels = ["Heart", "Oblong", "Oval", "Round", "Square"]
+glasses_recommendations = {
+    "Oval": "Most frame styles work well! Try square, rectangular, or round glasses.",
+    "Round": "Opt for angular frames like rectangular or square glasses to add definition.",
+    "Square": "Round or oval frames soften sharp facial features.",
+    "Heart": "Bottom-heavy frames, aviators, or round glasses balance the wider forehead.",
+    "Oblong": "Oversized, tall frames or round glasses add width and balance the face."
+}
 
 # Constants
 REAL_FACE_WIDTH = 14.0  # cm
 FOCAL_LENGTH = 500  # Adjust based on camera calibration
-
-# Vision chart
-eye_chart = {
-    "20/25": ["F", "E", "L", "O", "P", "Z", "D"],
-    "20/20": ["D", "E", "F", "P", "O", "T", "C"]
-}
-
-def diagnose_vision(near_accuracy, far_accuracy):
-    if near_accuracy >= 50 and far_accuracy < 50:
-        return "Nearsighted (Myopia)"
-    elif near_accuracy < 50 and far_accuracy >= 50:
-        return "Farsighted (Hyperopia)"
-    elif near_accuracy >= 50 and far_accuracy >= 50:
-        return "Vision is Normal"
-    else:
-        return "Severely Impaired"
 
 @app.route("/calculate-distance", methods=["POST"])
 def calculate_distance():
@@ -75,6 +67,7 @@ def calculate_distance():
         return jsonify({"distance_cm": round(distance, 2), "message": "Correct distance. Proceed with the test."})
     except Exception as e:
         return jsonify({"error": f"Processing error: {str(e)}"}), 500
+    
 @app.route("/predict-face-shape", methods=["POST"])
 def predict_face_shape():
     data = request.json
@@ -84,38 +77,16 @@ def predict_face_shape():
     try:
         img_data = base64.b64decode(data["image"])
         img = Image.open(BytesIO(img_data)).convert("RGB")
-        img = img.resize((224, 224))  # Match MobileNetV2 input size
-        img_array = np.array(img) / 255.0  # Normalize
-        img_array = np.expand_dims(img_array, axis=0)  # Expand batch dimension
+        img = img.resize((224, 224))
+        img_array = np.array(img) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
 
         predictions = model.predict(img_array)
         predicted_class = np.argmax(predictions)
         confidence = round(float(np.max(predictions)) * 100, 2)
 
-        # Face Shape Labels
-        face_shape_labels = [
-            "Oval", "Round", "Square", "Heart", "Diamond", "Oblong"
-        ]
-
-        # Recommended Glasses for Each Face Shape
-        glasses_recommendations = {
-            "Oval": "Most frame styles work well! Try square, rectangular, or round glasses.",
-            "Round": "Opt for angular frames like rectangular or square glasses to add definition.",
-            "Square": "Round or oval frames soften sharp facial features.",
-            "Heart": "Bottom-heavy frames, aviators, or round glasses balance the wider forehead.",
-            "Diamond": "Oval or rimless glasses complement high cheekbones and narrow jawlines.",
-            "Oblong": "Oversized, tall frames or round glasses add width and balance the face."
-        }
-
-        # Get detected face shape
         detected_shape = face_shape_labels[predicted_class]
         recommended_glasses = glasses_recommendations.get(detected_shape, "No specific recommendation.")
-
-        # Debugging prints
-        print("Predicted Probabilities:", predictions)
-        print("Predicted Class Index:", predicted_class)
-        print("Mapped Face Shape:", detected_shape)
-        print("Recommended Glasses:", recommended_glasses)
 
         return jsonify({
             "face_shape": detected_shape,
@@ -125,40 +96,37 @@ def predict_face_shape():
     except Exception as e:
         return jsonify({"error": f"Processing error: {str(e)}"}), 500
 
+def diagnose_vision(near_accuracy, far_accuracy):
+    if near_accuracy >= 50 and far_accuracy < 50:
+        return "Nearsighted (Myopia)"
+    elif near_accuracy < 50 and far_accuracy >= 50:
+        return "Farsighted (Hyperopia)"
+    elif near_accuracy >= 50 and far_accuracy >= 50:
+        return "Vision is Normal"
+    else:
+        return "Severely Impaired"
+
 def run_vision_test(eye_type):
     recognizer = sr.Recognizer()
     test_results = {}
 
     try:
         with sr.Microphone() as source:
-            print("Adjusting for ambient noise...")
-            recognizer.adjust_for_ambient_noise(source, duration=1)
-
-            # Test at 40-50 cm (near test)
             print(f"Testing {eye_type} at 40-50 cm...")
-            near_accuracy, near_text, near_vision_score, near_test_characters = test_vision(recognizer, source)
+            near_accuracy, near_text = test_vision(recognizer, source)
 
-            # Test at 80-100 cm (far test)
             print(f"Testing {eye_type} at 80-100 cm...")
-            far_accuracy, far_text, far_vision_score, far_test_characters = test_vision(recognizer, source)
+            far_accuracy, far_text = test_vision(recognizer, source)
 
-            # Determine final diagnosis
             diagnosis = diagnose_vision(near_accuracy, far_accuracy)
 
             test_results = {
                 "eye": eye_type,
-                "near_distance": "40-50 cm",
-                "near_spoken_text": near_text,
                 "near_accuracy": f"{near_accuracy:.2f}%",
-                "near_vision_score": near_vision_score,
-                "near_test_characters": near_test_characters,
-                "far_distance": "80-100 cm",
-                "far_spoken_text": far_text,
+                "near_spoken_text": near_text,
                 "far_accuracy": f"{far_accuracy:.2f}%",
-                "far_vision_score": far_vision_score,
-                "far_test_characters": far_test_characters,
-                "diagnosis": diagnosis,
-                "distance_message": "Position yourself correctly at 40-50 cm or 80-100 cm"
+                "far_spoken_text": far_text,
+                "diagnosis": diagnosis
             }
 
         return jsonify(test_results)
@@ -178,5 +146,4 @@ def vision_test_right():
     return run_vision_test("right_eye")
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
-
+    app.run(port=5000, debug=True, use_reloader=False)

@@ -11,30 +11,22 @@
 /* Outer Box Wrapping Group Box and Image */
 .border-box {
     display: flex;
-    align-items: center; /* Centers items vertically */
+    align-items: center;
     gap: 30px;
     padding: 30px;
-    border: 3px solid #4B0082; /* Deep purple border */
+    border: 3px solid #4B0082;
     border-radius: 12px;
-    background-color: #ffffff; /* White background for contrast */
+    background-color: #ffffff;
 }
 
 /* Group Box */
 .group-box {
     background-color: white;
-    width: 500px; /* Consistent width */
+    width: 500px;
     padding: 35px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     text-align: center;
-}
-
-/* Reference Image (Right Side) */
-.face-shape-guide {
-    width: 180px; /* Matches the logo size */
-    height: auto;
-    border-radius: 8px;
-    display: block;
 }
 
 /* Title */
@@ -46,13 +38,6 @@
 }
 
 /* File Input */
-.file-label {
-    font-weight: 600;
-    color: #4B0082;
-    display: block;
-    margin-bottom: 10px;
-}
-
 .file-input {
     width: 100%;
     padding: 12px;
@@ -60,73 +45,41 @@
     border-radius: 8px;
     cursor: pointer;
     background: #f9f9f9;
-    transition: border-color 0.3s ease-in-out;
+    margin-top: 15px;
 }
 
-.file-input:hover {
-    border-color: #6A0DAD;
-}
-
-/* Image Preview Box */
+/* Image Preview */
 .image-preview-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin: 20px 0;
     padding: 10px;
-    border-radius: 10px;
     background: #fafafa;
-    max-width: 100%;
-    overflow: hidden;
 }
 
-/* Uploaded Image - Properly Scaled */
 .image-preview {
-    max-width: 100%; /* Ensures the image fits within the container */
-    max-height: 200px; /* Prevents excessive height */
-    height: auto; /* Maintains aspect ratio */
-    object-fit: contain; /* Ensures no stretching */
-    border-radius: 8px;
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
 }
 
-/* Detect Button */
-.detect-button {
+/* Buttons with Spacing */
+.detect-button,
+.camera-button,
+.capture-button {
     width: 100%;
     padding: 12px;
-    margin-top: 15px;
-    background: #4B0082;
-    color: white;
     font-size: 1.1rem;
     font-weight: bold;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    transition: background 0.3s ease-in-out;
+    margin-top: 20px; /* Added more spacing */
+    margin-bottom: 10px;
 }
 
-.detect-button:hover {
-    background: #6A0DAD;
-}
-
-.detect-button:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-}
-
-/* Error Message */
-.error-message {
-    color: red;
-    font-weight: bold;
-    margin-top: 10px;
-}
-
-/* Result Box */
-.result-box {
-    background: #E6E6FA; /* Soft lavender */
-    padding: 15px;
-    margin-top: 20px;
+/* Webcam Video - Inverted (Mirror Effect) */
+.webcam {
+    transform: scaleX(-1);
+    width: 100%;
+    max-width: 640px;
     border-radius: 8px;
-    text-align: left;
-    color: #4B0082;
-    font-weight: bold;
 }
