@@ -3,7 +3,7 @@ import Navbar from "../Navigation/Navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Landing.css";
 import { motion } from "framer-motion";
-import logo from "../assets/landing.png"; // Import the logo
+import logo from "../assets/landing1.png"; // Import the logo
 
 const LandingPage = () => {
   return (

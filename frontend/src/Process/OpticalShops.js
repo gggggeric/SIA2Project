@@ -3,7 +3,25 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Navbar from "../Navigation/Navbar";
-import "./OpticalShops.css"; // Make sure the styles are correctly imported
+import eyeglassIcon from "../assets/eyeglass.png"; // Eyeglass icon for user
+import pinIconUrl from "../assets/redping.png"; // Classic red pin for optical shops
+import "./OpticalShops.css"; // Ensure styles are applied
+
+// Custom user location marker (Eyeglass Icon)
+const userIcon = L.icon({
+  iconUrl: eyeglassIcon, // Use the imported eyeglass image
+  iconSize: [50, 50],
+  iconAnchor: [25, 50],
+  popupAnchor: [0, -50],
+});
+
+// Custom optical shop marker (Red Pin)
+const shopIcon = L.icon({
+  iconUrl: pinIconUrl, // Use the classic red pin
+  iconSize: [30, 50],
+  iconAnchor: [15, 50],
+  popupAnchor: [0, -45],
+});
 
 // Function to fetch nearby optical shops using Overpass API
 const fetchOpticalShops = async (lat, lon) => {
@@ -97,14 +115,14 @@ const OpticalShops = () => {
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-              {/* User's location marker */}
-              <Marker position={[location.latitude, location.longitude]}>
+              {/* User's location marker (Eyeglass Icon) */}
+              <Marker position={[location.latitude, location.longitude]} icon={userIcon}>
                 <Popup>You are here</Popup>
               </Marker>
 
-              {/* Optical shop markers */}
+              {/* Optical shop markers (Classic Red Pin) */}
               {shops.map((shop, index) => (
-                <Marker key={index} position={[shop.lat, shop.lon]}>
+                <Marker key={index} position={[shop.lat, shop.lon]} icon={shopIcon}>
                   <Popup>
                     <b>{shop.name}</b>
                     <br />

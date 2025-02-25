@@ -4,7 +4,7 @@
 
 .text-container h1,
 .text-container p {
-  color: black;
+  color: #352e4b; /* Updated font color */
   font-size: 36px; /* Increased font size */
 }
 
@@ -12,11 +12,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative; /* Allows image to exceed container */
+  overflow: visible; /* Ensures image isn't clipped */
 }
 
 .logo-box {
-  background: white;
-  border-radius: 10px;
+  background: transparent !important; /* Removed background */
+  box-shadow: none !important; /* Removed shadow */
   padding: 30px; /* Increased padding */
   display: flex;
   justify-content: center;
@@ -24,9 +26,16 @@
 }
 
 .logo-img {
-  max-width: 400px; /* Increased logo size */
+  max-width: 800px; /* Super large image */
+  width: 150%; /* Makes it larger than its container */
   height: auto;
+  filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0)); /* Ensures no drop shadow */
+  
+  /* Apply fading effect on the sides */
+  -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 25%, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 100%);
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 25%, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 100%);
 }
+
 
 button {
   background-color: #352e4b; /* Applied color to button */
@@ -41,6 +50,7 @@ button {
 button:hover {
   background-color: #261d35; /* Darker shade on hover */
 }
+
 .btn-primary {
   background-color: #352e4b !important;
   border-color: #352e4b !important;
