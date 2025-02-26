@@ -97,3 +97,11 @@
 .btn-icon {
   font-size: 1.5rem; /* Slightly larger icon */
 }
+
+.welcome-message {
+  text-align: center;
+  font-size: 22px;
+  font-weight: bold;
+  color: #4B0082; /* Indigo color */
+  margin-bottom: 10px;
+}

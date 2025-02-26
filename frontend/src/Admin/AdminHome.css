@@ -1,0 +1,144 @@
+/* Main Container - No Background Shadows */
+.admin-home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: white !important; /* Ensure clean background */
+  padding: 60px;
+  box-shadow: none !important; /* Remove unwanted shadows */
+  border: none !important;
+}
+
+/* Dashboard */
+.admin-dashboard {
+  width: 90%;
+  max-width: 1400px;
+  background: white;
+  padding: 60px;
+  border-radius: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border: 2px solid #4B0082;
+  box-shadow: none !important; /* Remove unwanted shadows */
+  gap: 40px;
+}
+
+/* Welcome Section */
+.welcome-container {
+  width: 30%;
+  text-align: left;
+  padding-right: 50px;
+}
+
+.welcome-text {
+  font-size: 2.2rem;
+  color: #4B0082;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.subtext {
+  font-size: 1.2rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Statistics Section */
+.admin-statistics {
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+  align-items: center;
+  gap: 25px;
+}
+
+.stat-card {
+  background: #4B0082 !important; /* Make sure background is set */
+  color: white !important; /* Ensure text is visible */
+  padding: 25px;
+  border-radius: 10px;
+  width: 100%;
+  text-align: center;
+  border: 2px solid #4B0082;
+  box-shadow: none !important;
+}
+
+.stat-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+
+.stat-card p {
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+
+/* Chart Container */
+.chart-container {
+  width: 35%;
+  padding: 30px;
+  background: white !important;
+  border-radius: 10px;
+  border: 2px solid #4B0082;
+  box-shadow: none !important;
+}
+
+/* Buttons */
+.admin-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 20%;
+}
+
+.admin-btn {
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: 2px solid #4B0082;
+  border-radius: 10px;
+  cursor: pointer;
+  background: #4B0082 !important; /* Ensure background color is visible */
+  color: white !important; /* Ensure text color is visible */
+  width: 100%;
+  transition: all 0.3s ease-in-out;
+}
+
+.admin-btn:hover {
+  background: #6200b3 !important;
+  transform: translateY(-3px);
+}
+
+/* Fix Global Styles Without Removing Button Colors */
+* {
+  box-shadow: none !important;
+}
+
+body {
+  background: white !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .admin-dashboard {
+    flex-direction: column;
+    padding: 40px;
+  }
+
+  .welcome-container,
+  .admin-statistics,
+  .chart-container,
+  .admin-buttons {
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .welcome-container {
+    padding-right: 0;
+  }
+}

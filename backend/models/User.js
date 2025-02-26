@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema({
   address: String,
   resetToken: String, // Token for password reset
   resetTokenExpiry: Date, // Expiration time for token
+  userType: { type: String, enum: ["user", "admin"], default: "user" }, // Role-based access
 });
 
 module.exports = mongoose.model("User", UserSchema);

@@ -1,0 +1,178 @@
+/* General Container - Center the Page */
+.user-crud-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 80px auto 30px; /* Added top margin to prevent navbar overlap */
+    padding: 40px;
+    border: 2px solid #4B0082; /* Indigo Purple Border */
+    border-radius: 12px;
+    background-color: white;
+    text-align: center;
+    box-shadow: none !important;
+    gap: 40px;
+}
+
+/* Left Side - Table */
+.user-table-container {
+    width: 65%;
+    overflow-x: auto;
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.user-table th,
+.user-table td {
+    border: 2px solid #4B0082;
+    padding: 12px;
+    text-align: center;
+}
+
+/* Table Header */
+.user-table th {
+    background-color: #4B0082;
+    color: white;
+    font-size: 1rem;
+}
+
+/* Action Buttons */
+.table-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Added more spacing between buttons */
+}
+
+/* Edit & Delete Buttons */
+.edit-btn, .delete-btn {
+    background-color: #4B0082 !important; /* Indigo Purple */
+    color: white !important;
+    padding: 10px 15px;
+    border: 2px solid #4B0082;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    margin: 5px;
+}
+
+.edit-btn:hover, .delete-btn:hover {
+    background-color: #6200b3 !important; /* Darker Purple */
+    transform: translateY(-3px);
+}
+
+/* Right Side - Form */
+.user-form-container {
+    width: 35%;
+    padding: 30px;
+    border-radius: 10px;
+    border: 2px solid #4B0082;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styles */
+.user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.user-form input,
+.user-form select {
+    padding: 12px;
+    border: 2px solid #4B0082;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    background: white;
+    text-align: center;
+}
+
+.user-form select {
+    cursor: pointer;
+}
+
+/* Buttons */
+.submit-btn, .cancel-btn {
+    background-color: #4B0082 !important; /* Indigo Purple */
+    color: white !important;
+    padding: 12px 18px;
+    border: 2px solid #4B0082;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+    margin: 5px; /* Added margin for spacing */
+}
+
+.submit-btn:hover, .cancel-btn:hover {
+    background-color: #6200b3 !important; /* Darker Purple */
+    transform: translateY(-3px);
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #4B0082;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    margin: 0 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+.navbar a:hover {
+    color: #bb86fc;
+    transform: scale(1.1);
+}
+
+/* Fix Body Padding to Avoid Navbar Overlap */
+body {
+    padding-top: 70px; /* Makes space for the navbar */
+    background: white !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .user-crud-container {
+        flex-direction: column;
+        align-items: center;
+        width: 90%;
+        padding: 30px;
+    }
+
+    .user-table-container, .user-form-container {
+        width: 100%;
+    }
+
+    .user-form {
+        padding: 20px;
+    }
+
+    .user-table {
+        font-size: 0.9rem;
+    }
+
+    .table-buttons {
+        flex-direction: column;
+        gap: 10px; /* More spacing in mobile view */
+    }
+}

@@ -7,6 +7,7 @@ import "./Home.css"; // Import CSS file
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const userEmail = localStorage.getItem("email"); // Retrieve stored email
 
   return (
     <div className="home-container">
@@ -16,6 +17,12 @@ const HomePage = () => {
       <div className="dashboard-container">
         {/* Left Side - Image & Description */}
         <div className="info-section">
+          {/* Welcome Message inside the container */}
+          <h2 className="welcome-message">
+  Welcome back, {userEmail ? userEmail : "Guest"}!
+</h2>
+
+
           <img src={eyeTestImage} alt="Eye Test" className="dashboard-image" />
         </div>
 

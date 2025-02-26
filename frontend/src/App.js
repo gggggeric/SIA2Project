@@ -4,20 +4,23 @@ import Login from "./Authentication/Login";
 import SignUp from "./Authentication/Signup";
 import HomePage from "./Home/Home";
 import RequirementsPage from "./Intructions/Requirements";
-import ProtectedRoute from "./ProtectedRoute"; 
-import RemindersPage from "./Intructions/Reminders"; 
-import BothEyePage from "./Process/BothEye"; 
+import ProtectedRoute from "./ProtectedRoute";
+import RemindersPage from "./Intructions/Reminders";
+import BothEyePage from "./Process/BothEye";
 import LandingPage from "./Home/Landing";
 import About from "./Home/About";
 import ForgotPassword from "./Authentication/ForgotPassword";
 import ResetPassword from "./Authentication/ResetPassword";
 import FaceShapeDetector from "./Process/FaceShapeDetector";
 import OpticalShops from "./Process/OpticalShops";
+import AdminHome from "./Admin/AdminHome";
+import UserCrudPage from "./Admin/UserCrud";
+
 function App() {
   return (
     <Router>
       <Routes>
-      <Route path="/" element={<LandingPage />} />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/about" element={<About />} />
@@ -56,7 +59,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/process/faceshape-detector"
           element={
             <ProtectedRoute>
@@ -64,7 +67,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-         <Route
+        <Route
           path="/process/near-opticalshops"
           element={
             <ProtectedRoute>
@@ -72,8 +75,25 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route
+          path="/adminHome"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <AdminHome />
+            </ProtectedRoute>
+          }
+        />
+           <Route
+          path="/adminUserCRUD"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <UserCrudPage />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
-      
+
     </Router>
   );
 }

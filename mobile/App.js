@@ -8,7 +8,7 @@ import Toast from "react-native-toast-message";
 // Import Screens
 import LoginScreen from "./src/authentication/LoginScreen";
 import RegisterScreen from "./src/authentication/RegisterScreen";
-import HomeScreen from "./src/home/homeScreen";
+import HomeScreen from "./src/home/HomeScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();

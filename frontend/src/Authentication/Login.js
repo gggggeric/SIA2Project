@@ -4,6 +4,7 @@ import './Login.css';
 import logo from '../assets/login.png';
 import { Link, useNavigate } from 'react-router-dom'; 
 import Navbar from '../Navigation/Navbar'; 
+
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,12 +22,19 @@ const LoginPage = () => {
   
       console.log('Login successful:', response.data); 
       console.log('JWT Token:', response.data.token); 
-  
-
+      
+      // Store token, email, and userType in localStorage
       localStorage.setItem('token', response.data.token);
-  
-  
-      navigate('/home');
+      localStorage.setItem('email', email); 
+      localStorage.setItem('userType', response.data.userType); // Store userType
+
+      console.log(response.data.userType); 
+      // Navigate based on user type
+      if (response.data.userType === 'admin') {
+        navigate('/adminHome'); 
+      } else {
+        navigate('/home'); 
+      }
     } catch (err) {
       console.error('Login error:', err);
       setError('Invalid email or password');

@@ -1,12 +1,12 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode"; // Use default import
+import { jwtDecode } from "jwt-decode"; 
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, adminOnly = false }) => {
   const token = localStorage.getItem("token");
 
   if (!token) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" replace />; // Redirect if not logged in
   }
 
   try {
@@ -17,12 +17,18 @@ const ProtectedRoute = ({ children }) => {
       localStorage.removeItem("token");
       return <Navigate to="/" replace />;
     }
+
+    const userType = decoded.userType; // Extract user type from token
+
+    if (adminOnly && userType !== "admin") {
+      return <Navigate to="/" replace />; // Only admins can access
+    }
   } catch (error) {
     localStorage.removeItem("token");
     return <Navigate to="/" replace />;
   }
 
-  return children; // Render the child component (HomePage)
+  return children; // Render the page if authenticated
 };
 
 export default ProtectedRoute;

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { 
-  FaUser, FaHome, FaInfoCircle, 
+  FaUser, FaHome, 
   FaSignInAlt, FaUserPlus 
 } from "react-icons/fa";
 import "./Navbar.css";
@@ -11,10 +11,12 @@ import "./Navbar.css";
 const Navbar = () => {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("token");
+  const userType = localStorage.getItem("userType"); // Get userType from localStorage
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    console.log("Token removed successfully");
+    localStorage.removeItem("userType"); // Clear userType on logout
+    console.log("Token and userType removed successfully");
     navigate("/");
   };
 
@@ -25,7 +27,7 @@ const Navbar = () => {
         <div className="navbar-left"></div>
 
         {/* Centered Brand Name */}
-        <Link className="navbar-brand text-white mx-auto" to={isLoggedIn ? "/home" : "/"}>
+        <Link className="navbar-brand text-white mx-auto" to={isLoggedIn ? (userType === "admin" ? "/adminHome" : "/home") : "/"}>
           OpticAI
         </Link>
 
@@ -47,17 +49,20 @@ const Navbar = () => {
           <ul className="navbar-nav ms-auto">
             {isLoggedIn && (
               <li className="nav-item">
-                <Link className="nav-link text-white d-flex align-items-center" to="/home">
+                <Link className="nav-link text-white d-flex align-items-center" to={userType === "admin" ? "/adminHome" : "/home"}>
                   <FaHome size={22} className="me-1" /> Home
                 </Link>
               </li>
             )}
 
-            <li className="nav-item">
-              <Link className="nav-link text-white d-flex align-items-center" to="/about">
-                <FaInfoCircle size={22} className="me-1" /> About
-              </Link>
-            </li>
+            {/* Only show "About" if the user is not an admin */}
+            {userType !== "admin" && (
+              <li className="nav-item">
+                <Link className="nav-link text-white d-flex align-items-center" to="/about">
+                  About
+                </Link>
+              </li>
+            )}
 
             {isLoggedIn ? (
               <li className="nav-item dropdown">
