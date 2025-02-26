@@ -1,6 +1,6 @@
 HOW TO SETUP PROJECT
 
-for frontend and backend
+for frontend, backend, and mobile
 
 - npm install
 - npm start
