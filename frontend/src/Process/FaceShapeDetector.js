@@ -1,8 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FaCamera } from "react-icons/fa"; // Import camera icon
+import { FaCamera } from "react-icons/fa";
 import Navbar from "../Navigation/Navbar";
-import faceShapeGuide from "../assets/faceshape.png"; // Import image
-import "./FaceShapeDetector.css"; // Import CSS file
+import faceShapeGuide from "../assets/faceshape.png";
+import "./FaceShapeDetector.css";
+
+// Import glasses images
+import angularGlasses from "../assets/glassesImages/angular.png";
+import aviatorGlasses from "../assets/glassesImages/aviator.png";
+import squareGlasses from "../assets/glassesImages/square.png";
+import rectangleGlasses from "../assets/glassesImages/rectangular.png";
+import circleGlasses from "../assets/glassesImages/circle.png";
 
 const FaceShapeDetector = () => {
   const [image, setImage] = useState(null);
@@ -10,24 +17,31 @@ const FaceShapeDetector = () => {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
 
-  // Handle image upload
+  const glassesImages = {
+    Oval: [squareGlasses, rectangleGlasses, circleGlasses],
+    Round: [rectangleGlasses, squareGlasses, angularGlasses],
+    Square: [circleGlasses, aviatorGlasses],
+    Heart: [aviatorGlasses, circleGlasses],
+    Oblong: [rectangleGlasses, circleGlasses],
+  };
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImage(reader.result.split(",")[1]); // Extract base64 string
-        setPreview(reader.result); // Set preview image
+        setImage(reader.result.split(",")[1]);
+        setPreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  // Start the webcam
   const startCamera = () => {
     setIsCameraOn(true);
     navigator.mediaDevices
@@ -42,31 +56,28 @@ const FaceShapeDetector = () => {
       });
   };
 
-  // Capture image from webcam
   const captureImage = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-  
+
     if (video && canvas) {
-      context.save(); // Save current state
-      context.scale(-1, 1); // Flip horizontally
-      context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height); // Draw flipped image
-      context.restore(); // Restore state
-  
+      context.save();
+      context.scale(-1, 1);
+      context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+      context.restore();
+
       const dataUrl = canvas.toDataURL("image/jpeg");
-      setImage(dataUrl.split(",")[1]); // Extract base64 string
+      setImage(dataUrl.split(",")[1]);
       setPreview(dataUrl);
-  
-      // Stop the camera after capturing
+
       if (video.srcObject) {
         video.srcObject.getTracks().forEach((track) => track.stop());
       }
       setIsCameraOn(false);
     }
   };
-  
-  // Stop the camera when unmounting
+
   useEffect(() => {
     return () => {
       if (videoRef.current?.srcObject) {
@@ -75,7 +86,6 @@ const FaceShapeDetector = () => {
     };
   }, []);
 
-  // Send image to backend
   const detectFaceShape = async () => {
     if (!image) {
       setError("Please upload or capture an image.");
@@ -98,7 +108,7 @@ const FaceShapeDetector = () => {
         setError(data.error || "Failed to detect face shape.");
       }
     } catch (err) {
-      setError("Server error. Please try again.");
+      setError("Server error. Please try again.");  
     } finally {
       setLoading(false);
     }
@@ -111,17 +121,14 @@ const FaceShapeDetector = () => {
         <div className="group-box">
           <h2 className="title">Best Glasses for Face Shape</h2>
 
-          {/* Image Preview */}
           {preview && (
             <div className="image-preview-container">
               <img src={preview} alt="Captured Preview" className="image-preview" />
             </div>
           )}
 
-          {/* File Upload */}
           <input type="file" accept="image/*" onChange={handleImageUpload} className="file-input" />
 
-          {/* Camera Capture */}
           {isCameraOn ? (
             <div className="camera-container">
               <video ref={videoRef} autoPlay className="webcam"></video>
@@ -134,26 +141,43 @@ const FaceShapeDetector = () => {
             </button>
           )}
 
-          {/* Detect Face Shape Button */}
           <button onClick={detectFaceShape} className="detect-button" disabled={loading}>
             {loading ? "Detecting..." : "Detect Face Shape"}
           </button>
 
-          {/* Error Message */}
           {error && <p className="error-message">{error}</p>}
 
-          {/* Results */}
           {result && (
-            <div className="result-box">
-              <p><strong>Face Shape:</strong> {result.face_shape}</p>
-              <p><strong>Recommended Glasses:</strong> {result.recommended_glasses}</p>
-            </div>
+            <button className="view-results-button" onClick={() => setIsModalOpen(true)}>
+              View Results
+            </button>
           )}
         </div>
 
-        {/* Face Shape Guide Image */}
         <img src={faceShapeGuide} alt="Face Shape Guide" className="face-shape-guide" />
       </div>
+
+      {isModalOpen && result && (
+  <div className="modal-overlay">
+    <div className="modal-content">
+      {/* Modal Header with Flexbox Fix */}
+      <div className="modal-header">
+        <h2>Face Shape Results</h2>
+        <button className="close-modal-button" onClick={() => setIsModalOpen(false)}>✖</button>
+      </div>
+
+      <p><strong>Face Shape:</strong> {result.face_shape}</p>
+      <p><strong>Recommended Glasses:</strong> {result.recommended_glasses}</p>
+
+      <div className="glasses-container">
+        {glassesImages[result.face_shape]?.map((glasses, index) => (
+          <img key={index} src={glasses} alt={`${result.face_shape} Glasses`} className="glasses-recommendation" />
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

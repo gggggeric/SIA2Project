@@ -72,7 +72,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    margin-top: 20px; /* Added more spacing */
+    margin-top: 20px;
     margin-bottom: 10px;
 }
 
@@ -82,4 +82,117 @@
     width: 100%;
     max-width: 640px;
     border-radius: 8px;
+}
+
+/* Glasses Container */
+.glasses-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.glasses-recommendation {
+    width: 120px;
+    height: auto;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+}
+
+/* Modal Overlay (Background Blur Effect) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+/* Modal Content */
+.modal-content {
+    background: #fff;
+    padding: 25px;
+    width: 400px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+    border: 3px solid #4B0082;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Modal Header - Fix Overlapping Issue */
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+/* Close Button - Now Properly Positioned */
+.close-modal-button {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4B0082;
+    cursor: pointer;
+    transition: color 0.3s ease-in-out;
+    padding: 5px;
+}
+
+.close-modal-button:hover {
+    color: red;
+}
+
+/* Modal Title */
+.modal-header h2 {
+    color: #4B0082;
+    font-size: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+/* Glasses Images Container */
+.modal-content .glasses-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Recommended Glasses Image */
+.modal-content .glasses-recommendation {
+    width: 100px;
+    height: auto;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+    transition: transform 0.2s ease-in-out;
+}
+
+.modal-content .glasses-recommendation:hover {
+    transform: scale(1.1);
+}
+
+/* Fade-in Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
