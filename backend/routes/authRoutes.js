@@ -1,8 +1,8 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer'); // ✅ Import nodemailer
-const crypto = require('crypto'); // ✅ Import crypto
+const nodemailer = require('nodemailer'); 
+const crypto = require('crypto'); 
 const User = require('../models/User');
 require('dotenv').config(); 
 const sendMail = require("../config/mailer");
@@ -10,6 +10,26 @@ const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+router.get("/verify-email", async (req, res) => {
+    try {
+        const { token } = req.query;
+
+        // Find user by token
+        const user = await User.findOne({ emailVerificationToken: token });
+        if (!user) {
+            return res.status(400).json({ error: "Invalid or expired verification token" });
+        }
+
+        // Mark user as verified and remove the token
+        user.isVerified = true;
+        user.emailVerificationToken = null;
+        await user.save();
+
+        res.status(200).json({ message: "Email verified successfully. You can now log in." });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 router.post("/register", async (req, res) => {
     try {
@@ -25,11 +45,25 @@ router.post("/register", async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        // Generate email verification token
+        const emailVerificationToken = crypto.randomBytes(32).toString("hex");
+
         // Create new user
-        const newUser = new User({ name, email, password: hashedPassword });
+        const newUser = new User({
+            name,
+            email,
+            password: hashedPassword,
+            emailVerificationToken,
+            isVerified: false
+        });
+
         await newUser.save();
 
-        res.status(201).json({ message: "User registered successfully" });
+        // Send verification email
+        const verificationLink = `http://localhost:3000/verify-email?token=${emailVerificationToken}`;
+        await sendMail(email, "Email Verification", `Click the link to verify your email: ${verificationLink}`);
+
+        res.status(201).json({ message: "User registered successfully. Please check your email to verify your account." });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -44,23 +78,25 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
+        if (!user.isVerified) {
+            return res.status(400).json({ message: 'Please verify your email before logging in.' });
+        }
+
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid password' });
         }
 
-        // Include `userType` in the JWT token
         const token = jwt.sign(
             { userId: user._id, email: user.email, userType: user.userType }, 
             JWT_SECRET, 
             { expiresIn: '1h' }
         );
 
-        // ✅ Send `userType` in the response
         res.status(200).json({ 
             message: 'Login successful', 
             token,
-            userType: user.userType // ✅ Now included
+            userType: user.userType 
         });
 
     } catch (err) {
@@ -68,7 +104,6 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
-
 
 
 const authenticateToken = (req, res, next) => {

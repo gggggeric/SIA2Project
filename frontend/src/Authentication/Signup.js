@@ -1,54 +1,92 @@
 import React, { useState } from 'react';
 import axios from 'axios'; 
 import './Login.css'; 
-import logo from '../assets/login.png';
 import { Link } from 'react-router-dom';
 import Navbar from '../Navigation/Navbar'; 
 import { FaArrowLeft } from 'react-icons/fa'; 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
 
 const SignUpPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      toast.error('Passwords do not match!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: 'colored',
+      });
       return;
     }
 
     try {
-      await axios.post('http://localhost:5001/auth/register', {
+      const response = await axios.post('http://localhost:5001/auth/register', {
         name,
         email,
         password
       });
 
-      setSuccess('Account created successfully! You can now log in.');
-      setError('');
+      // ✅ Show success toast with email verification message
+      toast.success('Account created! Please check your email to verify your account.', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: 'colored',
+      });
+
+      // Clear form fields
       setName('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
+
     } catch (err) {
       console.error('Signup error:', err);
-      setError('Failed to sign up. Email may already be in use.');
+
+      // ✅ Show error toast if email is already in use
+      if (err.response && err.response.data.error === "Email already in use") {
+        toast.error('Email already in use. Please try a different one.', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: 'colored',
+        });
+      } else {
+        // Generic error message
+        toast.error('Failed to sign up. Please try again later.', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: 'colored',
+        });
+      }
     }
   };
 
   return (
     <>
       <Navbar /> 
+      <ToastContainer /> {/* Toast Container to display messages */}
       <div className="login-container">
-        <div className="left-side">
-          <img src={logo} alt="Logo" className="logo" />
-        </div>
-        <div className="separator"></div>
         <div className="right-side">
           <div className="back-to-login-container">
             <Link to="/login" className="back-to-login-link">
@@ -56,9 +94,6 @@ const SignUpPage = () => {
             </Link>
           </div>
           <h2>Create an Account</h2>
-          
-          {error && <div className="error-message">{error}</div>}
-          {success && <div className="success-message">{success}</div>}
           
           <form onSubmit={handleSubmit}>
             <div className="input-group">
@@ -112,7 +147,7 @@ const SignUpPage = () => {
         </div>
       </div>
     </>
-  );
+  );  
 };
 
 export default SignUpPage;

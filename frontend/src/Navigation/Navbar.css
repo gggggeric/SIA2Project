@@ -191,3 +191,9 @@
     transform: rotate(-45deg) translate(5px, -5px);
   }
 }
+
+/* Style for Navbar Logo */
+.navbar-logo {
+  height: 90px; /* Adjust size as needed */
+  width: auto;
+}

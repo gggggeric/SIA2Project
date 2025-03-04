@@ -1,0 +1,36 @@
+.footer {
+    width: 100%;
+    background-color: #2E1A47; /* Match the navbar color */
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    position: relative;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.footer-links a {
+    margin: 0 10px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-social a {
+    margin: 0 8px;
+    color: white;
+    font-size: 18px;
+}
+
+.footer-social a:hover {
+    color: #FFD700; /* Highlight color */
+}

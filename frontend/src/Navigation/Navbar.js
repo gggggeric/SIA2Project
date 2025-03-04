@@ -2,11 +2,10 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { 
-  FaUser, FaHome, 
-  FaSignInAlt, FaUserPlus 
-} from "react-icons/fa";
 import "./Navbar.css";
+
+// Import the logo
+import logo from "../assets/logoOpticAI (2).png"; // Adjust the path if necessary
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -26,8 +25,9 @@ const Navbar = () => {
         {/* Left Section (Empty for spacing) */}
         <div className="navbar-left"></div>
 
-        {/* Centered Brand Name */}
-        <Link className="navbar-brand text-white mx-auto" to={isLoggedIn ? (userType === "admin" ? "/adminHome" : "/home") : "/"}>
+        {/* Centered Brand Name with Logo */}
+        <Link className="navbar-brand text-white mx-auto d-flex align-items-center" to={isLoggedIn ? (userType === "admin" ? "/adminHome" : "/home") : "/"}>
+          <img src={logo} alt="OpticAI Logo" className="navbar-logo me-2" />
           OpticAI
         </Link>
 
@@ -47,54 +47,74 @@ const Navbar = () => {
         {/* Navigation Items */}
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-            {isLoggedIn && (
+            {/* Admin View - Show ONLY Logout */}
+            {isLoggedIn && userType === "admin" ? (
               <li className="nav-item">
-                <Link className="nav-link text-white d-flex align-items-center" to={userType === "admin" ? "/adminHome" : "/home"}>
-                  <FaHome size={22} className="me-1" /> Home
-                </Link>
-              </li>
-            )}
-
-            {/* Only show "About" if the user is not an admin */}
-            {userType !== "admin" && (
-              <li className="nav-item">
-                <Link className="nav-link text-white d-flex align-items-center" to="/about">
-                  About
-                </Link>
-              </li>
-            )}
-
-            {isLoggedIn ? (
-              <li className="nav-item dropdown">
-                <Link
-                  className="nav-link text-white dropdown-toggle d-flex align-items-center"
-                  id="profileDropdown"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  to="#"
-                >
-                  <FaUser size={22} className="me-1" /> Profile
-                </Link>
-                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                  <li>
-                    <button className="dropdown-item" onClick={handleLogout}>
-                      Logout
-                    </button>
-                  </li>
-                </ul>
+                <button className="nav-link text-danger" onClick={handleLogout}>
+                  Logout
+                </button>
               </li>
             ) : (
               <>
-                <li className="nav-item">
-                  <Link className="nav-link text-white d-flex align-items-center" to="/login">
-                    <FaSignInAlt size={22} className="me-1" /> Login
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link text-white d-flex align-items-center" to="/signup">
-                    <FaUserPlus size={22} className="me-1" /> Signup
-                  </Link>
-                </li>
+                {/* Home (Visible if logged in) */}
+                {isLoggedIn && (
+                  <li className="nav-item">
+                    <Link className="nav-link text-white" to="/home">
+                      Home
+                    </Link>
+                  </li>
+                )}
+
+                {/* About (Hidden for admin) */}
+                {!isLoggedIn || userType !== "admin" ? (
+                  <li className="nav-item">
+                    <Link className="nav-link text-white" to="/about">
+                      About
+                    </Link>
+                  </li>
+                ) : null}
+
+                {/* Profile Dropdown (Only for logged-in users, but not admins) */}
+                {isLoggedIn && userType !== "admin" && (
+                  <li className="nav-item dropdown">
+                    <Link
+                      className="nav-link text-white dropdown-toggle"
+                      id="profileDropdown"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      to="#"
+                    >
+                      Profile
+                    </Link>
+                    <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+                      <li>
+                        <button className="dropdown-item" onClick={() => navigate("/process/faceshape-detector")}>Eye Glass Frame Analyzer</button>
+                      </li>
+                      <li>
+                        <button className="dropdown-item" onClick={() => navigate("/instructions/reminders")}>Proceed to Testing the Eye Sight</button>
+                      </li>
+                      <li>
+                        <button className="dropdown-item" onClick={() => navigate("/process/near-opticalshops")}>View All the Near Optical Shops</button>
+                      </li>
+                      <li><hr className="dropdown-divider" /></li>
+                      <li>
+                        <button className="dropdown-item text-danger" onClick={handleLogout}>Logout</button>
+                      </li>
+                    </ul>
+                  </li>
+                )}
+
+                {/* Guest (Login & Signup) */}
+                {!isLoggedIn && (
+                  <>
+                    <li className="nav-item">
+                      <Link className="nav-link text-white" to="/login">Login</Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link text-white" to="/signup">Signup</Link>
+                    </li>
+                  </>
+                )}
               </>
             )}
           </ul>

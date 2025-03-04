@@ -15,6 +15,7 @@ import FaceShapeDetector from "./Process/FaceShapeDetector";
 import OpticalShops from "./Process/OpticalShops";
 import AdminHome from "./Admin/AdminHome";
 import UserCrudPage from "./Admin/UserCrud";
+import EmailVerification from "./Authentication/EmailVerification";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/verify-email" element={<EmailVerification />} />
         <Route
           path="/home"
           element={

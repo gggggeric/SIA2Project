@@ -1,41 +1,226 @@
-.about-container {
+/* Scoped to About Page */
+.about-page {
+    font-family: 'Poppins', sans-serif;  /* Modern font */
+    text-align: center;
+    padding: 160px 5% 50px;
+    margin-top: 500px;
+    background-color: #f9f9f9;
+    position: relative;
+}
+
+/* About Us Section */
+.about-page .about-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+.about-page .about-content h1 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    font-weight: bold;
+    color: #333; /* Darker color for better contrast */
+    letter-spacing: 1px;  /* Slightly increased letter spacing */
+    text-shadow: none;  /* Remove subtle shadow */
+}
+
+.about-page .about-content p {
+    font-size: 1.2rem;
+    color: #555;
+    line-height: 1.8;
+}
+
+/* Mission, Vision & System Features */
+.about-page .group-box {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    gap: 30px;
+    flex-wrap: nowrap;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 5%;
+}
+
+.about-page .mission, .about-page .vision, .about-page .system-features {
+    flex: 1;
+    background: #2c2543;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    min-width: 280px;
+    max-width: 32%;
+    color: white;
+    box-shadow: none !important;
+    border: none;
+    outline: none;
+}
+
+/* Team Section */
+.about-page .team-section {
+    text-align: center;
+    padding: 80px 5%;
+    background-color: white;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Team Members */
+.about-page .team-members {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: nowrap;
+}
+
+/* Individual Team Member */
+.about-page .team-member {
+    background: #2c2543;
+    text-align: center;
+    width: 220px;
+    padding: 20px;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+    flex: 1;
+    min-width: 200px;
+    color: white;
+    box-shadow: none !important;
+    border: none;
+    outline: none;
+}
+
+/* Image Styling */
+.about-page .team-member img {
+    width: 100%;
+    height: auto;
+    max-height: 220px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: white;
+    padding: 5px;
+}
+
+/* Hover Effect */
+.about-page .team-member:hover {
+    transform: translateY(-5px);
+}
+
+/* Responsive Fix */
+@media (max-width: 1100px) {
+    .about-page .group-box {
+        flex-wrap: wrap;
+    }
+
+    .about-page .mission, .about-page .vision, .about-page .system-features {
+        width: 48%;
+        max-width: 48%;
+    }
+
+    .about-page .team-members {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-page .group-box {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .about-page .mission, .about-page .vision, .about-page .system-features {
+        width: 90%;
+        max-width: 90%;
+    }
+
+    .about-page .about-container {
+        padding: 120px 5% 50px;
+        margin-top: 60px;
+    }
+
+    .about-page .team-members {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-page .about-container {
+        padding: 100px 5% 40px;
+        margin-top: 50px;
+    }
+
+    .about-page .about-content h1 {
+        font-size: 2rem;
+    }
+
+    .about-page .about-content p {
+        font-size: 1rem;
+    }
+
+    .about-page .team-member {
+        width: 180px;
+    }
+}
+
+/* Modal Styles */
+.about-page .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    z-index: 1000;
 }
 
-.about-content {
-    display: flex;
-    align-items: center;
-    width: 1000px; /* Increased width */
-    padding: 60px; /* Increased padding */
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    border-radius: 15px; /* Increased border radius */
-    border: 3px solid #352e4b; /* Thickened outline */
-}
-
-.about-image {
-    width: 50%; /* Increased image size */
-    margin-right: 30px; /* Increased margin */
-    border-radius: 15px;
-}
-
-.about-text {
-    flex: 1;
+.about-page .modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
     text-align: center;
+    max-width: 400px;
+    width: 90%;
+    position: relative;
 }
 
-.about-text h1 {
-    color: #352e4b;
-    font-size: 36px; /* Increased font size */
-    margin-bottom: 30px;
+.about-page .modal-content img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
 }
 
-.about-text p {
-    font-size: 22px; /* Increased font size */
-    color: #555;
-    line-height: 1.8; /* Increased line height */
-    margin-bottom: 20px;
+.about-page .modal-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333; /* Darker header for contrast */
+}
+
+.about-page .modal-content p {
+    font-size: 1rem;
+    color: #333;
+}
+
+.about-page .modal-content a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.about-page .modal-content a:hover {
+    text-decoration: underline;
+}
+
+.about-page .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.8rem;
+    cursor: pointer;
 }

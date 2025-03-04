@@ -1,27 +1,119 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from '../Navigation/Navbar';
-import aboutUsImage from '../assets/aboutus.png';
+
+// Import team images
+import gianan from '../assets/developers/gianan.png';
+import morit from '../assets/developers/morit.png';
+import bacala from '../assets/developers/bacala.png';
+import gone from '../assets/developers/gone.png';
+
 import '../Home/About.css';
 
+const teamMembers = [
+    { 
+        name: 'Geric', 
+        role: 'Lead Developer', 
+        image: morit, 
+        description: 'Geric is responsible for both frontend and backend development, ensuring seamless integration.',
+        email: 'gericmorit3211@gmail.com'
+    },
+    { 
+        name: 'Mico', 
+        role: 'Backend Developer', 
+        image: gianan, 
+        description: 'Mico specializes in backend development, working on APIs and database management.', 
+        email: 'micogianan28@gmail.com' 
+    },
+    { 
+        name: 'Nicole', 
+        role: 'Frontend Developer', 
+        image: bacala, 
+        description: 'Nicole focuses on frontend design and implementation to enhance user experience.', 
+        email: 'Nicolebacala17@gmail.com' 
+    },
+    { 
+        name: 'Krizel', 
+        role: 'UI/UX Designer', 
+        image: gone, 
+        description: 'Krizel creates intuitive UI/UX designs to make Optic AI visually appealing and user-friendly.', 
+        email: 'krizelannegone08@gmail.com' 
+    }
+];
+
 const About = () => {
+    const [selectedMember, setSelectedMember] = useState(null);
+
+    const openModal = (member) => {
+        setSelectedMember(member);
+    };
+
+    const closeModal = () => {
+        setSelectedMember(null);
+    };
+
     return (
-        <div className="about-container">
+        <div className="about-page">
             <Navbar />
+
+            {/* About Us Section */}
             <div className="about-content">
-                <img src={aboutUsImage} alt="About Us" className="about-image" />
-                <div className="about-text">
-                    <h1>About Us</h1>
+                <h1>About Us</h1>
+                <p>
+                    Welcome to <strong>Optic AI</strong>! Our system is designed to revolutionize optical care by integrating AI-powered solutions to enhance user experience and provide better vision-related services.
+                </p>
+            </div>
+
+            {/* Mission, Vision & System Features Section */}
+            <div className="group-box">
+                <div className="mission">
+                    <h2>Our Mission</h2>
                     <p>
-                        Welcome to our platform! We are dedicated to providing the best services to our users. Our team is passionate about creating seamless experiences through innovative technology and user-friendly design.
-                    </p>
-                    <p>
-                        Our mission is to continuously innovate and enhance our services to meet the evolving needs of our users.
-                    </p>
-                    <p>
-                        Thank you for being a part of our journey. We appreciate your support and look forward to serving you better.
+                        To provide an AI-powered system that enhances optical care by offering accurate eye-grade predictions, personalized frame suggestions, and accessible optical shop locations.
                     </p>
                 </div>
+                <div className="vision">
+                    <h2>Our Vision</h2>
+                    <p>
+                        To become the leading AI-driven optical care platform that empowers individuals to achieve better vision with personalized solutions and advanced technology.
+                    </p>
+                </div>
+                <div className="system-features">
+                    <h2>What Our System Does</h2>
+                    <ul>
+                        <li><strong>Eye Grade Prediction:</strong> Uses AI to analyze and predict the grade of your eyes.</li>
+                        <li><strong>Face Shape Analysis:</strong> Identifies your face shape to suggest the best glasses frame.</li>
+                        <li><strong>Optical Shop Locator:</strong> Helps you find nearby optical shops within a 5km radius.</li>
+                    </ul>
+                </div>
             </div>
+
+            {/* Team Section */}
+            <div className="team-section">
+                <h1>Meet Our Team</h1>
+                <div className="team-members">
+                    {teamMembers.map((member, index) => (
+                        <div key={index} className="team-member" onClick={() => openModal(member)}>
+                            <img src={member.image} alt={member.name} />
+                            <h3>{member.name}</h3>
+                            <p>{member.role}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Modal */}
+            {selectedMember && (
+                <div className="modal-overlay" onClick={closeModal}>
+                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <span className="close-btn" onClick={closeModal}>&times;</span>
+                        <img src={selectedMember.image} alt={selectedMember.name} />
+                        <h3>{selectedMember.name}</h3>
+                        <p><strong>{selectedMember.role}</strong></p>
+                        <p>{selectedMember.description}</p>
+                        <p><strong>Email:</strong> <a href={`mailto:${selectedMember.email}`}>{selectedMember.email}</a></p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
