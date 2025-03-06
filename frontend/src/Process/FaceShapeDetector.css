@@ -1,5 +1,5 @@
 /* Main Container */
-.container {
+.face-shape-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -9,7 +9,7 @@
 }
 
 /* Outer Box Wrapping Group Box and Image */
-.border-box {
+.face-shape-border-box {
     display: flex;
     align-items: center;
     gap: 30px;
@@ -17,10 +17,11 @@
     border: 3px solid #4B0082;
     border-radius: 12px;
     background-color: #ffffff;
+    max-width: 90%;
 }
 
 /* Group Box */
-.group-box {
+.face-shape-group-box {
     background-color: white;
     width: 500px;
     padding: 35px;
@@ -30,7 +31,7 @@
 }
 
 /* Title */
-.title {
+.face-shape-title {
     font-size: 1.8rem;
     font-weight: bold;
     color: #4B0082;
@@ -38,7 +39,7 @@
 }
 
 /* File Input */
-.file-input {
+.face-shape-file-input {
     width: 100%;
     padding: 12px;
     border: 1px solid #4B0082;
@@ -49,22 +50,25 @@
 }
 
 /* Image Preview */
-.image-preview-container {
+.face-shape-image-preview-container {
     margin: 20px 0;
     padding: 10px;
     background: #fafafa;
+    border-radius: 8px;
 }
 
-.image-preview {
+.face-shape-image-preview {
     max-width: 100%;
     max-height: 200px;
-    object-fit: contain;
+    object-fit: cover; /* Fixes black image issue */
+    border-radius: 8px;
+    border: 2px solid #4B0082;
 }
 
 /* Buttons with Spacing */
-.detect-button,
-.camera-button,
-.capture-button {
+.face-shape-detect-button,
+.face-shape-camera-button,
+.face-shape-capture-button {
     width: 100%;
     padding: 12px;
     font-size: 1.1rem;
@@ -74,33 +78,85 @@
     cursor: pointer;
     margin-top: 20px;
     margin-bottom: 10px;
+    background-color: #4B0082;
+    color: white;
+    transition: background 0.3s ease-in-out;
 }
 
+.face-shape-detect-button:hover,
+.face-shape-camera-button:hover,
+.face-shape-capture-button:hover {
+    background-color: #370061;
+}
+
+/* "View Results" Button - Enhanced */
+.face-shape-view-results {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    background-color: #4B0082; /* Match other buttons */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* View Results Button */
+.face-shape-view-results-button {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    background-color: #4B0082;
+    color: white;
+    transition: background 0.3s ease-in-out;
+}
+
+.face-shape-view-results-button:hover {
+    background-color: #370061;
+}
+
+
 /* Webcam Video - Inverted (Mirror Effect) */
-.webcam {
+.face-shape-webcam {
     transform: scaleX(-1);
     width: 100%;
     max-width: 640px;
     border-radius: 8px;
+    border: 3px solid #4B0082;
 }
 
 /* Glasses Container */
-.glasses-container {
+.face-shape-glasses-container {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 10px;
 }
 
-.glasses-recommendation {
+.face-shape-glasses-recommendation {
     width: 120px;
     height: auto;
     border-radius: 8px;
     border: 2px solid #ddd;
+    transition: transform 0.3s ease-in-out;
+}
+
+.face-shape-glasses-recommendation:hover {
+    transform: scale(1.1);
 }
 
 /* Modal Overlay (Background Blur Effect) */
-.modal-overlay {
+.face-shape-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -114,7 +170,7 @@
 }
 
 /* Modal Content */
-.modal-content {
+.face-shape-modal-content {
     background: #fff;
     padding: 25px;
     width: 400px;
@@ -128,10 +184,11 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    max-width: 90%;
 }
 
 /* Modal Header - Fix Overlapping Issue */
-.modal-header {
+.face-shape-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -141,7 +198,7 @@
 }
 
 /* Close Button - Now Properly Positioned */
-.close-modal-button {
+.face-shape-close-modal-button {
     background: transparent;
     border: none;
     font-size: 1.5rem;
@@ -152,12 +209,12 @@
     padding: 5px;
 }
 
-.close-modal-button:hover {
+.face-shape-close-modal-button:hover {
     color: red;
 }
 
 /* Modal Title */
-.modal-header h2 {
+.face-shape-modal-header h2 {
     color: #4B0082;
     font-size: 1.5rem;
     margin: 0;
@@ -165,7 +222,7 @@
 }
 
 /* Glasses Images Container */
-.modal-content .glasses-container {
+.face-shape-modal-content .face-shape-glasses-container {
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -173,7 +230,7 @@
 }
 
 /* Recommended Glasses Image */
-.modal-content .glasses-recommendation {
+.face-shape-modal-content .face-shape-glasses-recommendation {
     width: 100px;
     height: auto;
     border-radius: 8px;
@@ -181,7 +238,7 @@
     transition: transform 0.2s ease-in-out;
 }
 
-.modal-content .glasses-recommendation:hover {
+.face-shape-modal-content .face-shape-glasses-recommendation:hover {
     transform: scale(1.1);
 }
 
@@ -194,5 +251,19 @@
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Responsive Fix for Smaller Screens */
+@media screen and (max-width: 768px) {
+    .face-shape-border-box {
+        flex-direction: column;
+        gap: 15px;
+        padding: 20px;
+    }
+
+    .face-shape-group-box {
+        width: 100%;
+        padding: 20px;
     }
 }

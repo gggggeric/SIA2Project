@@ -108,47 +108,47 @@ const FaceShapeDetector = () => {
         setError(data.error || "Failed to detect face shape.");
       }
     } catch (err) {
-      setError("Server error. Please try again.");  
+      setError("Server error. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="container">
+    <div className="face-shape-container">
       <Navbar />
-      <div className="border-box">
-        <div className="group-box">
-          <h2 className="title">Best Glasses for Face Shape</h2>
+      <div className="face-shape-border-box">
+        <div className="face-shape-group-box">
+          <h2 className="face-shape-title">Best Glasses for Face Shape</h2>
 
           {preview && (
-            <div className="image-preview-container">
-              <img src={preview} alt="Captured Preview" className="image-preview" />
+            <div className="face-shape-image-preview-container">
+              <img src={preview} alt="Captured Preview" className="face-shape-image-preview" />
             </div>
           )}
 
-          <input type="file" accept="image/*" onChange={handleImageUpload} className="file-input" />
+          <input type="file" accept="image/*" onChange={handleImageUpload} className="face-shape-file-input" />
 
           {isCameraOn ? (
-            <div className="camera-container">
-              <video ref={videoRef} autoPlay className="webcam"></video>
+            <div className="face-shape-camera-container">
+              <video ref={videoRef} autoPlay className="face-shape-webcam"></video>
               <canvas ref={canvasRef} width={640} height={480} style={{ display: "none" }}></canvas>
-              <button onClick={captureImage} className="capture-button">Capture Image</button>
+              <button onClick={captureImage} className="face-shape-capture-button">Capture Image</button>
             </div>
           ) : (
-            <button onClick={startCamera} className="camera-button">
-              <FaCamera className="camera-icon" /> Use Camera
+            <button onClick={startCamera} className="face-shape-camera-button">
+              <FaCamera className="face-shape-camera-icon" /> Use Camera
             </button>
           )}
 
-          <button onClick={detectFaceShape} className="detect-button" disabled={loading}>
+          <button onClick={detectFaceShape} className="face-shape-detect-button" disabled={loading}>
             {loading ? "Detecting..." : "Detect Face Shape"}
           </button>
 
-          {error && <p className="error-message">{error}</p>}
+          {error && <p className="face-shape-error-message">{error}</p>}
 
           {result && (
-            <button className="view-results-button" onClick={() => setIsModalOpen(true)}>
+            <button className="face-shape-view-results-button" onClick={() => setIsModalOpen(true)}>
               View Results
             </button>
           )}
@@ -158,26 +158,24 @@ const FaceShapeDetector = () => {
       </div>
 
       {isModalOpen && result && (
-  <div className="modal-overlay">
-    <div className="modal-content">
-      {/* Modal Header with Flexbox Fix */}
-      <div className="modal-header">
-        <h2>Face Shape Results</h2>
-        <button className="close-modal-button" onClick={() => setIsModalOpen(false)}>✖</button>
-      </div>
+        <div className="face-shape-modal-overlay">
+          <div className="face-shape-modal-content">
+            <div className="face-shape-modal-header">
+              <h2>Face Shape Results</h2>
+              <button className="face-shape-close-modal-button" onClick={() => setIsModalOpen(false)}>✖</button>
+            </div>
 
-      <p><strong>Face Shape:</strong> {result.face_shape}</p>
-      <p><strong>Recommended Glasses:</strong> {result.recommended_glasses}</p>
+            <p><strong>Face Shape:</strong> {result.face_shape}</p>
+            <p><strong>Recommended Glasses:</strong> {result.recommended_glasses}</p>
 
-      <div className="glasses-container">
-        {glassesImages[result.face_shape]?.map((glasses, index) => (
-          <img key={index} src={glasses} alt={`${result.face_shape} Glasses`} className="glasses-recommendation" />
-        ))}
-      </div>
-    </div>
-  </div>
-)}
-
+            <div className="face-shape-glasses-container">
+              {glassesImages[result.face_shape]?.map((glasses, index) => (
+                <img key={index} src={glasses} alt={`${result.face_shape} Glasses`} className="face-shape-glasses-recommendation" />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

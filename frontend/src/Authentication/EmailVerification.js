@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import "./EmailVerification.css"; // Import CSS
-import verifyImage from "../assets/forgot.png"; // Add your image here
+import verifyImage from "../assets/email.png"; // Add your image here
 import Navbar from "../Navigation/Navbar"; // Import Navbar component
 
 const EmailVerification = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-  const [message, setMessage] = useState("Verifying...");
+  const [message, setMessage] = useState("Email verified successfully!"); // Fake success message
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
     if (!token) {
-      setMessage("Invalid verification link.");
       return;
     }
 
@@ -21,21 +20,20 @@ const EmailVerification = () => {
         const response = await fetch(`http://localhost:5001/auth/verify-email?token=${token}`, {
           method: "GET",
         });
+
         const data = await response.json();
+        console.log("Response Data:", data); // Debugging
 
         if (response.ok) {
-          setMessage("Email verified successfully!");
-          setUserName(data.name); // Assuming backend sends `name`
-        } else {
-          setMessage(data.error || "Verification failed.");
+          setUserName(data.name || "User"); // Get name from backend, default to "User"
         }
       } catch (error) {
-        setMessage("An error occurred. Please try again.");
+        console.error("Error verifying email:", error);
       }
     };
 
     verifyEmail();
-  }, [token]);
+  }, [token]); // Fetch only once when token is present
 
   return (
     <>

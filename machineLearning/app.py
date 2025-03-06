@@ -21,7 +21,7 @@ CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
 # Load the trained face shape model
-model_path = r"C:\Users\morit\Desktop\3RD YR PROJECTS\2nd\SIA2_System\machineLearning\learning\face_shape_model2.h5"
+model_path = r"C:\Users\morit\Desktop\3RD YR PROJECTS\2nd\SIA2_System\machineLearning\learning\face_shape_model4.h5"
 model = tf.keras.models.load_model(model_path)
 
 # Define face shape labels

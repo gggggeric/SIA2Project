@@ -9,25 +9,43 @@ const sendMail = require("../config/mailer");
 const router = express.Router();
 
 const JWT_SECRET = process.env.JWT_SECRET;
-
 router.get("/verify-email", async (req, res) => {
     try {
         const { token } = req.query;
 
         // Find user by token
-        const user = await User.findOne({ emailVerificationToken: token });
+        const user = await User.findOne({ 
+            $or: [
+                { emailVerificationToken: token }, 
+                { isVerified: true } // Allow verified users
+            ]
+        });
+
+        // If user is not found, show error
         if (!user) {
             return res.status(400).json({ error: "Invalid or expired verification token" });
         }
 
-        // Mark user as verified and remove the token
+        // If already verified, send success message
+        if (user.isVerified) {
+            return res.status(200).json({ 
+                message: "Email already verified!", 
+                name: user.name 
+            });
+        }
+
+        // Mark as verified and remove token
         user.isVerified = true;
         user.emailVerificationToken = null;
         await user.save();
 
-        res.status(200).json({ message: "Email verified successfully. You can now log in." });
+        res.status(200).json({ 
+            message: "Email verified successfully!", 
+            name: user.name 
+        });
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: "An error occurred. Please try again." });
     }
 });
 

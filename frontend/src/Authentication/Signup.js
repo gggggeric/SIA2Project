@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import axios from 'axios'; 
+import axios from 'axios';
 import './Login.css'; 
-import { Link } from 'react-router-dom';
-import Navbar from '../Navigation/Navbar'; 
+import { Link, useNavigate } from 'react-router-dom'; 
 import { FaArrowLeft } from 'react-icons/fa'; 
+import Navbar from '../Navigation/Navbar'; 
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
+import 'react-toastify/dist/ReactToastify.css'; 
 
 const SignUpPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,8 +37,8 @@ const SignUpPage = () => {
         password
       });
 
-      // ✅ Show success toast with email verification message
-      toast.success('Account created! Please check your email to verify your account.', {
+      // ✅ Show success toast
+      toast.success('Account created! Check your email to verify.', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -53,12 +54,16 @@ const SignUpPage = () => {
       setPassword('');
       setConfirmPassword('');
 
+      // Redirect to login after a delay
+      setTimeout(() => {
+        navigate('/login');
+      }, 3000);
+
     } catch (err) {
       console.error('Signup error:', err);
 
-      // ✅ Show error toast if email is already in use
       if (err.response && err.response.data.error === "Email already in use") {
-        toast.error('Email already in use. Please try a different one.', {
+        toast.error('Email already in use. Try a different one.', {
           position: 'top-right',
           autoClose: 3000,
           hideProgressBar: false,
@@ -68,8 +73,7 @@ const SignUpPage = () => {
           theme: 'colored',
         });
       } else {
-        // Generic error message
-        toast.error('Failed to sign up. Please try again later.', {
+        toast.error('Failed to sign up. Try again later.', {
           position: 'top-right',
           autoClose: 3000,
           hideProgressBar: false,
@@ -85,69 +89,75 @@ const SignUpPage = () => {
   return (
     <>
       <Navbar /> 
-      <ToastContainer /> {/* Toast Container to display messages */}
+      <ToastContainer />
       <div className="login-container">
+        {/* Left Side */}
+        <div className="left-side">
+          <h1>OpticAI</h1>
+          <h2>Welcome to OpticAI</h2>
+          <p>Empowering Vision, Enhancing Care</p>
+        </div>
+
+        {/* Right Side */}
         <div className="right-side">
-          <div className="back-to-login-container">
-            <Link to="/login" className="back-to-login-link">
-              <FaArrowLeft className="back-to-login-icon" /> 
-            </Link>
-          </div>
           <h2>Create an Account</h2>
-          
+          <p>Join us and start your journey with OpticAI.</p>
+
           <form onSubmit={handleSubmit}>
             <div className="input-group">
               <label htmlFor="name">Name</label>
               <input
                 type="text"
                 id="name"
-                name="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
+
             <div className="input-group">
               <label htmlFor="email">Email</label>
               <input
                 type="email"
                 id="email"
-                name="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
+
             <div className="input-group">
               <label htmlFor="password">Password</label>
               <input
                 type="password"
                 id="password"
-                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
+
             <div className="input-group">
-              <label htmlFor="confirm-password">Confirm Password</label>
+              <label htmlFor="confirmPassword">Confirm Password</label>
               <input
                 type="password"
-                id="confirm-password"
-                name="confirm-password"
+                id="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
             </div>
-            <div className="button-container">
-              <button type="submit">Sign Up</button>
+
+            <button type="submit" className="signup-btn">Sign Up</button>
+
+            <div className="extra-links">
+              <p>Already have an account? <Link to="/login" className="login-link">Login</Link></p>
             </div>
           </form>
         </div>
       </div>
     </>
-  );  
+  );
 };
 
 export default SignUpPage;
