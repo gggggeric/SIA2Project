@@ -12,25 +12,23 @@ const JWT_SECRET = process.env.JWT_SECRET;
 router.get("/verify-email", async (req, res) => {
     try {
         const { token } = req.query;
+        console.log("Received token:", token);
 
         // Find user by token
-        const user = await User.findOne({ 
-            $or: [
-                { emailVerificationToken: token }, 
-                { isVerified: true } // Allow verified users
-            ]
-        });
+        const user = await User.findOne({ emailVerificationToken: token });
 
-        // If user is not found, show error
         if (!user) {
+            console.log("User not found or token invalid.");
             return res.status(400).json({ error: "Invalid or expired verification token" });
         }
 
-        // If already verified, send success message
+        console.log("Found user:", user);
+
+        // If already verified, return success
         if (user.isVerified) {
-            return res.status(200).json({ 
-                message: "Email already verified!", 
-                name: user.name 
+            return res.status(200).json({
+                message: "Email already verified!",
+                name: user.name,
             });
         }
 
@@ -39,12 +37,15 @@ router.get("/verify-email", async (req, res) => {
         user.emailVerificationToken = null;
         await user.save();
 
-        res.status(200).json({ 
-            message: "Email verified successfully!", 
-            name: user.name 
+        console.log("User after verification:", await User.findById(user._id));
+
+        res.status(200).json({
+            message: "Email verified successfully!",
+            name: user.name,
         });
 
     } catch (error) {
+        console.error("Error verifying email:", error);
         res.status(500).json({ error: "An error occurred. Please try again." });
     }
 });

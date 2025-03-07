@@ -1,164 +1,180 @@
-/* General Styles */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #e0e0ff, #b19cd9);
-}
-
-/* Container */
+/* Centering the Login Container */
 .login-container {
   display: flex;
   width: 900px;
   max-width: 100%;
   min-height: 550px;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.25); /* Deep shadow */
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
   background: white;
-  border: 3px solid #6a5acd; /* Added border */
+  border: 2px solid #6a5acd;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease-in-out;
 }
 
 /* Left Side */
-.left-side {
+.login-container .left-side {
   flex: 1;
-  background: #352e4b;
+  background: linear-gradient(135deg, #352e4b, #6a5acd);
   color: white;
   padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: inset -5px 0px 10px rgba(0, 0, 0, 0.2); /* Inner shadow */
-  border-right: 3px solid #6a5acd; /* Border between left and right sections */
+  align-items: center;
+  text-align: center;
+  box-shadow: inset -5px 0px 10px rgba(0, 0, 0, 0.2);
+  border-right: 3px solid #6a5acd;
 }
 
-.left-side h1 {
-  font-size: 24px;
-  font-weight: bold;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2); /* Subtle text shadow */
+.login-container .left-side h1 {
+  font-size: 30px;
+  font-weight: 700;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.left-side h2 {
-  font-size: 28px;
+.login-container .left-side p {
+  font-size: 16px;
   margin-top: 10px;
-  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3); /* Stronger text shadow */
-}
-
-.left-side p {
-  font-size: 14px;
-  margin-top: 10px;
+  opacity: 0.9;
 }
 
 /* Right Side */
-.right-side {
+.login-container .right-side {
   flex: 1;
-  background-color: white;
+  background: white;
   padding: 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  box-shadow: inset 5px 0px 10px rgba(0, 0, 0, 0.1); /* Subtle inner shadow */
+  box-shadow: inset 5px 0px 10px rgba(0, 0, 0, 0.05);
 }
 
-.right-side h2 {
-  font-size: 24px;
+/* Login Title */
+.login-container .login-title {
+  font-size: 26px;
   font-weight: bold;
   color: #352e4b;
-  border-bottom: 2px solid #6a5acd; /* Border under title */
+  text-align: center;
   padding-bottom: 10px;
+  border-bottom: 2px solid #6a5acd;
 }
 
-.right-side p {
+.login-container .login-subtext {
+  text-align: center;
   font-size: 14px;
   color: #777;
+  margin-bottom: 20px;
+}
+
+/* Error Message */
+.login-container .error-message {
+  background: #ffebeb;
+  color: #d32f2f;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: 500;
 }
 
 /* Input Fields */
-.input-group {
+.login-container .input-group {
   margin-bottom: 15px;
 }
 
-.input-group label {
+.login-container .input-group label {
   display: block;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 600;
   color: #352e4b;
   margin-bottom: 5px;
 }
 
-.input-group input {
+.login-container .input-group input {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
-  border: 2px solid #6a5acd; /* Added border */
+  border: 2px solid #6a5acd;
   border-radius: 6px;
-  box-shadow: inset 0px 3px 5px rgba(0, 0, 0, 0.1); /* Inner input shadow */
+  background: #f8f8ff;
   transition: 0.3s ease-in-out;
 }
 
-.input-group input:focus {
+.login-container .input-group input:focus {
   border-color: #483d8b;
-  box-shadow: 0px 0px 8px rgba(72, 61, 139, 0.5); /* Glow effect on focus */
+  box-shadow: 0px 0px 8px rgba(72, 61, 139, 0.4);
+  background: white;
 }
 
-/* Login & Signup Buttons */
-.login-btn, .signup-btn {
+/* Remember Me */
+.login-container .remember-me {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.login-container .remember-me input {
+  margin-right: 10px;
+}
+
+/* Login Button */
+.login-container .login-btn {
   width: 100%;
   padding: 12px;
   font-size: 18px;
-  background: #352e4b;
+  background: linear-gradient(135deg, #352e4b, #6a5acd);
   color: white;
-  border: 2px solid #352e4b; /* Added border */
+  border: none;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: 600;
   transition: all 0.3s ease-in-out;
   margin-top: 10px;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3); /* Button shadow */
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
 }
 
-.login-btn:hover, .signup-btn:hover {
-  background: #2a2540;
-  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.4); /* Darker shadow on hover */
-  border-color: #483d8b;
+.login-container .login-btn:hover {
+  background: linear-gradient(135deg, #2a2540, #5a4fcf);
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.4);
 }
 
 /* Extra Links */
-.extra-links {
+.login-container .extra-links {
   text-align: center;
   margin-top: 15px;
 }
 
-.signup-link {
+.login-container .signup-link {
   color: #352e4b;
-  font-weight: bold;
+  font-weight: 600;
   text-decoration: none;
-  border-bottom: 2px solid transparent;
   transition: 0.3s ease-in-out;
 }
 
-.signup-link:hover {
+.login-container .signup-link:hover {
   text-decoration: underline;
-  border-bottom: 2px solid #6a5acd;
+  color: #6a5acd;
 }
 
-.forgot-password-link {
+.login-container .forgot-password-link {
   display: block;
   margin-top: 10px;
   color: #777;
   text-decoration: none;
-  border-bottom: 1px solid transparent;
   transition: 0.3s ease-in-out;
 }
 
-.forgot-password-link:hover {
+.login-container .forgot-password-link:hover {
   text-decoration: underline;
-  border-bottom: 1px solid #6a5acd;
+  color: #6a5acd;
 }
 
-/* Mobile Responsive */
+/* Responsive Design */
 @media (max-width: 768px) {
   .login-container {
     flex-direction: column;
@@ -166,18 +182,15 @@ body {
     border: 2px solid #6a5acd;
   }
 
-  .left-side, .right-side {
+  .login-container .left-side {
     width: 100%;
-    text-align: center;
     padding: 30px;
-    border: none;
+    border-bottom: 3px solid #6a5acd;
+    border-right: none;
   }
 
-  .left-side h1 {
-    font-size: 20px;
-  }
-
-  .left-side h2 {
-    font-size: 18px;
+  .login-container .right-side {
+    width: 100%;
+    padding: 30px;
   }
 }

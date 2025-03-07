@@ -68,9 +68,10 @@ const LoginPage = () => {
   
   return (
     <>
-      <ToastContainer /> {/* Moved to the top */}
+      <ToastContainer /> 
       <Navbar /> 
       <div className="login-container">
+        <div className="overlay"></div> {/* Dark overlay for better contrast */}
         {/* Left Side */}
         <div className="left-side">
           <h1>OpticAI</h1>
