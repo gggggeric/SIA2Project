@@ -7,7 +7,6 @@ const User = require('../models/User');
 require('dotenv').config(); 
 const sendMail = require("../config/mailer");
 const router = express.Router();
-
 const JWT_SECRET = process.env.JWT_SECRET;
 router.get("/verify-email", async (req, res) => {
     try {
@@ -106,16 +105,19 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'Invalid password' });
         }
 
+        // Generate JWT token with user ID, email, and userType
         const token = jwt.sign(
             { userId: user._id, email: user.email, userType: user.userType }, 
             JWT_SECRET, 
             { expiresIn: '1h' }
         );
 
+        // Respond with token, userType, and userId
         res.status(200).json({ 
             message: 'Login successful', 
             token,
-            userType: user.userType 
+            userType: user.userType,
+            userId: user._id  // Add userId here
         });
 
     } catch (err) {

@@ -1,0 +1,268 @@
+/* Body style to center content */
+body {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center; /* Centers vertically */
+  height: 100vh; /* Full viewport height */
+  margin: 0;
+  background-color: #f0f0f0; /* Optional background color for the whole page */
+}
+
+/* Container for profile and text boxes with background */
+.edit-profile__content-container {
+  background-color: #f4f4f9; /* Light background for the content area */
+  padding: 40px;
+  border-radius: 12px; /* Slightly rounded corners */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%; /* Ensures it doesn't overflow */
+  transition: all 0.3s ease-in-out;
+}
+
+/* Overall container with more depth */
+.edit-profile__container { 
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.edit-profile__container:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Title styling */
+.edit-profile__title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: 'Arial', sans-serif;
+  color: #2a2250;
+  font-size: 1.8rem;
+  letter-spacing: 0.5px;
+}
+
+/* Group box with background and shadow */
+.edit-profile__group-box {
+  padding: 25px;
+  background-color: #fff; /* White background for the group box */
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* User info styling */
+.edit-profile__user-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+/* Profile image container */
+.edit-profile__profile-img-container {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile image inside the container */
+.edit-profile__profile-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Profile placeholder */
+.edit-profile__profile-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* User name styling */
+.edit-profile__user-name h3 {
+  font-size: 1.4rem;
+  margin: 0;
+  color: #2a2250;
+  font-family: 'Arial', sans-serif;
+  font-weight: 700;
+}
+
+.edit-profile__user-name p {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Form container */
+.edit-profile__form-container {
+  padding: 10px 0;
+}
+
+/* Grouping of form elements */
+.edit-profile__form-group {
+  margin-bottom: 20px;
+}
+
+/* Form labels */
+.edit-profile__label {
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 8px;
+  color: #2a2250;
+}
+
+/* Inputs with smooth border and shadow */
+.edit-profile__input {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.edit-profile__input:focus {
+  border-color: #2a2250;
+  outline: none;
+}
+
+/* Custom file input */
+.edit-profile__input[type="file"] {
+  border: none;
+  padding: 10px;
+}
+
+/* Submit button styling */
+.edit-profile__submit-btn {
+  background-color: #2a2250;
+  color: white;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.edit-profile__submit-btn:hover {
+  background-color: #1c1a3b;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.edit-profile__submit-btn:active {
+  transform: translateY(0);
+}
+
+.edit-profile__submit-btn:focus {
+  outline: none;
+}
+
+/* Last form group without margin */
+.edit-profile__form-group:last-child {
+  margin-bottom: 0;
+}
+
+/* Modal background */
+.edit-profile__modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Modal content with padding and border */
+.edit-profile__modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  position: relative;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.edit-profile__modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Edit pencil button with a stronger depth effect */
+.edit-profile__edit-icon {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.edit-profile__edit-icon:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Profile image modal styling */
+.edit-profile__current-img-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.edit-profile__current-img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+}
+
+.edit-profile__current-img-placeholder {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ccc;
+  border-radius: 50%;
+  font-size: 2rem;
+  color: white;
+  font-weight: bold;
+}

@@ -21,15 +21,16 @@ const LoginPage = () => {
         email,
         password
       });
-
+  
       console.log('Login successful:', response.data); 
       console.log('JWT Token:', response.data.token); 
-
-      // Store token, email, and userType in localStorage
+  
+      // Store token, email, userType, and userId in localStorage
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('email', email); 
+      localStorage.setItem('email', email);
       localStorage.setItem('userType', response.data.userType);
-
+      localStorage.setItem('userId', response.data.userId);  // Store userId here
+  
       // Show success toast at bottom-right
       toast.success('Login successful!', {
         position: 'bottom-right',
@@ -40,7 +41,7 @@ const LoginPage = () => {
         draggable: true,
         theme: 'colored',
       });
-
+  
       setTimeout(() => {
         if (response.data.userType === 'admin') {
           navigate('/adminHome'); 
@@ -48,11 +49,11 @@ const LoginPage = () => {
           navigate('/home'); 
         }
       }, 2000);
-
+  
     } catch (err) {
       console.error('Login error:', err);
       setError('Invalid email or password');
-
+  
       // Show error toast at bottom-right
       toast.error('Invalid email or password!', {
         position: 'bottom-right',

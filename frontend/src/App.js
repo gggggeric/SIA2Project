@@ -16,6 +16,7 @@ import OpticalShops from "./Process/OpticalShops";
 import AdminHome from "./Admin/AdminHome";
 import UserCrudPage from "./Admin/UserCrud";
 import EmailVerification from "./Authentication/EmailVerification";
+import EditProfile from "./Profile/EditProfile";
 
 function App() {
   return (
@@ -91,6 +92,14 @@ function App() {
           element={
             <ProtectedRoute adminOnly={true}>
               <UserCrudPage />
+            </ProtectedRoute>
+          }
+        />
+          <Route
+          path="/edit-profile"
+          element={
+            <ProtectedRoute>
+              <EditProfile />
             </ProtectedRoute>
           }
         />

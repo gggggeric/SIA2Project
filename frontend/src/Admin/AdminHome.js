@@ -16,7 +16,7 @@ const AdminHome = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/users/userDashboard");
+        const response = await axios.get("http://localhost:5001/admin/userDashboard");
 
         // Count users by type
         const userCount = response.data.filter(user => user.userType === "user").length;

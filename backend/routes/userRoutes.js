@@ -1,81 +1,115 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-
+const cloudinary = require("cloudinary").v2;
+const multer = require("multer");
+const fs = require('fs');
+const path = require('path');
 const router = express.Router();
+const crypto = require('crypto'); 
 
-router.get("/userDashboard", async (req, res) => {
-    try {
-        const users = await User.find().select("name email userType").lean(); // Use lean() for faster reads
-        res.json(users);
-    } catch (error) {
-        console.error("Error fetching users:", error);
-        res.status(500).json({ message: "Internal server error" });
+// Set up Multer for file uploading
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        const uploadDir = path.join(__dirname, '../uploads');
+        
+        // Ensure the "uploads" folder exists
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir);
+        }
+
+        cb(null, uploadDir);  // Store images in the "uploads" folder temporarily
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + file.originalname); // Append timestamp to avoid filename conflicts
     }
 });
-router.get("/users", async (req, res) => {
-    try {
-        const users = await User.find();
-        res.json(users);
-    } catch (error) {
-        console.error("Error fetching users:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
+
+const upload = multer({ storage: storage });
+
+// Cloudinary configuration
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET,
 });
 
+router.put("/users/:id", async (req, res) => {
+    const { name, address, password } = req.body; // Get name, address, and password from the request body
+  
+    try {
+      // Find the user by ID
+      const user = await User.findById(req.params.id);
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      // Update name and address
+      user.name = name || user.name;
+      user.address = address || user.address;
+  
+      // If a new password is provided, hash it and update it
+      if (password) {
+        const salt = await bcrypt.genSalt(10); // Generate salt with 10 rounds
+        const hashedPassword = await bcrypt.hash(password, salt); // Hash the password
+        user.password = hashedPassword;
+      }
+  
+      // Save the updated user document
+      const updatedUser = await user.save();
+  
+      res.json({ message: "User updated successfully", updatedUser });
+    } catch (error) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 
+// Get the user's profile information
 router.get("/users/:id", async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select("name email userType").lean();
+        // Fetch user data and include the profile image URL and address
+        const user = await User.findById(req.params.id)
+            .select("name email userType profile address") // Ensure 'address' is included
+            .lean();
+
         if (!user) return res.status(404).json({ message: "User not found" });
-        res.json(user);
+
+        res.json(user); // The response will now include name, email, userType, profile, and address
     } catch (error) {
         console.error("Error fetching user:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 });
 
-router.post("/users", async (req, res) => {
+// Route to upload a user's profile image
+router.put("/users/:id/uploadProfile", upload.single("profileImage"), async (req, res) => {
     try {
-        const { name, email, password, address, userType } = req.body;
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded" });
+        }
 
-        if (await User.exists({ email })) return res.status(400).json({ message: "Email already in use" });
+        // Upload the file to Cloudinary
+        const result = await cloudinary.uploader.upload(req.file.path);
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // Update the user's profile image URL in the database
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            { profile: result.secure_url },
+            { new: true }
+        ).lean();
 
-        const newUser = await User.create({ name, email, password: hashedPassword, address, userType });
+        // Delete the local file after uploading to Cloudinary
+        fs.unlinkSync(req.file.path);
 
-        res.status(201).json({ message: "User created successfully", id: newUser._id });
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.json({ message: "Profile image uploaded successfully", updatedUser });
     } catch (error) {
-        console.error("Error creating user:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-});
-
-
-router.put("/users/:id", async (req, res) => {
-    try {
-        const { name, address, userType } = req.body;
-        const updatedUser = await User.findByIdAndUpdate(req.params.id, { name, address, userType }, { new: true }).lean();
-
-        if (!updatedUser) return res.status(404).json({ message: "User not found" });
-
-        res.json({ message: "User updated successfully", updatedUser });
-    } catch (error) {
-        console.error("Error updating user:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-});
-
-
-router.delete("/users/:id", async (req, res) => {
-    try {
-        const deletedUser = await User.findByIdAndDelete(req.params.id).lean();
-        if (!deletedUser) return res.status(404).json({ message: "User not found" });
-
-        res.json({ message: "User deleted successfully" });
-    } catch (error) {
-        console.error("Error deleting user:", error);
+        console.error("Error uploading profile image:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 });

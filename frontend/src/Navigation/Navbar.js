@@ -1,28 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Glasses, Eye, MapPin, User, Edit, LogOut, X } from "lucide-react"; // Icons
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./Navbar.css";
 import logo from "../assets/logoOpticAI (2).png"; // Adjust path if needed
-import profileImage from "../assets/profile.jpg"; // Import the profile image
 
 const Navbar = () => {
   const navigate = useNavigate();
   const isLoggedIn = localStorage.getItem("token");
   const userType = localStorage.getItem("userType");
-  
-  // Get email from localStorage
-  const userEmail = localStorage.getItem("email");
-  
-  // State to manage the sidebar
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [userData, setUserData] = useState(null); // State to store user data (name and profile)
+
+  // Fetch user data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (isLoggedIn) {
+        const userId = localStorage.getItem("userId"); // Retrieve userId from localStorage
+        if (userId) {
+          try {
+            const response = await fetch(`http://localhost:5001/users/users/${userId}`);
+            const data = await response.json();
+            if (data) {
+              setUserData(data); // Update user data state
+            }
+          } catch (error) {
+            console.error("Error fetching user data:", error);
+          }
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [isLoggedIn]);
 
   // Logout functionality
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userType");
-    localStorage.removeItem("email");  // Ensure email is also cleared on logout
+    localStorage.removeItem("email"); // Ensure email is also cleared on logout
+    localStorage.removeItem("userId"); // Ensure user ID is cleared on logout
     console.log("Logged out successfully");
     navigate("/");
   };
@@ -86,10 +105,11 @@ const Navbar = () => {
 
         <ul className="sidebar-menu">
           {/* User Profile Section */}
-          {isLoggedIn && (
+          {isLoggedIn && userData && (
             <div className="sidebar-profile">
-              <img src={profileImage} alt="Profile" className="sidebar-profile-img" /> {/* Use the imported image */}
-              <p className="sidebar-profile-email">{userEmail}</p>
+              <img src={userData.profile} alt="Profile" className="sidebar-profile-img" />
+              <p className="sidebar-profile-name">{userData.name}</p>
+              <p className="sidebar-profile-email">{userData.email}</p>
             </div>
           )}
 
@@ -136,7 +156,7 @@ const Navbar = () => {
             <>
               <li className="sidebar-section-title">You</li>
               <li className="sidebar-item">
-                <Link to="/profile/edit" onClick={() => setSidebarOpen(false)}>
+                <Link to="/edit-profile" onClick={() => setSidebarOpen(false)}>
                   <Edit size={20} className="sidebar-icon" /> Edit Profile
                 </Link>
               </li>

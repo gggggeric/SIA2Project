@@ -14,7 +14,7 @@ const UserCrudPage = () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await axios.get("http://localhost:5001/users/users");
+            const response = await axios.get("http://localhost:5001/admin/users");
             setUsers(response.data);
         } catch (error) {
             console.error("Error fetching users:", error);
@@ -29,7 +29,7 @@ const UserCrudPage = () => {
         e.preventDefault();
         try {
             if (editingUser) {
-                await axios.put(`http://localhost:5001/users/users/${editingUser._id}`, formData);
+                await axios.put(`http://localhost:5001/admin/users/${editingUser._id}`, formData);
             } else {
                 await axios.post("http://localhost:5001/users/users", formData);
             }
@@ -48,7 +48,7 @@ const UserCrudPage = () => {
     const handleDelete = async (id) => {
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
-                await axios.delete(`http://localhost:5001/users/users/${id}`);
+                await axios.delete(`http://localhost:5001/admin/users/${id}`);
                 fetchUsers();
             } catch (error) {
                 console.error("Error deleting user:", error);
