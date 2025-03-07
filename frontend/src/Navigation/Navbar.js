@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Glasses, Eye, MapPin, User, Settings, Edit, LogOut, X } from "lucide-react"; // Import icons
+import { User, Edit, LogOut, X } from "lucide-react"; // Icons
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./Navbar.css";
-
 import logo from "../assets/logoOpticAI (2).png"; // Adjust path if needed
 
 const Navbar = () => {
@@ -26,8 +25,8 @@ const Navbar = () => {
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-light fixed-top">
         <div className="container-fluid custom-container">
-          {/* Hamburger Menu */}
-          {isLoggedIn && userType !== "admin" && (
+          {/* Hamburger Menu (For All Users) */}
+          {isLoggedIn && (
             <button className="hamburger-menu" onClick={() => setSidebarOpen(true)}>
               <div className="bar"></div>
               <div className="bar"></div>
@@ -46,32 +45,24 @@ const Navbar = () => {
           {/* Navigation Items */}
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
-              {isLoggedIn && userType === "admin" ? (
-                <li className="nav-item">
-                  <button className="nav-link text-danger" onClick={handleLogout}>Logout</button>
-                </li>
-              ) : (
+              {isLoggedIn && (
                 <>
-                  {isLoggedIn && (
-                    <li className="nav-item">
-                      <Link className="nav-link text-white" to="/home">Home</Link>
-                    </li>
-                  )}
-                  {!isLoggedIn || userType !== "admin" ? (
-                    <li className="nav-item">
-                      <Link className="nav-link text-white" to="/about">About</Link>
-                    </li>
-                  ) : null}
-                  {!isLoggedIn && (
-                    <>
-                      <li className="nav-item">
-                        <Link className="nav-link text-white" to="/login">Login</Link>
-                      </li>
-                      <li className="nav-item">
-                        <Link className="nav-link text-white" to="/signup">Signup</Link>
-                      </li>
-                    </>
-                  )}
+                  <li className="nav-item">
+                    <Link className="nav-link text-white" to={userType === "admin" ? "/adminHome" : "/home"}>Home</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link text-white" to="/about">About</Link>
+                  </li>
+                </>
+              )}
+              {!isLoggedIn && (
+                <>
+                  <li className="nav-item">
+                    <Link className="nav-link text-white" to="/login">Login</Link>
+                  </li>
+                  <li className="nav-item">
+                    <Link className="nav-link text-white" to="/signup">Signup</Link>
+                  </li>
                 </>
               )}
             </ul>
@@ -87,51 +78,59 @@ const Navbar = () => {
         </button>
 
         <ul className="sidebar-menu">
-          {/* Services Section */}
-          <li className="sidebar-section-title">Services</li>
-          <li className="sidebar-item">
-            <Link to="/process/faceshape-detector" onClick={() => setSidebarOpen(false)}>
-              <Glasses size={20} className="sidebar-icon" /> Eye Glass Frame Analyzer
-            </Link>
-          </li>
-          <li className="sidebar-item">
-            <Link to="/instructions/reminders" onClick={() => setSidebarOpen(false)}>
-              <Eye size={20} className="sidebar-icon" /> Proceed to Testing the Eye Sight
-            </Link>
-          </li>
-          <li className="sidebar-item">
-            <Link to="/process/near-opticalshops" onClick={() => setSidebarOpen(false)}>
-              <MapPin size={20} className="sidebar-icon" /> View All the Near Optical Shops
-            </Link>
-          </li>
-
-          <hr className="sidebar-separator" />
-
-          {/* "You" Section */}
-          {isLoggedIn && userType !== "admin" && (
+          {/* Sidebar for Admins */}
+          {isLoggedIn && userType === "admin" ? (
             <>
-              <li className="sidebar-section-title">You</li>
+              <li className="sidebar-section-title">Manage</li>
               <li className="sidebar-item">
-                <Link to="/profile" onClick={() => setSidebarOpen(false)}>
-                  <User size={20} className="sidebar-icon" /> Profile
+                <Link to="/admin/manage-users" onClick={() => setSidebarOpen(false)}>
+                  <User size={20} className="sidebar-icon" /> Manage Users
                 </Link>
               </li>
+              <li className="sidebar-item">
+                <Link to="/admin/deactivate-users" onClick={() => setSidebarOpen(false)}>
+                  <User size={20} className="sidebar-icon" /> Deactivate Users
+                </Link>
+              </li>
+              <hr className="sidebar-separator" />
+            </>
+          ) : (
+            <>
+              {/* Sidebar for Normal Users */}
+              <li className="sidebar-section-title">Services</li>
+              <li className="sidebar-item">
+                <Link to="/process/faceshape-detector" onClick={() => setSidebarOpen(false)}>
+                  <User size={20} className="sidebar-icon" /> Eye Glass Frame Analyzer
+                </Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/instructions/reminders" onClick={() => setSidebarOpen(false)}>
+                  <User size={20} className="sidebar-icon" /> Proceed to Testing the Eye Sight
+                </Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/process/near-opticalshops" onClick={() => setSidebarOpen(false)}>
+                  <User size={20} className="sidebar-icon" /> View All the Near Optical Shops
+                </Link>
+              </li>
+              <hr className="sidebar-separator" />
+            </>
+          )}
+
+          {/* "You" Section (For All Users) */}
+          {isLoggedIn && (
+            <>
+              <li className="sidebar-section-title">You</li>
               <li className="sidebar-item">
                 <Link to="/profile/edit" onClick={() => setSidebarOpen(false)}>
                   <Edit size={20} className="sidebar-icon" /> Edit Profile
                 </Link>
               </li>
-              <li className="sidebar-item">
-                <Link to="/profile/settings" onClick={() => setSidebarOpen(false)}>
-                  <Settings size={20} className="sidebar-icon" /> Settings
-                </Link>
-              </li>
-
               <hr className="sidebar-separator" />
             </>
           )}
 
-          {/* Logout Button */}
+          {/* Logout Button (For All Users) */}
           {isLoggedIn && (
             <li className="sidebar-item logout">
               <button onClick={handleLogout}>
