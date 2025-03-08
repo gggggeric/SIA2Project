@@ -4,6 +4,38 @@ const User = require("../models/User");
 
 const router = express.Router();
 
+router.get("/manageActive", async (req, res) => {
+    try {
+      const users = await User.find().select("name email isActivate").lean(); // Use isActivate instead of isActive
+      console.log("Fetched users from DB:", users);  // Log to ensure the data is correct
+      res.json({ users });
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+  
+  
+  router.put("/user/:id/activate", async (req, res) => {
+    const { isActivate } = req.body;  // Make sure you're using isActivate in the request body
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        req.params.id, 
+        { isActivate }, 
+        { new: true }
+      );
+  
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      res.json({ message: "User activation status updated successfully", user: updatedUser });
+    } catch (error) {
+      console.error("Error updating user activation status:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+  
 router.get("/userDashboard", async (req, res) => {
     try {
       const users = await User.find().select("name email userType isActivate").lean(); // Added isActivate

@@ -17,7 +17,7 @@ import AdminHome from "./Admin/AdminHome";
 import UserCrudPage from "./Admin/UserCrud";
 import EmailVerification from "./Authentication/EmailVerification";
 import EditProfile from "./Profile/EditProfile";
-
+import UserActivationPage from "./Admin/UserActivationPage";
 function App() {
   return (
     <Router>
@@ -100,6 +100,14 @@ function App() {
           element={
             <ProtectedRoute>
               <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+          <Route
+          path="/adminUserActivation"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <UserActivationPage />
             </ProtectedRoute>
           }
         />

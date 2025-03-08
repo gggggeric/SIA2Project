@@ -146,7 +146,7 @@ const Navbar = () => {
                 </Link>
               </li>
               <li className="sidebar-item">
-                <Link to="/admin/deactivate-users" onClick={() => setSidebarOpen(false)}>
+                <Link to="/adminUserActivation" onClick={() => setSidebarOpen(false)}>
                   <User size={20} className="sidebar-icon" /> Deactivate Users
                 </Link>
               </li>
