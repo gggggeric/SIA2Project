@@ -22,8 +22,8 @@ const LoginPage = () => {
         password
       });
   
-      console.log('Login successful:', response.data); 
-      console.log('JWT Token:', response.data.token); 
+      console.log('Login successful:', response.data);
+      console.log('JWT Token:', response.data.token);
   
       // Store token, email, userType, and userId in localStorage
       localStorage.setItem('token', response.data.token);
@@ -44,26 +44,41 @@ const LoginPage = () => {
   
       setTimeout(() => {
         if (response.data.userType === 'admin') {
-          navigate('/adminHome'); 
+          navigate('/adminHome');
         } else {
-          navigate('/home'); 
+          navigate('/home');
         }
       }, 2000);
   
     } catch (err) {
       console.error('Login error:', err);
-      setError('Invalid email or password');
   
-      // Show error toast at bottom-right
-      toast.error('Invalid email or password!', {
-        position: 'bottom-right',
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: 'colored',
-      });
+      // Check if error response exists and handle specific messages
+      if (err.response && err.response.data && err.response.data.message) {
+        const errorMessage = err.response.data.message;
+  
+        // Show the specific backend error message in a toast
+        toast.error(errorMessage, {
+          position: 'bottom-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: 'colored',
+        });
+      } else {
+        // Default error message in case of unexpected errors
+        toast.error('Invalid email or password', {
+          position: 'bottom-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: 'colored',
+        });
+      }
     }
   };
   

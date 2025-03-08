@@ -1,13 +1,14 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const nodemailer = require('nodemailer'); 
-const crypto = require('crypto'); 
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const User = require('../models/User');
-require('dotenv').config(); 
+require('dotenv').config();
 const sendMail = require("../config/mailer");
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET;
+
 router.get("/verify-email", async (req, res) => {
     try {
         const { token } = req.query;
@@ -34,6 +35,7 @@ router.get("/verify-email", async (req, res) => {
         // Mark as verified and remove token
         user.isVerified = true;
         user.emailVerificationToken = null;
+        user.isActivate = "Activated"; // Change the isActivate status to 'Activated'
         await user.save();
 
         console.log("User after verification:", await User.findById(user._id));
@@ -72,7 +74,8 @@ router.post("/register", async (req, res) => {
             email,
             password: hashedPassword,
             emailVerificationToken,
-            isVerified: false
+            isVerified: false,
+            isActivate: "Deactivated" // Default to Deactivated
         });
 
         await newUser.save();
@@ -96,8 +99,14 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
-        if (!user.isVerified) {
+        // Check if user is activated
+        if (user.isActivate === "Deactivated") {
             return res.status(400).json({ message: 'Please verify your email before logging in.' });
+        }
+
+        // Check if the email is verified
+        if (!user.isVerified) {
+            return res.status(400).json({ message: 'Email not verified. Please verify your email to activate your account.' });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -107,17 +116,17 @@ router.post('/login', async (req, res) => {
 
         // Generate JWT token with user ID, email, and userType
         const token = jwt.sign(
-            { userId: user._id, email: user.email, userType: user.userType }, 
-            JWT_SECRET, 
+            { userId: user._id, email: user.email, userType: user.userType },
+            JWT_SECRET,
             { expiresIn: '1h' }
         );
 
         // Respond with token, userType, and userId
-        res.status(200).json({ 
-            message: 'Login successful', 
+        res.status(200).json({
+            message: 'Login successful',
             token,
             userType: user.userType,
-            userId: user._id  // Add userId here
+            userId: user._id
         });
 
     } catch (err) {
@@ -125,7 +134,6 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
-
 
 const authenticateToken = (req, res, next) => {
     const authHeader = req.header('Authorization');
@@ -144,7 +152,6 @@ const authenticateToken = (req, res, next) => {
         return res.status(403).json({ message: 'Invalid or expired token' });
     }
 };
-
 
 router.post("/forgot-password", async (req, res) => {
     try {
@@ -177,7 +184,6 @@ router.post("/forgot-password", async (req, res) => {
     }
 });
 
-
 router.post("/reset-password/:token", async (req, res) => {
     try {
         const { token } = req.params;
@@ -206,4 +212,4 @@ router.post("/reset-password/:token", async (req, res) => {
     }
 });
 
-module.exports = router; 
+module.exports = router;

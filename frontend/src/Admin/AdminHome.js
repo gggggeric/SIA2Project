@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../Navigation/Navbar";
 import "./AdminHome.css";
-import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
+import { Bar, Pie } from "react-chartjs-2"; // Import both Bar and Pie charts
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
 const AdminHome = () => {
   const navigate = useNavigate();
-  const email = localStorage.getItem("email"); // Get admin email
   const [userTypeCount, setUserTypeCount] = useState({ users: 0, admins: 0 });
+  const [activationStatusCount, setActivationStatusCount] = useState({ activated: 0, deactivated: 0 });
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -19,10 +19,17 @@ const AdminHome = () => {
         const response = await axios.get("http://localhost:5001/admin/userDashboard");
 
         // Count users by type
-        const userCount = response.data.filter(user => user.userType === "user").length;
-        const adminCount = response.data.filter(user => user.userType === "admin").length;
+        const userCount = response.data.users.filter(user => user.userType === "user").length;
+        const adminCount = response.data.users.filter(user => user.userType === "admin").length;
 
         setUserTypeCount({ users: userCount, admins: adminCount });
+
+        // Get counts for activated and deactivated users
+        setActivationStatusCount({
+          activated: response.data.activatedCount,
+          deactivated: response.data.deactivatedCount,
+        });
+
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -31,10 +38,8 @@ const AdminHome = () => {
     fetchUsers();
   }, []);
 
- 
-
-  // Chart Data
-  const chartData = {
+  // Chart Data for User Types (Bar Chart)
+  const userTypeChartData = {
     labels: ["Users", "Admins"],
     datasets: [
       {
@@ -45,42 +50,77 @@ const AdminHome = () => {
     ],
   };
 
+  // Chart Data for Activation Status (Pie Chart)
+  const activationStatusChartData = {
+    labels: ["Activated", "Deactivated"],
+    datasets: [
+      {
+        label: "Activation Status",
+        data: [activationStatusCount.activated, activationStatusCount.deactivated],
+        backgroundColor: ["#28a745", "#dc3545"],
+        hoverOffset: 4, // Optional to add a slight hover effect
+      },
+    ],
+  };
+
   return (
     <div className="admin-home-container">
       <Navbar />
 
       <div className="admin-dashboard">
-        <h2 className="welcome-text">Welcome, {email || "Admin"}!</h2>
-        <p className="subtext">Monitor statistics and manage the system efficiently.</p>
-
-        <div className="admin-statistics">
-          <div className="stat-card">
-            <h3>Total Users</h3>
-            <p>{userTypeCount.users}</p>
+        {/* Landscape Layout: Aligning the charts horizontally */}
+        <div className="charts-container">
+          <div className="chart-item">
+            <h3>User Type Statistics</h3>
+            <Bar
+              data={userTypeChartData}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  tooltip: {
+                    enabled: true,
+                  },
+                  legend: {
+                    position: 'top',
+                  },
+                },
+                scales: {
+                  x: {
+                    beginAtZero: true,
+                    grid: {
+                      color: '#f2f2f2',
+                    },
+                  },
+                  y: {
+                    beginAtZero: true,
+                    grid: {
+                      color: '#f2f2f2',
+                    },
+                  },
+                },
+              }}
+            />
           </div>
-          <div className="stat-card">
-            <h3>Total Admins</h3>
-            <p>{userTypeCount.admins}</p>
+
+          <div className="chart-item">
+            <h3>Activation Status</h3>
+            <Pie
+              data={activationStatusChartData}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  tooltip: {
+                    enabled: true,
+                  },
+                  legend: {
+                    position: 'top',
+                  },
+                },
+              }}
+            />
           </div>
-        </div>
-
-        {/* User Statistics Chart */}
-        <div className="chart-container">
-          <h3>User Statistics</h3>
-          <Bar data={chartData} />
-        </div>
-
-        <div className="admin-buttons">
-          <button onClick={() => navigate("/adminUserCRUD")} className="admin-btn">
-            Manage Users
-          </button>
-          <button onClick={() => navigate("/view-reports")} className="admin-btn">
-            View Reports
-          </button>
-          <button onClick={() => navigate("/settings")} className="admin-btn">
-            Settings
-          </button>
-
         </div>
       </div>
     </div>

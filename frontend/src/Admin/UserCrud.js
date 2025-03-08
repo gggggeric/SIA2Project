@@ -3,6 +3,8 @@ import axios from "axios";
 import Navbar from "../Navigation/Navbar"; // Import the Navbar component
 import { DataGrid } from "@mui/x-data-grid"; // Import DataGrid component from Material UI
 import Button from "@mui/material/Button"; // Import MUI Button for actions
+import { ToastContainer, toast } from "react-toastify"; // Import Toastify components
+import "react-toastify/dist/ReactToastify.css"; // Import Toastify styles
 import "./UserCrud.css"; // Import external styles
 
 const UserCrudPage = () => {
@@ -17,9 +19,8 @@ const UserCrudPage = () => {
     const fetchUsers = async () => {
         try {
             const response = await axios.get("http://localhost:5001/admin/users");
-            // Modify the user data to add an `id` field
             const usersWithId = response.data.map(user => ({
-                ...user, 
+                ...user,
                 id: user._id // Adding `id` field to each user object
             }));
             setUsers(usersWithId);
@@ -27,7 +28,7 @@ const UserCrudPage = () => {
             console.error("Error fetching users:", error);
         }
     };
-    
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -36,15 +37,41 @@ const UserCrudPage = () => {
         e.preventDefault();
         try {
             if (editingUser) {
-                // Make sure to pass the correct ID
                 await axios.put(`http://localhost:5001/admin/users/${editingUser._id}`, formData);
+                toast.success("User updated successfully!", {
+                    position: "bottom-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "colored",
+                });
             } else {
                 await axios.post("http://localhost:5001/users/users", formData);
+                toast.success("User added successfully!", {
+                    position: "bottom-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "colored",
+                });
             }
             fetchUsers(); // Fetch the updated list of users
             resetForm(); // Reset the form after submission
         } catch (error) {
             console.error("Error saving user:", error);
+            toast.error("Error saving user!", {
+                position: "bottom-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "colored",
+            });
         }
     };
 
@@ -63,8 +90,26 @@ const UserCrudPage = () => {
             try {
                 await axios.delete(`http://localhost:5001/admin/users/${id}`);
                 fetchUsers(); // Re-fetch the user list after deletion
+                toast.success("User deleted successfully!", {
+                    position: "bottom-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "colored",
+                });
             } catch (error) {
                 console.error("Error deleting user:", error);
+                toast.error("Error deleting user!", {
+                    position: "bottom-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    theme: "colored",
+                });
             }
         }
     };
@@ -74,7 +119,6 @@ const UserCrudPage = () => {
         setEditingUser(null);
     };
 
-    // Columns for the DataGrid
     const columns = [
         { field: "name", headerName: "Name", width: 150 },
         { field: "email", headerName: "Email", width: 200 },
@@ -189,6 +233,9 @@ const UserCrudPage = () => {
                     </form>
                 </div>
             </div>
+
+            {/* Toastify Container for Notifications */}
+            <ToastContainer />
         </>
     );
 };

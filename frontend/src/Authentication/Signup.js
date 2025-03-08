@@ -16,10 +16,10 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (password !== confirmPassword) {
       toast.error('Passwords do not match!', {
-        position: 'top-right',
+        position: 'bottom-right', // Change the position here
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -29,17 +29,17 @@ const SignUpPage = () => {
       });
       return;
     }
-
+  
     try {
       const response = await axios.post('http://localhost:5001/auth/register', {
         name,
         email,
         password
       });
-
+  
       // ✅ Show success toast
       toast.success('Account created! Check your email to verify.', {
-        position: 'top-right',
+        position: 'bottom-right', // Change the position here
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -47,24 +47,24 @@ const SignUpPage = () => {
         draggable: true,
         theme: 'colored',
       });
-
+  
       // Clear form fields
       setName('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
-
+  
       // Redirect to login after a delay
       setTimeout(() => {
         navigate('/login');
       }, 3000);
-
+  
     } catch (err) {
       console.error('Signup error:', err);
-
+  
       if (err.response && err.response.data.error === "Email already in use") {
         toast.error('Email already in use. Try a different one.', {
-          position: 'top-right',
+          position: 'bottom-right', // Change the position here
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -74,7 +74,7 @@ const SignUpPage = () => {
         });
       } else {
         toast.error('Failed to sign up. Try again later.', {
-          position: 'top-right',
+          position: 'bottom-right', // Change the position here
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -85,6 +85,7 @@ const SignUpPage = () => {
       }
     }
   };
+  
 
   return (
     <>

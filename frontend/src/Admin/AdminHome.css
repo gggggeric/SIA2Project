@@ -1,144 +1,67 @@
-/* Main Container - No Background Shadows */
+/* AdminHome.css */
+
 .admin-home-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: white !important; /* Ensure clean background */
-  padding: 60px;
-  box-shadow: none !important; /* Remove unwanted shadows */
-  border: none !important;
-}
-
-/* Dashboard */
-.admin-dashboard {
-  width: 90%;
-  max-width: 1400px;
-  background: white;
-  padding: 60px;
-  border-radius: 12px;
-  text-align: center;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  border: 2px solid #4B0082;
-  box-shadow: none !important; /* Remove unwanted shadows */
-  gap: 40px;
-}
-
-/* Welcome Section */
-.welcome-container {
-  width: 30%;
-  text-align: left;
-  padding-right: 50px;
-}
-
-.welcome-text {
-  font-size: 2.2rem;
-  color: #4B0082;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-.subtext {
-  font-size: 1.2rem;
-  color: #666;
-  line-height: 1.6;
-}
-
-/* Statistics Section */
-.admin-statistics {
-  display: flex;
   flex-direction: column;
-  width: 25%;
   align-items: center;
-  gap: 25px;
-}
-
-.stat-card {
-  background: #4B0082 !important; /* Make sure background is set */
-  color: white !important; /* Ensure text is visible */
-  padding: 25px;
-  border-radius: 10px;
-  width: 100%;
-  text-align: center;
-  border: 2px solid #4B0082;
-  box-shadow: none !important;
-}
-
-.stat-card h3 {
-  font-size: 1.3rem;
-  margin-bottom: 8px;
-}
-
-.stat-card p {
-  font-size: 2.2rem;
-  font-weight: bold;
-}
-
-/* Chart Container */
-.chart-container {
-  width: 35%;
   padding: 30px;
-  background: white !important;
-  border-radius: 10px;
-  border: 2px solid #4B0082;
-  box-shadow: none !important;
+  background-color: #f5f5f5;
 }
 
-/* Buttons */
-.admin-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 20%;
-}
-
-.admin-btn {
-  padding: 16px;
-  font-size: 1rem;
-  font-weight: bold;
-  border: 2px solid #4B0082;
-  border-radius: 10px;
-  cursor: pointer;
-  background: #4B0082 !important; /* Ensure background color is visible */
-  color: white !important; /* Ensure text color is visible */
+.admin-dashboard {
   width: 100%;
-  transition: all 0.3s ease-in-out;
+  max-width: 1400px;
+  padding: 40px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
 
-.admin-btn:hover {
-  background: #6200b3 !important;
-  transform: translateY(-3px);
+.charts-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin-top: 30px;
 }
 
-/* Fix Global Styles Without Removing Button Colors */
-* {
-  box-shadow: none !important;
+.chart-item {
+  width: 48%;  /* Adjust width for larger charts */
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  height: 350px; /* Set a max height for the charts */
 }
 
-body {
-  background: white !important;
+.chart-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .admin-dashboard {
+.chart-item h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Add a smooth transition for better hover effect */
+.chart-item canvas {
+  transition: transform 0.3s ease;
+  height: 80% !important; /* Limit chart height */
+}
+
+/* Make the charts responsive */
+@media screen and (max-width: 768px) {
+  .charts-container {
     flex-direction: column;
-    padding: 40px;
+    align-items: center;
   }
 
-  .welcome-container,
-  .admin-statistics,
-  .chart-container,
-  .admin-buttons {
-    width: 100%;
-    text-align: center;
-    padding: 20px 0;
-  }
-
-  .welcome-container {
-    padding-right: 0;
+  .chart-item {
+    width: 80%;
+    margin-bottom: 30px;
   }
 }

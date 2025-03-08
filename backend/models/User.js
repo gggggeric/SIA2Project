@@ -11,6 +11,11 @@ const UserSchema = new mongoose.Schema({
   emailVerificationToken: String, // Token for email verification
   isVerified: { type: Boolean, default: false }, // Email verified status
   profile: { type: String, default: "" }, // Profile picture URL (Cloudinary)
+  isActivate: { 
+    type: String, 
+    enum: ["Activated", "Deactivated"], 
+    default: "Deactivated" 
+  }, // New field for activation status
 });
 
 module.exports = mongoose.model("User", UserSchema);

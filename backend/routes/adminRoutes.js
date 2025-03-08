@@ -6,13 +6,24 @@ const router = express.Router();
 
 router.get("/userDashboard", async (req, res) => {
     try {
-        const users = await User.find().select("name email userType").lean(); // Use lean() for faster reads
-        res.json(users);
+      const users = await User.find().select("name email userType isActivate").lean(); // Added isActivate
+  
+      // Count users based on their activation status
+      const activatedCount = users.filter(user => user.isActivate === "Activated").length;
+      const deactivatedCount = users.filter(user => user.isActivate === "Deactivated").length;
+  
+      // Send both the user data and activation counts in the response
+      res.json({
+        users: users,
+        activatedCount: activatedCount,
+        deactivatedCount: deactivatedCount
+      });
     } catch (error) {
-        console.error("Error fetching users:", error);
-        res.status(500).json({ message: "Internal server error" });
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
-});
+  });
+  
 router.get("/users", async (req, res) => {
     try {
         const users = await User.find();
