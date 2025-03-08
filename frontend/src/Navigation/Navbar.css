@@ -25,12 +25,12 @@
 }
 
 .navbar-logo {
-  height: 35px;
+  height: 100px; /* Increased height for a bigger logo */
   margin-right: 8px;
 }
 
 .brand-text {
-  font-size: 20px; /* Reduced font size */
+  font-size: 20px; /* Retained font size */
   font-weight: bold;
   color: #D8BFD8; /* Pastel purple for better contrast */
 }

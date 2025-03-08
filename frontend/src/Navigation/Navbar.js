@@ -113,32 +113,35 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Services Section */}
-          <li className="sidebar-section-title">Services</li>
-          <li className="sidebar-item">
-            <Link to="/process/faceshape-detector" onClick={() => setSidebarOpen(false)}>
-              <Glasses size={20} className="sidebar-icon" /> Eye Glass Frame Analyzer
-            </Link>
-          </li>
-          <li className="sidebar-item">
-            <Link to="/instructions/reminders" onClick={() => setSidebarOpen(false)}>
-              <Eye size={20} className="sidebar-icon" /> Proceed to Testing the Eye Sight
-            </Link>
-          </li>
-          <li className="sidebar-item">
-            <Link to="/process/near-opticalshops" onClick={() => setSidebarOpen(false)}>
-              <MapPin size={20} className="sidebar-icon" /> View All the Near Optical Shops
-            </Link>
-          </li>
-
-          <hr className="sidebar-separator" />
+          {/* Services Section (Only for non-admin users) */}
+          {userType !== "admin" && (
+            <>
+              <li className="sidebar-section-title">Services</li>
+              <li className="sidebar-item">
+                <Link to="/process/faceshape-detector" onClick={() => setSidebarOpen(false)}>
+                  <Glasses size={20} className="sidebar-icon" /> Eye Glass Frame Analyzer
+                </Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/instructions/reminders" onClick={() => setSidebarOpen(false)}>
+                  <Eye size={20} className="sidebar-icon" /> Proceed to Testing the Eye Sight
+                </Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/process/near-opticalshops" onClick={() => setSidebarOpen(false)}>
+                  <MapPin size={20} className="sidebar-icon" /> View All the Near Optical Shops
+                </Link>
+              </li>
+              <hr className="sidebar-separator" />
+            </>
+          )}
 
           {/* Manage Section (Only for Admins) */}
           {isLoggedIn && userType === "admin" && (
             <>
               <li className="sidebar-section-title">Manage</li>
               <li className="sidebar-item">
-                <Link to="/admin/manage-users" onClick={() => setSidebarOpen(false)}>
+                <Link to="/adminUserCRUD" onClick={() => setSidebarOpen(false)}>
                   <User size={20} className="sidebar-icon" /> Manage Users
                 </Link>
               </li>
