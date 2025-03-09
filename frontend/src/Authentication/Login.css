@@ -1,3 +1,13 @@
+/* Wrapper for the login container */
+.auth-page-wrapper {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 80px; /* Adjust based on Navbar height */
+}
+
 /* Centering the Login Container */
 .login-container {
   display: flex;
@@ -9,10 +19,8 @@
   box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.2);
   background: white;
   border: 2px solid #6a5acd;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative; /* Changed from absolute */
+  margin: 0 auto; /* Center horizontally */
   transition: all 0.3s ease-in-out;
 }
 

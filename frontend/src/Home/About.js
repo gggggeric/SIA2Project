@@ -7,7 +7,7 @@ import morit from '../assets/developers/morit.png';
 import bacala from '../assets/developers/bacala.png';
 import gone from '../assets/developers/gone.png';
 
-import '../Home/About.css';
+import styles from '../Home/About.module.css'; // Import CSS Module
 
 const teamMembers = [
     { 
@@ -52,11 +52,11 @@ const About = () => {
     };
 
     return (
-        <div className="about-page">
+        <div className={styles.aboutPageContainer}>
             <Navbar />
 
             {/* About Us Section */}
-            <div className="about-content">
+            <div className={styles.aboutContent}>
                 <h1>About Us</h1>
                 <p>
                     Welcome to <strong>Optic AI</strong>! Our system is designed to revolutionize optical care by integrating AI-powered solutions to enhance user experience and provide better vision-related services.
@@ -64,20 +64,20 @@ const About = () => {
             </div>
 
             {/* Mission, Vision & System Features Section */}
-            <div className="group-box">
-                <div className="mission">
+            <div className={styles.groupBox}>
+                <div className={styles.mission}>
                     <h2>Our Mission</h2>
                     <p>
                         To provide an AI-powered system that enhances optical care by offering accurate eye-grade predictions, personalized frame suggestions, and accessible optical shop locations.
                     </p>
                 </div>
-                <div className="vision">
+                <div className={styles.vision}>
                     <h2>Our Vision</h2>
                     <p>
                         To become the leading AI-driven optical care platform that empowers individuals to achieve better vision with personalized solutions and advanced technology.
                     </p>
                 </div>
-                <div className="system-features">
+                <div className={styles.systemFeatures}>
                     <h2>What Our System Does</h2>
                     <ul>
                         <li><strong>Eye Grade Prediction:</strong> Uses AI to analyze and predict the grade of your eyes.</li>
@@ -88,11 +88,11 @@ const About = () => {
             </div>
 
             {/* Team Section */}
-            <div className="team-section">
+            <div className={styles.teamSection}>
                 <h1>Meet Our Team</h1>
-                <div className="team-members">
+                <div className={styles.teamMembers}>
                     {teamMembers.map((member, index) => (
-                        <div key={index} className="team-member" onClick={() => openModal(member)}>
+                        <div key={index} className={styles.teamMember} onClick={() => openModal(member)}>
                             <img src={member.image} alt={member.name} />
                             <h3>{member.name}</h3>
                             <p>{member.role}</p>
@@ -103,9 +103,9 @@ const About = () => {
 
             {/* Modal */}
             {selectedMember && (
-                <div className="modal-overlay" onClick={closeModal}>
-                    <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                        <span className="close-btn" onClick={closeModal}>&times;</span>
+                <div className={styles.modalOverlay} onClick={closeModal}>
+                    <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                        <span className={styles.closeBtn} onClick={closeModal}>&times;</span>
                         <img src={selectedMember.image} alt={selectedMember.name} />
                         <h3>{selectedMember.name}</h3>
                         <p><strong>{selectedMember.role}</strong></p>

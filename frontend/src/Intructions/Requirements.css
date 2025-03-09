@@ -66,3 +66,71 @@
   color: #352e4b !important; 
   background: none !important; 
 }
+.requirements-login-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); 
+  backdrop-filter: blur(8px); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.requirements-login-modal-content {
+  background: #ffffff; 
+  color: #352e4b; 
+  padding: 50px 40px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 
+      0 8px 20px rgba(0, 0, 0, 0.2), 
+      0 4px 10px rgba(0, 0, 0, 0.1); 
+  animation: requirementsFadeIn 0.3s ease-in-out;
+  transform: translateY(-10px); 
+}
+
+.requirements-login-modal-content h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.requirements-login-modal-content p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.requirements-login-close-button {
+  background-color: #352e4b; 
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 
+      0 4px 10px rgba(0, 0, 0, 0.3), 
+      0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.requirements-login-close-button:hover {
+  background-color: #2b2640; 
+  transform: scale(1.05); 
+}
+
+@keyframes requirementsFadeIn {
+  from { 
+      opacity: 0;
+      transform: translateY(-20px);
+  }
+  to { 
+      opacity: 1;
+      transform: translateY(0);
+  }
+}

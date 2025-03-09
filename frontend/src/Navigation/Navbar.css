@@ -226,3 +226,30 @@
   font-size: 12px;  /* Reduced font size */
   font-weight: 500;
 }
+.nav-item .nav-link {
+  position: relative;
+  color: #ddd;
+  text-decoration: none;
+  padding-bottom: 5px;
+  margin: 0 15px;
+  transition: color 0.3s ease-in-out;
+}
+
+/* Subtle Centered Underline for Active Link */
+.nav-item.active .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%); /* Centers the underline */
+  width: 40%; /* Smaller underline */
+  bottom: 0;
+  height: 2px;
+  background-color: #fff;
+  border-radius: 2px; /* Slight round edges for smoothness */
+  transition: width 0.3s ease-in-out;
+}
+
+/* Hover Effect (Optional) */
+.nav-item .nav-link:hover::after {
+  width: 60%; /* Slight expansion on hover for emphasis */
+}

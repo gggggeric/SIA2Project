@@ -1,107 +1,120 @@
-/* Main Container */
+/* General Styles */
 .home-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: none; /* Fully transparent */
-}
-
-/* Dashboard Layout */
-.dashboard-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 95%; /* Increased width */
-  max-width: 1400px; /* Increased max width */
-  padding: 60px; /* Slightly more padding for a bigger feel */
-  border: 4px solid #4B0082; /* Purple border */
-  border-radius: 12px;
-  box-shadow: none; /* No shadow */
-  background: none; /* Fully transparent */
-}
-
-/* Left Side - Image & Description */
-.info-section {
-  text-align: center;
-  width: 50%;
-}
-
-.dashboard-image {
-  width: 100%;
-  max-width: 280px; /* Slightly larger */
-  height: auto;
-  border-radius: 12px;
-  margin-bottom: 15px;
-}
-
-.dashboard-title {
-  font-size: 2.2rem; /* Slightly larger text */
-  color: #4B0082;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.dashboard-text {
-  font-size: 1.2rem;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
   color: #333;
 }
 
-/* Right Side - Navigation Buttons */
-.dashboard-buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 50%;
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(135deg, #6a5acd, #352e4b);
+  color: white;
+  padding: 100px 20px;
   text-align: center;
 }
 
-.dashboard-buttons h2 {
-  font-size: 1.8rem;
-  color: #4B0082;
-  margin-bottom: 10px;
-}
-
-.dashboard-buttons p {
-  font-size: 1.2rem;
-  color: #555;
+.hero-content h1 {
+  font-size: 3rem;
   margin-bottom: 20px;
 }
 
-/* Buttons */
-.dashboard-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px; /* Space between icon and text */
-  width: 100%;
-  padding: 16px; /* Slightly bigger buttons */
-  margin-bottom: 15px;
-  color: #4B0082;
-  font-size: 1.3rem;
-  font-weight: bold;
-  border: 2px solid #4B0082;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  background: none;
+.hero-content p {
+  font-size: 1.5rem;
+  margin-bottom: 40px;
 }
 
-.dashboard-btn:hover {
-  background: #4B0082;
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.hero-btn {
+  background-color: #fff;
+  color: #6a5acd;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.hero-btn:hover {
+  background-color: #6a5acd;
   color: white;
 }
 
-/* Button Icons */
-.btn-icon {
-  font-size: 1.5rem; /* Slightly larger icon */
+/* Features Section */
+.features-section {
+  padding: 60px 20px;
+  text-align: center;
+  background-color: white;
 }
 
-.welcome-message {
-  text-align: center;
-  font-size: 22px;
+.features-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.feature-card h3 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.feature-card p {
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.feature-link {
+  background-color: #6a5acd;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
   font-weight: bold;
-  color: #4B0082; /* Indigo color */
-  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.feature-link:hover {
+  background-color: #483d8b;
+}
+
+/* Footer */
+.footer {
+  background-color: #352e4b;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  margin-top: auto;
+}
+
+.footer p {
+  margin: 0;
+  font-size: 1rem;
 }

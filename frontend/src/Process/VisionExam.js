@@ -1,10 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
 import Navbar from "../Navigation/Navbar";
 import axios from "axios";
-import styles from "./BothEye.module.css";
+import styles from "./VisionExam.module.css";
 import eyeTestImage from "../assets/eyetest1.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-const BothEyePage = () => {
+const VisionExamPage = () => {
   const webcamRef = useRef(null);
   const [image, setImage] = useState(null);
   const [distance, setDistance] = useState(null);
@@ -12,31 +14,23 @@ const BothEyePage = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [distanceFeedback, setDistanceFeedback] = useState("");
 
-  // State for detected speech results
   const [detectedSpeech, setDetectedSpeech] = useState(() => {
     const savedSpeech = localStorage.getItem("detectedSpeech");
-    return savedSpeech ? JSON.parse(savedSpeech) : { bothEyes: null, rightEye: null, leftEye: null };
+    return savedSpeech
+      ? JSON.parse(savedSpeech)
+      : { bothEyes: null, rightEye: null, leftEye: null };
   });
 
-  // State for current test level and letters to read
-  const [currentTestLevel, setCurrentTestLevel] = useState("");
-
-  // State for microphone permission and listening status
+  const [currentTestDistance, setCurrentTestDistance] = useState("");
+  const [testInstructions, setTestInstructions] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [micPermission, setMicPermission] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // State for test instructions
-  const [testInstructions, setTestInstructions] = useState("");
-
-  // State for current test distance
-  const [currentTestDistance, setCurrentTestDistance] = useState("");
-
-  // Save detected speech to localStorage
   useEffect(() => {
     localStorage.setItem("detectedSpeech", JSON.stringify(detectedSpeech));
   }, [detectedSpeech]);
 
-  // Request microphone permission on component mount
   useEffect(() => {
     const getMicPermission = async () => {
       try {
@@ -50,7 +44,6 @@ const BothEyePage = () => {
     getMicPermission();
   }, []);
 
-  // Capture image from webcam every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       captureImage();
@@ -58,14 +51,12 @@ const BothEyePage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Calculate face distance when a new image is captured
   useEffect(() => {
     if (image) {
       calculateFaceDistance();
     }
   }, [image]);
 
-  // Start webcam on component mount
   useEffect(() => {
     const startWebcam = async () => {
       try {
@@ -81,7 +72,6 @@ const BothEyePage = () => {
     startWebcam();
   }, []);
 
-  // Capture image from webcam
   const captureImage = () => {
     if (webcamRef.current) {
       const video = webcamRef.current;
@@ -98,31 +88,30 @@ const BothEyePage = () => {
     }
   };
 
-  // Calculate face distance using the backend API
   const calculateFaceDistance = async () => {
     if (image) {
       try {
         const response = await axios.post("http://127.0.0.1:5000/calculate-distance", {
-          image: image.split(",")[1], // Send base64 encoded image data
+          image: image.split(",")[1],
         });
-
-        console.log("Face distance response:", response.data);
 
         if (response.data.error) {
           setErrorMessage(response.data.error);
           setDistance(null);
           setDistanceFeedback("");
         } else {
-          setDistance(response.data.distance_cm);
+          const detectedDistance = response.data.distance_cm;
+          setDistance(detectedDistance);
           setExpectedDistance(response.data.expected_distance_cm);
-          setErrorMessage(null);
 
-          if (response.data.distance_cm < 20) {
+          if (detectedDistance < 40) {
             setDistanceFeedback("Move back for better accuracy.");
-          } else if (response.data.distance_cm > 100) {
-            setDistanceFeedback("Move closer for better accuracy.");
+          } else if (detectedDistance >= 40 && detectedDistance <= 50) {
+            setDistanceFeedback("Perfect distance for Myopia test.");
+          } else if (detectedDistance >= 60 && detectedDistance <= 100) {
+            setDistanceFeedback("Perfect distance for Hyperopia test.");
           } else {
-            setDistanceFeedback("Good distance detected.");
+            setDistanceFeedback("Move closer for better accuracy.");
           }
         }
       } catch (error) {
@@ -144,53 +133,62 @@ const BothEyePage = () => {
 
     try {
       let endpoint = "";
-      if (testType === "bothEyes") endpoint = "/vision-test/both-eyes";
-      else if (testType === "rightEye") endpoint = "/vision-test/right-eye";
-      else if (testType === "leftEye") endpoint = "/vision-test/left-eye";
+      if (testType === "bothEyes") {
+        endpoint = "/vision-test/both-eyes";
+      } else if (testType === "rightEye") {
+        endpoint = "/vision-test/right-eye";
+      } else if (testType === "leftEye") {
+        endpoint = "/vision-test/left-eye";
+      }
 
-      // Start the near vision test (40-50 cm)
-      setCurrentTestDistance("40-50 cm"); // Set current test distance
-      setTestInstructions("Testing at 40-50 cm... Please read the following letters:");
-      const nearResponse = await axios.post(`http://127.0.0.1:5000${endpoint}`, {}, {
+      // Call the backend to start the vision test
+      const response = await axios.post(`http://127.0.0.1:5000${endpoint}`, {}, {
         headers: { "Content-Type": "application/json" },
       });
 
-      console.log("✅ Near vision test response:", nearResponse.data);
+      // Extract the expected chart letters from the backend's response
+      const expectedText = response.data.near_spoken_text || response.data.far_spoken_text;
 
-      // Update test instructions
-      setTestInstructions(`Say these letters: ${nearResponse.data.near_test_characters.join(", ")}`);
+      if (expectedText) {
+        // Show an alert with the expected chart letters
+        alert(`Please read the chart showing: ${expectedText}`);
 
-      // Update detected speech results
-      setDetectedSpeech((prev) => ({
-        ...prev,
-        [testType]: {
-          near: nearResponse.data,
-          diagnosis: nearResponse.data.diagnosis,
-        },
-      }));
-
-      // Delay before starting the far test (80-100 cm)
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // Start the far vision test (80-100 cm)
-      setCurrentTestDistance("80-100 cm"); // Set current test distance
-      setTestInstructions("Testing at 80-100 cm... Please read the following letters:");
-      const farResponse = await axios.post(`http://127.0.0.1:5000${endpoint}`, {}, {
-        headers: { "Content-Type": "application/json" },
-      });
-
-      console.log("✅ Far vision test response:", farResponse.data);
+        // Show a toast notification
+        toast.info(`Please read the chart showing: ${expectedText}`, {
+          position: "top-center",
+          autoClose: 5000, // Close after 5 seconds
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
 
       setDetectedSpeech((prev) => ({
         ...prev,
-        [testType]: { error: "An error occurred during speech recognition." },
+        [testType]: response.data,
       }));
 
       setIsListening(false);
     } catch (error) {
-      console.error("❌ Speech recognition error:", error);
+      console.error(`❌ Error during ${testType} test:`, error);
       setIsListening(false);
     }
+  };
+
+  const Modal = ({ isOpen, onClose, children }) => {
+    if (!isOpen) return null;
+
+    return (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modalContent}>
+          <button className={styles.closeButton} onClick={onClose}>
+            &times;
+          </button>
+          {children}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -221,15 +219,53 @@ const BothEyePage = () => {
         </div>
       </section>
 
-   
-
       <div className={styles.buttons}>
-        <button onClick={() => handleSpeechRecognition("bothEyes")}>Test Both Eyes</button>
-        <button onClick={() => handleSpeechRecognition("rightEye")}>Test Right Eye</button>
-        <button onClick={() => handleSpeechRecognition("leftEye")}>Test Left Eye</button>
+        <button className={styles.elegantButton} onClick={() => handleSpeechRecognition("bothEyes")}>
+          Test Both Eyes
+        </button>
+        <button className={styles.elegantButton} onClick={() => handleSpeechRecognition("rightEye")}>
+          Test Right Eye
+        </button>
+        <button className={styles.elegantButton} onClick={() => handleSpeechRecognition("leftEye")}>
+          Test Left Eye
+        </button>
+        <button className={styles.elegantButton} onClick={() => setIsModalOpen(true)}>
+          View Results
+        </button>
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <div className={styles.testResults}>
+          <h3>Test Results</h3>
+          <div className={styles.horizontalResults}>
+            {Object.entries(detectedSpeech).map(([eye, result]) => (
+              <div key={eye} className={styles.resultBox}>
+                <h4>{eye === 'bothEyes' ? '👀 Both Eyes' : eye === 'rightEye' ? '👁️ Right Eye' : '👁️ Left Eye'}</h4>
+                {Object.entries(result).map(([key, value]) => (
+                  <p key={key}>
+                    <strong>{key.replace('_', ' ')}:</strong> {value || 'Unknown'}
+                  </p>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </Modal>
+
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };
 
-export default BothEyePage;
+export default VisionExamPage;

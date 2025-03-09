@@ -8,6 +8,7 @@
   font-family: 'Inter', sans-serif; /* Modern font */
   min-height: 100vh;
   box-sizing: border-box;
+  background-color: #f5f5f5; /* Light background for contrast */
 }
 
 /* Content Layout */
@@ -31,7 +32,7 @@
   padding: 20px;
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  background: transparent;
+  background: white;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -45,7 +46,7 @@
   max-width: 280px; /* Slightly larger for better visibility */
   transform: scaleX(-1);
   border-radius: 12px;
-  border: 3px solid #4b0082; /* Accent color */
+  border: 3px solid #352e4b; /* Updated color */
 }
 
 /* Log Box - Clean and Minimal */
@@ -54,7 +55,7 @@
   padding: 20px;
   border: 2px solid #e0e0e0;
   border-radius: 12px;
-  background: transparent;
+  background: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 100%;
@@ -65,7 +66,7 @@
 }
 
 .logBox:hover {
-  border-color: #4b0082; /* Accent color on hover */
+  border-color: #352e4b; /* Updated color */
 }
 
 /* Separator Line - Subtle and Elegant */
@@ -87,7 +88,7 @@
   padding: 25px;
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  background: transparent;
+  background: white;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -116,11 +117,12 @@
   margin-top: 40px;
 }
 
-.speechButton {
+/* Elegant Button Design */
+.elegantButton {
   padding: 14px 30px;
   font-size: 1rem;
   color: white;
-  background: #4b0082;
+  background: #352e4b; /* Updated color */
   border: none;
   border-radius: 10px;
   cursor: pointer;
@@ -128,12 +130,12 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.speechButton:hover {
-  background: #3a0066;
+.elegantButton:hover {
+  background: #2a253d; /* Darker shade for hover */
   transform: translateY(-2px);
 }
 
-.speechButton:disabled {
+.elegantButton:disabled {
   background: #a0a0a0;
   cursor: not-allowed;
   transform: none;
@@ -151,5 +153,74 @@
   width: 100%;
   max-width: 600px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background: transparent;
+  background: white;
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 90%;
+  position: relative;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #333;
+}
+
+.closeButton:hover {
+  color: #352e4b; /* Updated color */
+}
+
+/* Test Results in Modal */
+.testResults {
+  margin-top: 20px;
+}
+
+.horizontalResults {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.resultBox {
+  flex: 1;
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background: #f9f9f9;
+}
+
+.resultBox h4 {
+  margin-bottom: 10px;
+  color: #352e4b; /* Updated color */
+}
+
+.resultBox p {
+  margin: 5px 0;
+  color: #333;
 }

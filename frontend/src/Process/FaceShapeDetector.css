@@ -1,33 +1,44 @@
-/* Main Container */
+/* FaceShapeDetector.css */
 .face-shape-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: transparent;
+    background: linear-gradient(135deg, #f5f7fa, #e6e9ef); /* Softer gradient */
+    padding: 20px;
 }
 
-/* Outer Box Wrapping Group Box and Image */
+/* Outer Box Wrapping Group Box */
 .face-shape-border-box {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
     padding: 30px;
-    border: 3px solid #4B0082;
-    border-radius: 12px;
-    background-color: #ffffff;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #ffffff, #f8f8f8); /* Softer gradient */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Lighter shadow */
     max-width: 90%;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.face-shape-border-box:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow on hover */
 }
 
 /* Group Box */
 .face-shape-group-box {
-    background-color: white;
-    width: 500px;
-    padding: 35px;
+    background: linear-gradient(145deg, #ffffff, #f8f8f8); /* Softer gradient */
+    width: 400px;
+    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Lighter shadow */
     text-align: center;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.face-shape-group-box:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow on hover */
 }
 
 /* Title */
@@ -36,6 +47,7 @@
     font-weight: bold;
     color: #4B0082;
     margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Text shadow for depth */
 }
 
 /* File Input */
@@ -47,6 +59,11 @@
     cursor: pointer;
     background: #f9f9f9;
     margin-top: 15px;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.face-shape-file-input:hover {
+    box-shadow: 0 4px 10px rgba(75, 0, 130, 0.1); /* Lighter hover shadow */
 }
 
 /* Image Preview */
@@ -55,84 +72,53 @@
     padding: 10px;
     background: #fafafa;
     border-radius: 8px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* Lighter inner shadow */
 }
 
 .face-shape-image-preview {
     max-width: 100%;
-    max-height: 200px;
-    object-fit: cover; /* Fixes black image issue */
+    max-height: 150px;
+    object-fit: cover;
     border-radius: 8px;
-    border: 2px solid #4B0082;
+    border: 1px solid #4B0082;
 }
 
-/* Buttons with Spacing */
+/* Buttons with 3D Effect */
 .face-shape-detect-button,
 .face-shape-camera-button,
-.face-shape-capture-button {
+.face-shape-capture-button,
+.face-shape-view-results-button {
     width: 100%;
     padding: 12px;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 20px;
-    margin-bottom: 10px;
-    background-color: #4B0082;
-    color: white;
-    transition: background 0.3s ease-in-out;
-}
-
-.face-shape-detect-button:hover,
-.face-shape-camera-button:hover,
-.face-shape-capture-button:hover {
-    background-color: #370061;
-}
-
-/* "View Results" Button - Enhanced */
-.face-shape-view-results {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    text-align: center;
-    background-color: #4B0082; /* Match other buttons */
-    color: white;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     margin-top: 15px;
-    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
-}
-
-/* View Results Button */
-.face-shape-view-results-button {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-    background-color: #4B0082;
+    margin-bottom: 10px;
+    background: linear-gradient(145deg, #4B0082, #370061); /* Gradient background */
     color: white;
-    transition: background 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
+.face-shape-detect-button:hover,
+.face-shape-camera-button:hover,
+.face-shape-capture-button:hover,
 .face-shape-view-results-button:hover {
-    background-color: #370061;
+    transform: translateY(-2px); /* Lift effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
 }
-
 
 /* Webcam Video - Inverted (Mirror Effect) */
 .face-shape-webcam {
     transform: scaleX(-1);
     width: 100%;
-    max-width: 640px;
+    max-width: 500px;
     border-radius: 8px;
-    border: 3px solid #4B0082;
+    border: 2px solid #4B0082;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Lighter shadow */
 }
 
 /* Glasses Container */
@@ -140,19 +126,21 @@
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 15px;
 }
 
 .face-shape-glasses-recommendation {
-    width: 120px;
+    width: 100px;
     height: auto;
     border-radius: 8px;
-    border: 2px solid #ddd;
-    transition: transform 0.3s ease-in-out;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .face-shape-glasses-recommendation:hover {
-    transform: scale(1.1);
+    transform: scale(1.1); /* Scale up on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
 }
 
 /* Modal Overlay (Background Blur Effect) */
@@ -162,24 +150,23 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.3); /* Lighter overlay */
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(5px); /* Blur effect */
 }
 
 /* Modal Content */
 .face-shape-modal-content {
-    background: #fff;
+    background: linear-gradient(145deg, #ffffff, #f8f8f8); /* Softer gradient */
     padding: 25px;
-    width: 400px;
+    width: 350px;
     border-radius: 12px;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    position: relative;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Lighter shadow */
     animation: fadeIn 0.3s ease-in-out;
-    border: 3px solid #4B0082;
+    border: 2px solid #4B0082;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -187,7 +174,7 @@
     max-width: 90%;
 }
 
-/* Modal Header - Fix Overlapping Issue */
+/* Modal Header */
 .face-shape-modal-header {
     display: flex;
     justify-content: space-between;
@@ -197,7 +184,7 @@
     border-bottom: 1px solid #ccc;
 }
 
-/* Close Button - Now Properly Positioned */
+/* Close Button */
 .face-shape-close-modal-button {
     background: transparent;
     border: none;
@@ -206,7 +193,6 @@
     color: #4B0082;
     cursor: pointer;
     transition: color 0.3s ease-in-out;
-    padding: 5px;
 }
 
 .face-shape-close-modal-button:hover {
@@ -219,27 +205,6 @@
     font-size: 1.5rem;
     margin: 0;
     padding: 0;
-}
-
-/* Glasses Images Container */
-.face-shape-modal-content .face-shape-glasses-container {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-/* Recommended Glasses Image */
-.face-shape-modal-content .face-shape-glasses-recommendation {
-    width: 100px;
-    height: auto;
-    border-radius: 8px;
-    border: 2px solid #ddd;
-    transition: transform 0.2s ease-in-out;
-}
-
-.face-shape-modal-content .face-shape-glasses-recommendation:hover {
-    transform: scale(1.1);
 }
 
 /* Fade-in Animation */
@@ -265,5 +230,73 @@
     .face-shape-group-box {
         width: 100%;
         padding: 20px;
+    }
+}
+.face-shape-login-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7); /* Blurred background */
+    backdrop-filter: blur(8px); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.face-shape-login-modal-content {
+    background: #ffffff; /* Clean white modal */
+    color: #352e4b; /* Dark violet text for contrast */
+    padding: 50px 40px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.2), /* Deep shadow for 3D effect */
+        0 4px 10px rgba(0, 0, 0, 0.1); /* Softer inner shadow */
+    animation: fadeIn 0.3s ease-in-out;
+    transform: translateY(-10px); /* Slight lift for depth */
+}
+
+.face-shape-login-modal-content h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.face-shape-login-modal-content p {
+    font-size: 16px;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+.face-shape-login-close-button {
+    background-color: #352e4b; /* Violet button */
+    color: #fff;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 
+        0 4px 10px rgba(0, 0, 0, 0.3), 
+        0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.face-shape-login-close-button:hover {
+    background-color: #2b2640; /* Darker violet for hover effect */
+    transform: scale(1.05); /* Slight pop-out effect */
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
     }
 }

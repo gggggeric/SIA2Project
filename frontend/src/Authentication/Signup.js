@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './Login.css'; 
-import { Link, useNavigate } from 'react-router-dom'; 
-import { FaArrowLeft } from 'react-icons/fa'; 
-import Navbar from '../Navigation/Navbar'; 
+import './Login.css'; // Reuse the same CSS file
+import { Link, useNavigate } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
+import Navbar from '../Navigation/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; 
+import 'react-toastify/dist/ReactToastify.css';
 
 const SignUpPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (password !== confirmPassword) {
       toast.error('Passwords do not match!', {
-        position: 'bottom-right', // Change the position here
+        position: 'bottom-right',
         autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -29,17 +29,16 @@ const SignUpPage = () => {
       });
       return;
     }
-  
+
     try {
       const response = await axios.post('http://localhost:5001/auth/register', {
         name,
         email,
         password
       });
-  
-      // ✅ Show success toast
+
       toast.success('Account created! Check your email to verify.', {
-        position: 'bottom-right', // Change the position here
+        position: 'bottom-right',
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
@@ -47,24 +46,22 @@ const SignUpPage = () => {
         draggable: true,
         theme: 'colored',
       });
-  
-      // Clear form fields
+
       setName('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
-  
-      // Redirect to login after a delay
+
       setTimeout(() => {
         navigate('/login');
       }, 3000);
-  
+
     } catch (err) {
       console.error('Signup error:', err);
-  
+
       if (err.response && err.response.data.error === "Email already in use") {
         toast.error('Email already in use. Try a different one.', {
-          position: 'bottom-right', // Change the position here
+          position: 'bottom-right',
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -74,7 +71,7 @@ const SignUpPage = () => {
         });
       } else {
         toast.error('Failed to sign up. Try again later.', {
-          position: 'bottom-right', // Change the position here
+          position: 'bottom-right',
           autoClose: 3000,
           hideProgressBar: false,
           closeOnClick: true,
@@ -85,11 +82,10 @@ const SignUpPage = () => {
       }
     }
   };
-  
 
   return (
     <>
-      <Navbar /> 
+      <Navbar />
       <ToastContainer />
       <div className="login-container">
         {/* Left Side */}

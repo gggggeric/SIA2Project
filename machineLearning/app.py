@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins
 
-# Load HaarCascade face detector
+# Load HaarCascade face detector (replace with MTCNN or Dlib for better accuracy)
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
 # Load the trained face shape model
@@ -34,9 +34,20 @@ glasses_recommendations = {
     "Oblong": "Oversized, tall frames or round glasses add width and balance the face."
 }
 
-# Constants
+# Vision Test Constants
+chart_lines = {
+    "20/200": "E",
+    "20/100": "FP",
+    "20/70": "TOZ",
+    "20/50": "LPED",
+    "20/40": "PECFD",
+    "20/30": "EDFCZP",
+    "20/25": "FELPZD",
+    "20/20": "DEFPOTEC"
+}
+
 REAL_FACE_WIDTH = 14.0  # cm
-FOCAL_LENGTH = 500  # Adjust based on camera calibration
+FOCAL_LENGTH = 500      # Adjust based on camera calibration
 
 @app.route("/calculate-distance", methods=["POST"])
 def calculate_distance():
@@ -66,8 +77,9 @@ def calculate_distance():
 
         return jsonify({"distance_cm": round(distance, 2), "message": "Correct distance. Proceed with the test."})
     except Exception as e:
+        logger.error(f"Processing error: {str(e)}")
         return jsonify({"error": f"Processing error: {str(e)}"}), 500
-    
+
 @app.route("/predict-face-shape", methods=["POST"])
 def predict_face_shape():
     data = request.json
@@ -94,56 +106,129 @@ def predict_face_shape():
             "recommended_glasses": recommended_glasses
         })
     except Exception as e:
+        logger.error(f"Processing error: {str(e)}")
         return jsonify({"error": f"Processing error: {str(e)}"}), 500
 
-def diagnose_vision(near_accuracy, far_accuracy):
-    if near_accuracy >= 50 and far_accuracy < 50:
+def diagnose_vision(near_text, far_text):
+    if near_text in ["20/200", "20/100"] and far_text in ["20/30", "20/25", "20/20"]:
         return "Nearsighted (Myopia)"
-    elif near_accuracy < 50 and far_accuracy >= 50:
+    elif near_text in ["20/30", "20/25", "20/20"] and far_text in ["20/200", "20/100"]:
         return "Farsighted (Hyperopia)"
-    elif near_accuracy >= 50 and far_accuracy >= 50:
+    elif near_text in ["20/30", "20/25", "20/20"] and far_text in ["20/30", "20/25", "20/20"]:
         return "Vision is Normal"
     else:
         return "Severely Impaired"
 
+def estimate_eye_grade(near_text, far_text):
+    grade_map = {
+        "20/200": "-4.00",
+        "20/100": "-3.00",
+        "20/70": "-2.00",
+        "20/50": "-1.50",
+        "20/40": "-1.00",
+        "20/30": "-0.75",
+        "20/25": "-0.50",
+        "20/20": "0.00"
+    }
+
+    # Function to find the closest matching chart line
+    def find_closest_chart_line(text):
+        text_cleaned = text.replace(" ", "").upper()  # Remove spaces and convert to uppercase
+        for key, value in chart_lines.items():
+            if text_cleaned in value:  # Check if the cleaned text is a substring of the chart line
+                return key
+        return None
+
+    # Find the closest matching chart line for near_text and far_text
+    near_chart_line = find_closest_chart_line(near_text)
+    far_chart_line = find_closest_chart_line(far_text)
+
+    # Use the near_chart_line to estimate the eye grade
+    if near_chart_line and near_chart_line in grade_map:
+        return grade_map[near_chart_line]
+    else:
+        return "Unknown"
+
+def test_vision(recognizer, source, expected_text):
+    max_attempts = 3  # Maximum number of attempts to get a valid response
+    attempts = 0
+
+    while attempts < max_attempts:
+        try:
+            logger.info(f"Expected chart letters: '{expected_text}'")  # Logs the expected text
+            print(f"Please read the chart showing: '{expected_text}'...")
+
+            # Listen for user input with a longer timeout
+            audio = recognizer.listen(source, timeout=10)
+            spoken_text = recognizer.recognize_google(audio).strip().upper()
+
+            # Log raw and cleaned user response
+            logger.info(f"User said (raw): '{spoken_text}'")
+            spoken_text_cleaned = spoken_text.replace(" ", "")
+            logger.info(f"User said (cleaned): '{spoken_text_cleaned}'")
+
+            # Split expected and spoken text into individual letters
+            expected_letters = list(expected_text)
+            spoken_letters = list(spoken_text_cleaned)
+
+            # Calculate accuracy based on correct letters
+            correct = 0
+            for i in range(min(len(expected_letters), len(spoken_letters))):
+                if expected_letters[i] == spoken_letters[i]:
+                    correct += 1
+
+            accuracy = (correct / len(expected_letters)) * 100 if expected_letters else 0
+
+            logger.info(f"Result: {accuracy:.2f}% Accuracy")
+            return accuracy, spoken_text_cleaned
+        except sr.WaitTimeoutError:
+            logger.warning("No speech detected. Please try again.")
+            attempts += 1
+            if attempts < max_attempts:
+                print("No speech detected. Please try again.")
+        except Exception as e:
+            logger.error(f"Speech recognition error: {str(e)}")
+            return 0, "Unable to detect speech."
+
+    logger.error("Maximum attempts reached. No valid response.")
+    return 0, "No valid response."
+
 def run_vision_test(eye_type):
     recognizer = sr.Recognizer()
-    test_results = {}
-
     try:
         with sr.Microphone() as source:
-            print(f"Testing {eye_type} at 40-50 cm...")
-            near_accuracy, near_text = test_vision(recognizer, source)
+            logger.info(f"Using default microphone for {eye_type} test")
 
-            print(f"Testing {eye_type} at 80-100 cm...")
-            far_accuracy, far_text = test_vision(recognizer, source)
+            # Adjust microphone for ambient noise
+            recognizer.adjust_for_ambient_noise(source)
 
-            diagnosis = diagnose_vision(near_accuracy, far_accuracy)
+            near_accuracy, near_text = test_vision(recognizer, source, chart_lines["20/30"])
+            far_accuracy, far_text = test_vision(recognizer, source, chart_lines["20/100"])
 
-            test_results = {
+            return jsonify({
                 "eye": eye_type,
                 "near_accuracy": f"{near_accuracy:.2f}%",
                 "near_spoken_text": near_text,
                 "far_accuracy": f"{far_accuracy:.2f}%",
                 "far_spoken_text": far_text,
-                "diagnosis": diagnosis
-            }
-
-        return jsonify(test_results)
+                "diagnosis": diagnose_vision(near_text, far_text),
+                "estimated_eye_grade": estimate_eye_grade(near_text, far_text)
+            })
     except Exception as e:
+        logger.error(f"Error in vision test: {str(e)}")
         return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
 
 @app.route("/vision-test/both-eyes", methods=["POST"])
 def vision_test_both():
-    return run_vision_test("both_eyes") 
+    return run_vision_test("Both Eyes")
 
 @app.route("/vision-test/left-eye", methods=["POST"])
 def vision_test_left():
-    return run_vision_test("left_eye")
+    return run_vision_test("Left Eye")
 
 @app.route("/vision-test/right-eye", methods=["POST"])
 def vision_test_right():
-    return run_vision_test("right_eye")
+    return run_vision_test("Right Eye")
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True, use_reloader=False)

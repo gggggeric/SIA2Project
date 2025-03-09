@@ -6,7 +6,7 @@ import HomePage from "./Home/Home";
 import RequirementsPage from "./Intructions/Requirements";
 import ProtectedRoute from "./ProtectedRoute";
 import RemindersPage from "./Intructions/Reminders";
-import BothEyePage from "./Process/BothEye";
+import VisionExamPage from "./Process/VisionExam";
 import LandingPage from "./Home/Landing";
 import About from "./Home/About";
 import ForgotPassword from "./Authentication/ForgotPassword";
@@ -29,6 +29,10 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/verify-email" element={<EmailVerification />} />
+        <Route path="/process/faceshape-detector" element={<FaceShapeDetector />} />  
+        <Route path="/process/near-opticalshops" element={<OpticalShops />} />
+        <Route path="/instructions/requirements" element={<RequirementsPage />} />
+
         <Route
           path="/home"
           element={
@@ -37,14 +41,14 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/instructions/requirements"
           element={
             <ProtectedRoute>
               <RequirementsPage />
             </ProtectedRoute>
           }
-        />
+        /> */}
         <Route
           path="/instructions/reminders"
           element={
@@ -58,11 +62,11 @@ function App() {
           path="/process/both-eye"
           element={
             <ProtectedRoute>
-              <BothEyePage />
+              <VisionExamPage />
             </ProtectedRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/process/faceshape-detector"
           element={
             <ProtectedRoute>
@@ -77,7 +81,7 @@ function App() {
               <OpticalShops />
             </ProtectedRoute>
           }
-        />
+        /> */}
 
         <Route
           path="/adminHome"

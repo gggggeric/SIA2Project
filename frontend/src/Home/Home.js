@@ -1,50 +1,110 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { FaGlasses, FaEye, FaMapMarkerAlt } from "react-icons/fa"; // Import icons
+import { Box, Typography, Button, Paper } from "@mui/material";
 import Navbar from "../Navigation/Navbar";
-import eyeTestImage from "../assets/personwithdashboard2.png"; // Import image
-import "./Home.css"; // Import CSS file
+import opticImage from "../assets/isometricImage.png";
 
 const HomePage = () => {
-  const navigate = useNavigate();
-  const userEmail = localStorage.getItem("email"); // Retrieve stored email
-
   return (
-    <div className="home-container">
+    <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
       <Navbar />
 
-      {/* Main Content Layout */}
-      <div className="dashboard-container">
-        {/* Left Side - Image & Description */}
-        <div className="info-section">
-          {/* Welcome Message inside the container */}
-          <h2 className="welcome-message">
-  Welcome back, {userEmail ? userEmail : "Guest"}!
-</h2>
+      {/* Hero Section */}
+      <Box
+        sx={{
+          paddingTop: "80px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: { xs: "4rem 1rem", sm: "5rem 2rem", md: "5rem 4rem" },
+          flexDirection: { xs: "column-reverse", md: "row" }, // Image on the right
+          gap: { xs: "2rem", md: "0" },
+        }}
+      >
+        {/* Left Side Content */}
+        <Box sx={{ maxWidth: { xs: "100%", md: "50%" }, textAlign: { xs: "center", md: "left" } }}>
+          <Typography
+            variant="h3"
+            sx={{
+              color: "#2a2250", // Theme color
+              fontWeight: "bold",
+              marginBottom: "1rem",
+            }}
+          >
+            Welcome to OpticAI!
+          </Typography>
 
+          <Typography
+            variant="h5"
+            sx={{
+              color: "#2a2250",
+              fontWeight: "500",
+              marginBottom: "1rem",
+            }}
+          >
+            Empowering Vision, Enhancing Care
+          </Typography>
 
-          <img src={eyeTestImage} alt="Eye Test" className="dashboard-image" />
-        </div>
+          <Typography
+            variant="body1"
+            sx={{
+              color: "#555",
+              marginBottom: "2rem",
+              lineHeight: 1.5,
+            }}
+          >
+            Use smart intelligent systems to assist your waste disposal practices for a sustainable future.
+          </Typography>
 
-        {/* Right Side - Buttons for Navigation */}
-        <div className="dashboard-buttons">
-          <h2>Dashboard</h2>
-          <p>Select a feature to begin:</p>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: "#2a2250", // Theme color
+              "&:hover": { backgroundColor: "#1e1a3d" },
+              padding: "0.8rem 2rem",
+              borderRadius: "8px",
+            }}
+          >
+            Get Started
+          </Button>
+        </Box>
 
-          <button onClick={() => navigate("/process/faceshape-detector")} className="dashboard-btn">
-            <FaGlasses className="btn-icon" /> Eye Glass Frame Analyzer
-          </button>
-
-          <button onClick={() => navigate("/instructions/reminders")} className="dashboard-btn">
-            <FaEye className="btn-icon" /> Proceed to Testing the Eye Sight
-          </button>
-
-          <button onClick={() => navigate("/process/near-opticalshops")} className="dashboard-btn">
-            <FaMapMarkerAlt className="btn-icon" /> View All the Near Optical Shops
-          </button>
-        </div>
-      </div>
-    </div>
+        {/* Right Side Image */}
+        <Box sx={{ maxWidth: { xs: "100%", md: "50%" }, width: "100%" }}>
+          <Paper
+            elevation={12}
+            sx={{
+              padding: "1.5rem",
+              borderRadius: "20px",
+              backgroundColor: "#fff",
+              overflow: "hidden",
+              position: "relative",
+            }}
+          >
+            <img
+              src={opticImage}
+              alt="Optic AI Illustration"
+              style={{
+                width: "100%",
+                borderTopLeftRadius: "20px",
+                borderTopRightRadius: "20px",
+              }}
+            />
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "10px",
+                backgroundColor: "#2a2250", // Theme color
+                borderTopLeftRadius: "20px",
+                borderTopRightRadius: "20px",
+              }}
+            />
+          </Paper>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

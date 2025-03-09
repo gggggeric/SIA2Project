@@ -9,7 +9,7 @@ import "./OpticalShops.css"; // Ensure styles are applied
 
 // Custom user location marker (Eyeglass Icon)
 const userIcon = L.icon({
-  iconUrl: eyeglassIcon, // Use the imported eyeglass image
+  iconUrl: eyeglassIcon,
   iconSize: [50, 50],
   iconAnchor: [25, 50],
   popupAnchor: [0, -50],
@@ -17,7 +17,7 @@ const userIcon = L.icon({
 
 // Custom optical shop marker (Red Pin)
 const shopIcon = L.icon({
-  iconUrl: pinIconUrl, // Use the classic red pin
+  iconUrl: pinIconUrl,
   iconSize: [30, 50],
   iconAnchor: [15, 50],
   popupAnchor: [0, -45],
@@ -54,9 +54,16 @@ const OpticalShops = () => {
   const [location, setLocation] = useState(null);
   const [shops, setShops] = useState([]);
   const [error, setError] = useState("");
+  const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
 
-  // Get user's location
+  const isLoggedIn = localStorage.getItem("token"); // Check login status
+
   useEffect(() => {
+    if (!isLoggedIn) {
+      setIsLoginPromptOpen(true); // Show login modal if not logged in
+      return;
+    }
+
     if (!navigator.geolocation) {
       setError("Geolocation is not supported by this browser.");
       return;
@@ -68,7 +75,6 @@ const OpticalShops = () => {
         const { latitude, longitude } = position.coords;
         setLocation({ latitude, longitude });
 
-        // Fetch nearby optical shops
         const data = await fetchOpticalShops(latitude, longitude);
         setShops(data);
       },
@@ -89,12 +95,11 @@ const OpticalShops = () => {
         }
       }
     );
-  }, []);
+  }, [isLoggedIn]);
 
-  // Open Google Maps when "Get Directions" is clicked
   const handleGetDirections = (shop) => {
     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${shop.lat},${shop.lon}`;
-    window.open(googleMapsUrl, "_blank"); // Opens in a new tab
+    window.open(googleMapsUrl, "_blank");
   };
 
   return (
@@ -103,11 +108,25 @@ const OpticalShops = () => {
       <div className="optical-shops-content">
         <h1 className="page-title">Nearby Optical Shops (Within 5km)</h1>
 
+        {isLoginPromptOpen && (
+          <div className="optical-shops-login-modal-overlay">
+            <div className="optical-shops-login-modal-content">
+              <h2>Login Required</h2>
+              <p>You need to login first to use this feature.</p>
+              <button
+                onClick={() => (window.location.href = "/login")}
+                className="optical-shops-login-close-button"
+              >
+                Go to Login
+              </button>
+            </div>
+          </div>
+        )}
+
         {error ? (
           <p className="error-text">{error}</p>
         ) : location ? (
           <div className="map-location-container">
-            {/* Map */}
             <MapContainer
               center={[location.latitude, location.longitude]}
               zoom={14}
@@ -115,29 +134,25 @@ const OpticalShops = () => {
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-              {/* User's location marker (Eyeglass Icon) */}
               <Marker position={[location.latitude, location.longitude]} icon={userIcon}>
                 <Popup>You are here</Popup>
               </Marker>
 
-              {/* Optical shop markers (Classic Red Pin) */}
               {shops.map((shop, index) => (
                 <Marker key={index} position={[shop.lat, shop.lon]} icon={shopIcon}>
-                <Popup>
-  <div className="popup-content">
-    <b>{shop.name}</b>
-    <br />
-    <button className="direction-btn" onClick={() => handleGetDirections(shop)}>
-      Get Directions
-    </button>
-  </div>
-</Popup>
-
+                  <Popup>
+                    <div className="popup-content">
+                      <b>{shop.name}</b>
+                      <br />
+                      <button className="direction-btn" onClick={() => handleGetDirections(shop)}>
+                        Get Directions
+                      </button>
+                    </div>
+                  </Popup>
                 </Marker>
               ))}
             </MapContainer>
 
-            {/* Location List */}
             <div className="location-list">
               <h2>Nearby Optical Shops</h2>
               <ul>

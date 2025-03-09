@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaCamera } from "react-icons/fa";
 import Navbar from "../Navigation/Navbar";
-import faceShapeGuide from "../assets/faceshape.png";
 import "./FaceShapeDetector.css";
 
 // Import glasses images
@@ -18,9 +17,18 @@ const FaceShapeDetector = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false); // State for login modal
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
+
+  const isLoggedIn = localStorage.getItem("token"); // Check if user is logged in
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setIsLoginPromptOpen(true); // Show floating login prompt if not logged in
+    }
+  }, [isLoggedIn]);
 
   const glassesImages = {
     Oval: [squareGlasses, rectangleGlasses, circleGlasses],
@@ -31,6 +39,11 @@ const FaceShapeDetector = () => {
   };
 
   const handleImageUpload = (event) => {
+    if (!isLoggedIn) {
+      setIsLoginPromptOpen(true);
+      return;
+    }
+
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -43,6 +56,11 @@ const FaceShapeDetector = () => {
   };
 
   const startCamera = () => {
+    if (!isLoggedIn) {
+      setIsLoginPromptOpen(true);
+      return;
+    }
+
     setIsCameraOn(true);
     navigator.mediaDevices
       .getUserMedia({ video: true })
@@ -87,10 +105,16 @@ const FaceShapeDetector = () => {
   }, []);
 
   const detectFaceShape = async () => {
+    if (!isLoggedIn) {
+      setIsLoginPromptOpen(true);
+      return;
+    }
+
     if (!image) {
       setError("Please upload or capture an image.");
       return;
     }
+
     setLoading(true);
     setError(null);
 
@@ -127,13 +151,20 @@ const FaceShapeDetector = () => {
             </div>
           )}
 
-          <input type="file" accept="image/*" onChange={handleImageUpload} className="face-shape-file-input" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="face-shape-file-input"
+          />
 
           {isCameraOn ? (
             <div className="face-shape-camera-container">
               <video ref={videoRef} autoPlay className="face-shape-webcam"></video>
               <canvas ref={canvasRef} width={640} height={480} style={{ display: "none" }}></canvas>
-              <button onClick={captureImage} className="face-shape-capture-button">Capture Image</button>
+              <button onClick={captureImage} className="face-shape-capture-button">
+                Capture Image
+              </button>
             </div>
           ) : (
             <button onClick={startCamera} className="face-shape-camera-button">
@@ -141,41 +172,34 @@ const FaceShapeDetector = () => {
             </button>
           )}
 
-          <button onClick={detectFaceShape} className="face-shape-detect-button" disabled={loading}>
+          <button
+            onClick={detectFaceShape}
+            className="face-shape-detect-button"
+            disabled={loading}
+          >
             {loading ? "Detecting..." : "Detect Face Shape"}
           </button>
 
           {error && <p className="face-shape-error-message">{error}</p>}
-
-          {result && (
-            <button className="face-shape-view-results-button" onClick={() => setIsModalOpen(true)}>
-              View Results
-            </button>
-          )}
         </div>
-
-        <img src={faceShapeGuide} alt="Face Shape Guide" className="face-shape-guide" />
       </div>
 
-      {isModalOpen && result && (
-        <div className="face-shape-modal-overlay">
-          <div className="face-shape-modal-content">
-            <div className="face-shape-modal-header">
-              <h2>Face Shape Results</h2>
-              <button className="face-shape-close-modal-button" onClick={() => setIsModalOpen(false)}>✖</button>
-            </div>
+      {/* Centered Login Prompt Modal */}
+      {isLoginPromptOpen && (
+  <div className="face-shape-login-modal-overlay">
+    <div className="face-shape-login-modal-content">
+      <h2>Login Required</h2>
+      <p>You need to login first to use this feature.</p>
+      <button
+        onClick={() => (window.location.href = "/login")}
+        className="face-shape-login-close-button"
+      >
+        Go to Login
+      </button>
+    </div>
+  </div>
+)}
 
-            <p><strong>Face Shape:</strong> {result.face_shape}</p>
-            <p><strong>Recommended Glasses:</strong> {result.recommended_glasses}</p>
-
-            <div className="face-shape-glasses-container">
-              {glassesImages[result.face_shape]?.map((glasses, index) => (
-                <img key={index} src={glasses} alt={`${result.face_shape} Glasses`} className="face-shape-glasses-recommendation" />
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
