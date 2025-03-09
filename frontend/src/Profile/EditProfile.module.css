@@ -1,0 +1,252 @@
+/* Root container for the component */
+.rootContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-color: #f0f0f0;
+}
+
+/* Content container */
+.contentContainer {
+  background-color: #f4f4f9;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  width: 100%;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Overall container */
+.container {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.container:hover {
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Title styling */
+.title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-family: "Arial", sans-serif;
+  color: #2a2250;
+  font-size: 1.8rem;
+  letter-spacing: 0.5px;
+}
+
+/* Group box with background and shadow */
+.groupBox {
+  padding: 25px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* User info styling */
+.userInfo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+
+/* Profile image container */
+.profileImgContainer {
+  position: relative;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile image */
+.profileImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Profile placeholder */
+.profilePlaceholder {
+  width: 100%;
+  height: 100%;
+  background-color: #aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* User name styling */
+.userName h3 {
+  font-size: 1.4rem;
+  margin: 0;
+  color: #2a2250;
+  font-family: "Arial", sans-serif;
+  font-weight: 700;
+}
+
+.userName p {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Form container */
+.formContainer {
+  padding: 10px 0;
+}
+
+/* Form group */
+.formGroup {
+  margin-bottom: 20px;
+}
+
+/* Form labels */
+.label {
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 8px;
+  color: #2a2250;
+}
+
+/* Inputs */
+.input {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.input:focus {
+  border-color: #2a2250;
+  outline: none;
+}
+
+/* Submit button */
+.submitBtn {
+  background-color: #2a2250;
+  color: white;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.submitBtn:hover {
+  background-color: #1c1a3b;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.submitBtn:active {
+  transform: translateY(0);
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modalContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 400px;
+  position: relative;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.modalClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Edit icon */
+.editIcon {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 8px;
+  cursor: pointer;
+  color: white;
+  font-size: 16px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.editIcon:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Current image container */
+.currentImgContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.currentImg {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+}
+
+.currentImgPlaceholder {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ccc;
+  border-radius: 50%;
+  font-size: 2rem;
+  color: white;
+  font-weight: bold;
+}

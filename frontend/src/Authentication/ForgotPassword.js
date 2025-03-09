@@ -1,15 +1,15 @@
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify"; // Import ToastContainer and toast
+import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS
 import "./ForgotPassword.css"; // Import the CSS file
 import resetImage from "../assets/forgot.png"; // Add your image here
 import Navbar from "../Navigation/Navbar"; // Import Navbar component
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
 
   const handleForgotPassword = async (e) => {
     e.preventDefault();
-    setMessage("");
 
     try {
       const response = await fetch("http://localhost:5001/auth/forgot-password", {
@@ -19,13 +19,38 @@ const ForgotPassword = () => {
       });
 
       const data = await response.json();
+
       if (response.ok) {
-        setMessage("Password reset link sent! Check your email.");
+        toast.success("Password reset link sent! Check your email.", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
       } else {
-        setMessage(data.error || "Something went wrong.");
+        toast.error(data.error || "Something went wrong.", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
       }
     } catch (error) {
-      setMessage("Server error, please try again later.");
+      toast.error("Server error, please try again later.", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
     }
   };
 
@@ -52,11 +77,20 @@ const ForgotPassword = () => {
                 />
                 <button type="submit" className="send-btn">Send Reset Link</button>
               </form>
-              {message && <p className="message">{message}</p>}
             </div>
           </div>
         </div>
       </div>
+
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick={true}
+        pauseOnHover={true}
+        draggable={true}
+        theme="colored"
+      />
     </>
   );
 };

@@ -1,0 +1,15 @@
+/* App.css or global styles */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+  }
+  
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .main-content {
+    flex: 1; /* Ensures the main content takes up remaining space */
+  }

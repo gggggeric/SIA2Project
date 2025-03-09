@@ -18,105 +18,86 @@ import UserCrudPage from "./Admin/UserCrud";
 import EmailVerification from "./Authentication/EmailVerification";
 import EditProfile from "./Profile/EditProfile";
 import UserActivationPage from "./Admin/UserActivationPage";
+import Footer from "./Footer/Footer"; // Import the Footer component
+import "./App.css"; // Import global styles
+
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/verify-email" element={<EmailVerification />} />
-        <Route path="/process/faceshape-detector" element={<FaceShapeDetector />} />  
-        <Route path="/process/near-opticalshops" element={<OpticalShops />} />
-        <Route path="/instructions/requirements" element={<RequirementsPage />} />
+      <div className="app-container">
+        <div className="main-content">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
+            <Route path="/verify-email" element={<EmailVerification />} />
+            <Route path="/process/faceshape-detector" element={<FaceShapeDetector />} />
+            <Route path="/process/near-opticalshops" element={<OpticalShops />} />
+            <Route path="/instructions/requirements" element={<RequirementsPage />} />
 
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <HomePage />
-            </ProtectedRoute>
-          }
-        />
-        {/* <Route
-          path="/instructions/requirements"
-          element={
-            <ProtectedRoute>
-              <RequirementsPage />
-            </ProtectedRoute>
-          }
-        /> */}
-        <Route
-          path="/instructions/reminders"
-          element={
-            <ProtectedRoute>
-              <RemindersPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/process/both-eye"
-          element={
-            <ProtectedRoute>
-              <VisionExamPage />
-            </ProtectedRoute>
-          }
-        />
-        {/* <Route
-          path="/process/faceshape-detector"
-          element={
-            <ProtectedRoute>
-              <FaceShapeDetector />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/process/near-opticalshops"
-          element={
-            <ProtectedRoute>
-              <OpticalShops />
-            </ProtectedRoute>
-          }
-        /> */}
-
-        <Route
-          path="/adminHome"
-          element={
-            <ProtectedRoute adminOnly={true}>
-              <AdminHome />
-            </ProtectedRoute>
-          }
-        />
-           <Route
-          path="/adminUserCRUD"
-          element={
-            <ProtectedRoute adminOnly={true}>
-              <UserCrudPage />
-            </ProtectedRoute>
-          }
-        />
-          <Route
-          path="/edit-profile"
-          element={
-            <ProtectedRoute>
-              <EditProfile />
-            </ProtectedRoute>
-          }
-        />
-          <Route
-          path="/adminUserActivation"
-          element={
-            <ProtectedRoute adminOnly={true}>
-              <UserActivationPage />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-
+            {/* <Route
+              path="/home"
+              element={
+                <ProtectedRoute>
+                  <HomePage />
+                </ProtectedRoute>
+              }
+            /> */}
+            <Route
+              path="/instructions/reminders"
+              element={
+                <ProtectedRoute>
+                  <RemindersPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/process/both-eye"
+              element={
+                <ProtectedRoute>
+                  <VisionExamPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/adminHome"
+              element={
+                <ProtectedRoute adminOnly={true}>
+                  <AdminHome />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/adminUserCRUD"
+              element={
+                <ProtectedRoute adminOnly={true}>
+                  <UserCrudPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/edit-profile"
+              element={
+                <ProtectedRoute>
+                  <EditProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/adminUserActivation"
+              element={
+                <ProtectedRoute adminOnly={true}>
+                  <UserActivationPage />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </div>
+        <Footer /> {/* Add the Footer component here */}
+      </div>
     </Router>
   );
 }

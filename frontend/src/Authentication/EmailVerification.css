@@ -13,6 +13,13 @@
     border-radius: 15px;
     border: 3px solid #352e4b;
     background-color: #fff;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07); /* Depth and shadow */
+    transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+}
+
+.verification-box:hover {
+    transform: translateY(-10px); /* Hover effect for lifting the box */
+    box-shadow: 0 25px 40px rgba(0, 0, 0, 0.2), 0 10px 25px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
 }
 
 .image-container {
@@ -20,11 +27,19 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative; /* Added position for possible shadow effects */
 }
 
 .verify-image {
     width: 400px;
     height: auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Image shadow for depth */
+    transition: transform 0.3s ease-in-out; /* Image hover effect */
+}
+
+.verify-image:hover {
+    transform: scale(1.05); /* Image zoom effect on hover */
 }
 
 .verification-content {
@@ -43,6 +58,7 @@
     color: #352e4b;
     font-size: 36px;
     margin-bottom: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Light shadow for text */
 }
 
 .verification-text p {
@@ -50,10 +66,12 @@
     color: #555;
     line-height: 1.6;
     margin-bottom: 20px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Subtle text shadow */
 }
 
 .verification-text h3 {
     font-size: 24px;
     color: #352e4b;
     font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1); /* Shadow for emphasis */
 }

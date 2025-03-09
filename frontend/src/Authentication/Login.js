@@ -46,7 +46,7 @@ const LoginPage = () => {
         if (response.data.userType === 'admin') {
           navigate('/adminHome');
         } else {
-          navigate('/home');
+          navigate('/');
         }
       }, 2000);
   
@@ -86,63 +86,65 @@ const LoginPage = () => {
     <>
       <ToastContainer /> 
       <Navbar /> 
-      <div className="login-container">
-        <div className="overlay"></div> {/* Dark overlay for better contrast */}
-        {/* Left Side */}
-        <div className="left-side">
-          <h1>OpticAI</h1>
-          <h2>Welcome to OpticAI</h2>
-          <p>Empowering Vision, Enhancing Care</p>
-        </div>
+      <div className="auth-page-wrapper">
+        <div className="login-container">
+          <div className="overlay"></div> {/* Dark overlay for better contrast */}
+          {/* Left Side */}
+          <div className="left-side">
+            <h1>OpticAI</h1>
+            <h2>Welcome to OpticAI</h2>
+            <p>Empowering Vision, Enhancing Care</p>
+          </div>
 
-        {/* Right Side */}
-        <div className="right-side">
-          <h2 className="login-title">Login</h2>
-          <p className="login-subtext">Welcome! Login to access your OpticAI dashboard.</p>
+          {/* Right Side */}
+          <div className="right-side">
+            <h2 className="login-title">Login</h2>
+            <p className="login-subtext">Welcome! Login to access your OpticAI dashboard.</p>
 
-          {error && <div className="error-message">{error}</div>}
+            {error && <div className="error-message">{error}</div>}
 
-          <form onSubmit={handleLogin}>
-            <div className="input-group">
-              <label htmlFor="email">User Name</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
+            <form onSubmit={handleLogin}>
+              <div className="input-group">
+                <label htmlFor="email">User Name</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="remember-me">
-              <input 
-                type="checkbox" 
-                id="rememberMe" 
-                checked={rememberMe} 
-                onChange={() => setRememberMe(!rememberMe)} 
-              />
-              <label htmlFor="rememberMe"> Remember me</label>
-            </div>
+              <div className="remember-me">
+                <input 
+                  type="checkbox" 
+                  id="rememberMe" 
+                  checked={rememberMe} 
+                  onChange={() => setRememberMe(!rememberMe)} 
+                />
+                <label htmlFor="rememberMe"> Remember me</label>
+              </div>
 
-            <button type="submit" className="login-btn">LOGIN</button>
+              <button type="submit" className="login-btn">LOGIN</button>
 
-            <div className="extra-links">
-              <p>New User? <Link to="/signup" className="signup-link">Signup</Link></p>
-              <Link to="/forgot-password" className="forgot-password-link">Forgot your password?</Link>
-            </div>
-          </form>
+              <div className="extra-links">
+                <p>New User? <Link to="/signup" className="signup-link">Signup</Link></p>
+                <Link to="/forgot-password" className="forgot-password-link">Forgot your password?</Link>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </>

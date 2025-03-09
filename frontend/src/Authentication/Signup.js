@@ -87,70 +87,72 @@ const SignUpPage = () => {
     <>
       <Navbar />
       <ToastContainer />
-      <div className="login-container">
-        {/* Left Side */}
-        <div className="left-side">
-          <h1>OpticAI</h1>
-          <h2>Welcome to OpticAI</h2>
-          <p>Empowering Vision, Enhancing Care</p>
-        </div>
+      <div className="auth-page-wrapper">
+        <div className="login-container">
+          {/* Left Side */}
+          <div className="left-side">
+            <h1>OpticAI</h1>
+            <h2>Welcome to OpticAI</h2>
+            <p>Empowering Vision, Enhancing Care</p>
+          </div>
 
-        {/* Right Side */}
-        <div className="right-side">
-          <h2>Create an Account</h2>
-          <p>Join us and start your journey with OpticAI.</p>
+          {/* Right Side */}
+          <div className="right-side">
+            <h2>Create an Account</h2>
+            <p>Join us and start your journey with OpticAI.</p>
 
-          <form onSubmit={handleSubmit}>
-            <div className="input-group">
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
+            <form onSubmit={handleSubmit}>
+              <div className="input-group">
+                <label htmlFor="name">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="input-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
+              <div className="input-group">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="input-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
+              <div className="input-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="input-group">
-              <label htmlFor="confirmPassword">Confirm Password</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
+              <div className="input-group">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+              </div>
 
-            <button type="submit" className="login-btn">Sign Up</button>
+              <button type="submit" className="login-btn">Sign Up</button>
 
-            <div className="extra-links">
-              <p>Already have an account? <Link to="/login" className="login-link">Login</Link></p>
-            </div>
-          </form>
+              <div className="extra-links">
+                <p>Already have an account? <Link to="/login" className="login-link">Login</Link></p>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </>

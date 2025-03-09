@@ -5,14 +5,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 80px; /* Adjust based on Navbar height */
+  background: #f8f8ff; /* Optional: Add a background color */
+  padding-top: 1px; /* Adjust this value to match your navbar height */
 }
 
 /* Centering the Login Container */
 .login-container {
   display: flex;
   width: 900px;
-  max-width: 100%;
+  max-width: 90%; /* Adjusted for better responsiveness */
   min-height: 550px;
   border-radius: 14px;
   overflow: hidden;

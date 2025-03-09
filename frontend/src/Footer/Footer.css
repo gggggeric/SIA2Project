@@ -1,36 +1,117 @@
 .footer {
-    width: 100%;
-    background-color: #2E1A47; /* Match the navbar color */
-    color: white;
+    background-color: #2a2250;
+    color: #fff;
+    padding: 1.5rem;
     text-align: center;
-    padding: 20px 0;
-    position: relative;
-}
-
-.footer-content {
+    margin-top: auto; /* Ensures footer sticks to the bottom */
+  }
+  
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1.5rem; /* Reduced gap for compactness */
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  /* Review Section (Left Side) */
+  .footer-review {
+    flex: 1;
+    max-width: 400px; /* Reduced max-width for compactness */
+    text-align: left;
+  }
+  
+  .footer-review h3 {
+    font-size: 1.25rem; /* Smaller font size */
+    margin-bottom: 0.75rem; /* Reduced margin */
+    color: #ff6f61; /* Accent color for the heading */
+  }
+  
+  .review-form {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.footer-links a {
-    margin: 0 10px;
-    color: white;
+    gap: 0.5rem;
+  }
+  
+  .review-textbox {
+    width: 100%;
+    padding: 0.5rem; /* Reduced padding */
+    border-radius: 6px; /* Slightly smaller border radius */
+    border: 1px solid #ccc;
+    font-size: 0.9rem; /* Smaller font size */
+    resize: vertical; /* Allow vertical resizing */
+    background-color: #fff;
+    color: #333;
+  }
+  
+  .review-textbox::placeholder {
+    color: #999;
+  }
+  
+  .review-button {
+    background-color: #ff6f61; /* Accent color for the button */
+    color: #fff;
+    padding: 0.5rem 1rem; /* Reduced padding */
+    border: none;
+    border-radius: 6px; /* Slightly smaller border radius */
+    font-size: 0.9rem; /* Smaller font size */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .review-button:hover {
+    background-color: #e65a50; /* Darker shade for hover */
+  }
+  
+  /* Footer Links and Social Icons (Right Side) */
+  .footer-right {
+    flex: 1;
+    max-width: 300px; /* Reduced max-width for compactness */
+    text-align: left;
+  }
+  
+  .footer-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Reduced gap */
+    margin-bottom: 1rem; /* Reduced margin */
+  }
+  
+  .footer-links a {
+    color: #fff;
     text-decoration: none;
-    font-weight: bold;
-}
-
-.footer-links a:hover {
-    text-decoration: underline;
-}
-
-.footer-social a {
-    margin: 0 8px;
-    color: white;
-    font-size: 18px;
-}
-
-.footer-social a:hover {
-    color: #FFD700; /* Highlight color */
-}
+    font-size: 0.9rem; /* Smaller font size */
+    transition: color 0.3s ease;
+  }
+  
+  .footer-links a:hover {
+    color: #ff6f61; /* Accent color for hover */
+  }
+  
+  .footer-social {
+    display: flex;
+    gap: 1rem; /* Reduced gap */
+    margin-bottom: 1rem; /* Added margin to separate from copyright */
+  }
+  
+  .footer-social a {
+    color: #fff;
+    font-size: 1.25rem; /* Slightly smaller icons */
+    transition: color 0.3s ease;
+  }
+  
+  .footer-social a:hover {
+    color: #ff6f61; /* Accent color for hover */
+  }
+  
+  /* Copyright Section */
+  .copyright {
+    margin: 0px; /* Reset margin */
+    font-size: 0.8rem; /* Smaller font size */
+    color: #ccc;
+    text-align: center; 
+    margin-right: 205px;/* Center-align the copyright text */
+  }

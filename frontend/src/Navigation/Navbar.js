@@ -7,17 +7,15 @@ import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Get current path
+  const location = useLocation(); 
   const isLoggedIn = localStorage.getItem("token");
   const userType = localStorage.getItem("userType");
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState(null);
 
-  // Function to check active path
   const isActive = (path) => location.pathname === path;
 
-  // Fetch user data
   useEffect(() => {
     const fetchUserData = async () => {
       if (isLoggedIn) {
@@ -39,7 +37,6 @@ const Navbar = () => {
     fetchUserData();
   }, [isLoggedIn]);
 
-  // Logout functionality
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userType");
@@ -51,36 +48,31 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-light fixed-top">
         <div className="container-fluid custom-container">
-
-          {/* Sidebar Button (Now Visible to Everyone) */}
           <button className="hamburger-menu" onClick={() => setSidebarOpen(true)}>
             <div className="bar"></div>
             <div className="bar"></div>
             <div className="bar"></div>
           </button>
 
-          {/* OpticAI Branding */}
           <div className={`navbar-brand ${isLoggedIn ? "with-sidebar" : "no-sidebar"}`}>
             <Link
               className="text-white"
-              to={isLoggedIn ? (userType === "admin" ? "/adminHome" : "/home") : "/"}
+              to={isLoggedIn ? (userType === "admin" ? "/adminHome" : "/") : "/"}
             >
               <span className="brand-text">OpticAI</span>
             </Link>
           </div>
 
-          {/* Navigation Items */}
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               {isLoggedIn && (
                 <>
-                  <li className={`nav-item ${isActive("/home") ? "active" : ""}`}>
+                  <li className={`nav-item ${isActive("/") ? "active" : ""}`}>
                     <Link
                       className="nav-link text-white"
-                      to={userType === "admin" ? "/adminHome" : "/home"}
+                      to={userType === "admin" ? "/adminHome" : "/"}
                     >
                       Home
                     </Link>
@@ -105,14 +97,12 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Sidebar (Now Always Accessible) */}
       <div className={`sidebar ${sidebarOpen ? "active" : ""}`}>
         <button className="close-btn" onClick={() => setSidebarOpen(false)}>
           <X size={24} />
         </button>
 
         <ul className="sidebar-menu">
-          {/* Show profile data if user is logged in */}
           {isLoggedIn && userData && (
             <div className="sidebar-profile">
               <img src={userData.profile} alt="Profile" className="sidebar-profile-img" />
@@ -121,28 +111,40 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Services (Now Always Visible) */}
-          <li className="sidebar-section-title">Services</li>
-          <li className="sidebar-item">
-            <Link to="/process/faceshape-detector" onClick={() => setSidebarOpen(false)}>
-              <Glasses size={20} className="sidebar-icon" /> Eye Glass Frame Analyzer
-            </Link>
-          </li>
-          <li className="sidebar-item">
-            <Link to="/instructions/requirements" onClick={() => setSidebarOpen(false)}>
-              <Eye size={20} className="sidebar-icon" /> Proceed to Testing the Eye Sight
-            </Link>
-          </li>
-          <li className="sidebar-item">
-            <Link to="/process/near-opticalshops" onClick={() => setSidebarOpen(false)}>
-              <MapPin size={20} className="sidebar-icon" /> View All the Near Optical Shops
-            </Link>
-          </li>
-          <hr className="sidebar-separator" />
+          {/* Conditionally render Services section for non-admin users and non-logged-in users */}
+          {(isLoggedIn && userType !== "admin") || !isLoggedIn ? (
+            <>
+              <li className="sidebar-section-title">Services</li>
+              <li className="sidebar-item">
+                <Link to="/process/faceshape-detector" onClick={() => setSidebarOpen(false)}>
+                  <Glasses size={20} className="sidebar-icon" /> Eye Glass Frame Analyzer
+                </Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/instructions/requirements" onClick={() => setSidebarOpen(false)}>
+                  <Eye size={20} className="sidebar-icon" /> Proceed to Testing the Eye Sight
+                </Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/process/near-opticalshops" onClick={() => setSidebarOpen(false)}>
+                  <MapPin size={20} className="sidebar-icon" /> View All the Near Optical Shops
+                </Link>
+              </li>
+            </>
+          ) : null}
 
-          {/* Admin Options (Only for Admins) */}
+          {!isLoggedIn && (
+            <>
+              <hr className="sidebar-separator" />
+              <li className={`sidebar-item ${isActive("/about") ? "active" : ""}`}>
+                <Link className="nav-link text-white" to="/about">About</Link>
+              </li>
+            </>
+          )}
+
           {isLoggedIn && userType === "admin" && (
             <>
+              <hr className="sidebar-separator" />
               <li className="sidebar-section-title">Manage</li>
               <li className="sidebar-item">
                 <Link to="/adminUserCRUD" onClick={() => setSidebarOpen(false)}>
@@ -154,13 +156,12 @@ const Navbar = () => {
                   <User size={20} className="sidebar-icon" /> Deactivate Users
                 </Link>
               </li>
-              <hr className="sidebar-separator" />
             </>
           )}
 
-          {/* User Actions (Only for Logged-in Users) */}
           {isLoggedIn && (
             <>
+              <hr className="sidebar-separator" />
               <li className="sidebar-section-title">You</li>
               <li className="sidebar-item">
                 <Link to="/edit-profile" onClick={() => setSidebarOpen(false)}>
@@ -178,7 +179,6 @@ const Navbar = () => {
         </ul>
       </div>
 
-      {/* Overlay */}
       {sidebarOpen && <div className="overlay" onClick={() => setSidebarOpen(false)}></div>}
     </>
   );

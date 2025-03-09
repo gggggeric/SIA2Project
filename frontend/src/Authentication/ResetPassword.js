@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import "./ResetPassword.css"; // Import the CSS file
-import resetImage from "../assets/reset.png"; // Add your image here
-import Navbar from "../Navigation/Navbar"; // Import Navbar component
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./ResetPassword.css"; 
+import resetImage from "../assets/reset.png"; 
+import Navbar from "../Navigation/Navbar"; 
 
 const ResetPassword = () => {
-  const { token } = useParams(); // Get the token from URL
+  const { token } = useParams(); 
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
-  const [message, setMessage] = useState("");
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
-    setMessage("");
 
     try {
       const response = await fetch(`http://localhost:5001/auth/reset-password/${token}`, {
@@ -22,20 +22,46 @@ const ResetPassword = () => {
       });
 
       const data = await response.json();
+
       if (response.ok) {
-        setMessage("Password reset successful! Redirecting...");
-        setTimeout(() => navigate("/login"), 2000);
+        toast.success("Password reset successful! Redirecting...", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+
+        setTimeout(() => navigate("/login"), 3000);
       } else {
-        setMessage(data.error || "Failed to reset password.");
+        toast.error(data.error || "Failed to reset password.", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
       }
     } catch (error) {
-      setMessage("An error occurred.");
+      toast.error("An error occurred. Please try again later.", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
     }
   };
 
   return (
     <>
-      <Navbar /> {/* Added Navbar here */}
+      <Navbar />
       <div className="reset-container">
         <div className="reset-box">
           <div className="image-container">
@@ -56,11 +82,12 @@ const ResetPassword = () => {
                 />
                 <button type="submit" className="reset-btn">Reset Password</button>
               </form>
-              {message && <p className="message">{message}</p>}
             </div>
           </div>
         </div>
       </div>
+
+      <ToastContainer />
     </>
   );
 };
