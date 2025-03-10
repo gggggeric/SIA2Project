@@ -66,23 +66,24 @@ router.put("/users/:id", async (req, res) => {
     }
   });
 
-// Get the user's profile information
-router.get("/users/:id", async (req, res) => {
+  router.get("/users/:id", async (req, res) => {
     try {
-        // Fetch user data and include the profile image URL and address
-        const user = await User.findById(req.params.id)
-            .select("name email userType profile address") // Ensure 'address' is included
-            .lean();
-
-        if (!user) return res.status(404).json({ message: "User not found" });
-
-        res.json(user); // The response will now include name, email, userType, profile, and address
+      // Fetch user data and include the profile image URL and address
+      const user = await User.findById(req.params.id)
+        .select("name email userType profile address") // Ensure 'address' is included
+        .lean();
+  
+      if (!user) return res.status(404).json({ message: "User not found" });
+  
+      // If the profile picture is null or missing, return an empty string
+      user.profile = user.profile || ""; // Empty string if profile is null or missing
+  
+      res.json(user); // The response will now include name, email, userType, profile, and address
     } catch (error) {
-        console.error("Error fetching user:", error);
-        res.status(500).json({ message: "Internal server error" });
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
-});
-
+  });
 // Route to upload a user's profile image
 router.put("/users/:id/uploadProfile", upload.single("profileImage"), async (req, res) => {
     try {

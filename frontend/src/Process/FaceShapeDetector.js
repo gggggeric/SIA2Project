@@ -80,11 +80,7 @@ const FaceShapeDetector = () => {
     const context = canvas.getContext("2d");
 
     if (video && canvas) {
-      context.save();
-      context.scale(-1, 1);
-      context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
-      context.restore();
-
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
       const dataUrl = canvas.toDataURL("image/jpeg");
       setImage(dataUrl.split(",")[1]);
       setPreview(dataUrl);
@@ -180,26 +176,66 @@ const FaceShapeDetector = () => {
             {loading ? "Detecting..." : "Detect Face Shape"}
           </button>
 
+          {result && (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="face-shape-view-results-button"
+            >
+              View Result
+            </button>
+          )}
+
           {error && <p className="face-shape-error-message">{error}</p>}
         </div>
       </div>
 
+      {/* Results Modal */}
+      {isModalOpen && result && (
+        <div className="face-shape-modal-overlay">
+          <div className="face-shape-modal-content">
+            <div className="face-shape-modal-header">
+              <h2>Face Shape Detected</h2>
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="face-shape-close-modal-button"
+              >
+                &times;
+              </button>
+            </div>
+            <p>
+              Your face shape is: <strong>{result.face_shape}</strong> (Confidence:{" "}
+              <strong>{result.confidence}</strong>)
+            </p>
+            <p>Recommended Glasses: {result.recommended_glasses}</p>
+            <div className="face-shape-glasses-container">
+              {glassesImages[result.face_shape]?.map((glasses, index) => (
+                <img
+                  key={index}
+                  src={glasses}
+                  alt={`Glasses ${index + 1}`}
+                  className="face-shape-glasses-recommendation"
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Centered Login Prompt Modal */}
       {isLoginPromptOpen && (
-  <div className="face-shape-login-modal-overlay">
-    <div className="face-shape-login-modal-content">
-      <h2>Login Required</h2>
-      <p>You need to login first to use this feature.</p>
-      <button
-        onClick={() => (window.location.href = "/login")}
-        className="face-shape-login-close-button"
-      >
-        Go to Login
-      </button>
-    </div>
-  </div>
-)}
-
+        <div className="face-shape-login-modal-overlay">
+          <div className="face-shape-login-modal-content">
+            <h2>Login Required</h2>
+            <p>You need to login first to use this feature.</p>
+            <button
+              onClick={() => (window.location.href = "/login")}
+              className="face-shape-login-close-button"
+            >
+              Go to Login
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

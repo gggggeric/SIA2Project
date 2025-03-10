@@ -27,7 +27,7 @@
   .footer-review h3 {
     font-size: 1.25rem; /* Smaller font size */
     margin-bottom: 0.75rem; /* Reduced margin */
-    color: #ff6f61; /* Accent color for the heading */
+    color: #D8BFD8; /* Accent color for the heading */
   }
   
   .review-form {
@@ -80,21 +80,22 @@
     margin-bottom: 1rem; /* Reduced margin */
   }
   
-  .footer-links a {
+  .footer-links a,
+  .footer-links Link {
     color: #fff;
     text-decoration: none;
     font-size: 0.9rem; /* Smaller font size */
     transition: color 0.3s ease;
   }
   
-  .footer-links a:hover {
-    color: #ff6f61; /* Accent color for hover */
+  .footer-links a:hover,
+  .footer-links Link:hover {
+    color: #D8BFD8; /* Accent color for hover */
   }
   
   .footer-social {
     display: flex;
     gap: 1rem; /* Reduced gap */
-    margin-bottom: 1rem; /* Added margin to separate from copyright */
   }
   
   .footer-social a {
@@ -109,9 +110,17 @@
   
   /* Copyright Section */
   .copyright {
-    margin: 0px; /* Reset margin */
+    margin: 0; /* Reset margin */
     font-size: 0.8rem; /* Smaller font size */
     color: #ccc;
-    text-align: center; 
-    margin-right: 205px;/* Center-align the copyright text */
+    text-align: center; /* Center-align the copyright text */
+    margin-right: 200px;
+  }
+  .admin-message {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+    color: #666;
   }

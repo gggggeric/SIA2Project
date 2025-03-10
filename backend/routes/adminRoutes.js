@@ -1,8 +1,31 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-
 const router = express.Router();
+const Review = require("../models/Review"); // Import the Review model
+
+// Route to fetch reviews data
+router.get("/reviewsDashboard", async (req, res) => {
+  try {
+    // Fetch all reviews from the database
+    const reviews = await Review.find({});
+
+    // Count anonymous and non-anonymous reviews
+    const anonymousCount = reviews.filter((review) => review.user.startsWith("Anonymous#")).length;
+    const nonAnonymousCount = reviews.length - anonymousCount;
+
+    // Send the counts as a response
+    res.status(200).json({
+      anonymousCount,
+      nonAnonymousCount,
+    });
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ message: "Failed to fetch reviews data" });
+  }
+});
+
+module.exports = router;
 
 router.get("/manageActive", async (req, res) => {
     try {

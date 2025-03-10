@@ -1,0 +1,148 @@
+/* General Styles */
+.admin-reviews-page {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #f5f5f5; /* Light background for contrast */
+  }
+  
+  h1 {
+    text-align: center;
+    color: #2a2250; /* Primary theme color */
+    margin-bottom: 20px;
+  }
+  
+  /* Filter Controls */
+  .filter-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .filter-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #e0e0e0; /* Light gray for inactive buttons */
+    color: #2a2250; /* Primary theme color */
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .filter-button.active {
+    background-color: #2a2250; /* Primary theme color */
+    color: white;
+  }
+  
+  .filter-button:hover {
+    background-color: #2a2250; /* Primary theme color */
+    color: white;
+  }
+  
+  /* Review Card */
+  .review-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .review-user {
+    font-weight: bold;
+    color: #2a2250; /* Primary theme color */
+  }
+  
+  .review-date {
+    color: #666;
+    font-size: 0.9em;
+  }
+  
+  .review-text {
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* Replies Section */
+  .replies-section {
+    margin-top: 20px;
+  }
+  
+  .replies-section h3 {
+    color: #2a2250; /* Primary theme color */
+    margin-bottom: 10px;
+  }
+  
+  .reply-card {
+    background-color: #f9f9f9;
+    border-left: 3px solid #2a2250; /* Primary theme color */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  
+  .reply-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+  
+  .reply-admin {
+    font-weight: bold;
+    color: #2a2250; /* Primary theme color */
+  }
+  
+  .reply-date {
+    color: #666;
+    font-size: 0.8em;
+  }
+  
+  .reply-text {
+    color: #333;
+    line-height: 1.6;
+  }
+  
+  /* Reply Form */
+  .reply-form {
+    margin-top: 20px;
+  }
+  
+  .reply-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+    margin-bottom: 10px;
+  }
+  
+  .submit-reply-button {
+    padding: 10px 20px;
+    background-color: #2a2250; /* Primary theme color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .submit-reply-button:hover {
+    background-color: #1a1438; /* Darker shade for hover */
+  }
+  
+  /* No Reviews Message */
+  .no-reviews-message {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+  }

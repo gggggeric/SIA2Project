@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Glasses, Eye, MapPin, User, Edit, LogOut, X } from "lucide-react"; // Icons
+import { Glasses, Eye, MapPin, User, Edit, LogOut, X, MessageCircle } from "lucide-react"; // Added MessageCircle icon
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./Navbar.css";
+import defaultProfile from '../assets/profile.jpg'; // Import the default profile image
+import { ToastContainer, toast } from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css'; // Import toast styles
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const isLoggedIn = localStorage.getItem("token");
   const userType = localStorage.getItem("userType");
 
@@ -25,6 +28,8 @@ const Navbar = () => {
             const response = await fetch(`http://localhost:5001/users/users/${userId}`);
             const data = await response.json();
             if (data) {
+              // If the profile picture is an empty string, use the default image
+              data.profile = data.profile || defaultProfile; // Use the imported default image
               setUserData(data);
             }
           } catch (error) {
@@ -43,11 +48,30 @@ const Navbar = () => {
     localStorage.removeItem("email");
     localStorage.removeItem("userId");
     console.log("Logged out successfully");
-    navigate("/");
+
+    // Show success toast
+    toast.success("Successfully logged out!", {
+      position: "bottom-right",
+      autoClose: 3000, // Toast will auto-close after 3 seconds
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "colored",
+    });
+
+    // Navigate to home page after a short delay
+    setTimeout(() => {
+      navigate("/");
+      window.location.reload(); // Reload the page after logout
+    }, 3000); // Match this delay with the toast's autoClose duration
   };
 
   return (
     <>
+      {/* Add ToastContainer to display toasts */}
+      <ToastContainer />
+
       <nav className="navbar navbar-expand-lg navbar-light fixed-top">
         <div className="container-fluid custom-container">
           <button className="hamburger-menu" onClick={() => setSidebarOpen(true)}>
@@ -105,7 +129,11 @@ const Navbar = () => {
         <ul className="sidebar-menu">
           {isLoggedIn && userData && (
             <div className="sidebar-profile">
-              <img src={userData.profile} alt="Profile" className="sidebar-profile-img" />
+              <img
+                src={userData.profile} // This will always be a valid URL or the default image
+                alt="Profile"
+                className="sidebar-profile-img"
+              />
               <p className="sidebar-profile-name">{userData.name}</p>
               <p className="sidebar-profile-email">{userData.email}</p>
             </div>
@@ -154,6 +182,12 @@ const Navbar = () => {
               <li className="sidebar-item">
                 <Link to="/adminUserActivation" onClick={() => setSidebarOpen(false)}>
                   <User size={20} className="sidebar-icon" /> Deactivate Users
+                </Link>
+              </li>
+              {/* Add a new link for managing reviews */}
+              <li className="sidebar-item">
+                <Link to="/adminReply" onClick={() => setSidebarOpen(false)}>
+                  <MessageCircle size={20} className="sidebar-icon" /> Manage Reviews
                 </Link>
               </li>
             </>

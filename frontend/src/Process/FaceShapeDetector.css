@@ -1,4 +1,4 @@
-/* FaceShapeDetector.css */
+/* General Styles */
 .face-shape-container {
     display: flex;
     flex-direction: column;
@@ -7,10 +7,10 @@
     height: 100vh;
     background: linear-gradient(135deg, #f5f7fa, #e6e9ef); /* Softer gradient */
     padding: 20px;
-}
-
-/* Outer Box Wrapping Group Box */
-.face-shape-border-box {
+  }
+  
+  /* Outer Box Wrapping Group Box */
+  .face-shape-border-box {
     display: flex;
     align-items: center;
     gap: 20px;
@@ -20,14 +20,14 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Lighter shadow */
     max-width: 90%;
     transition: box-shadow 0.3s ease-in-out;
-}
-
-.face-shape-border-box:hover {
+  }
+  
+  .face-shape-border-box:hover {
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow on hover */
-}
-
-/* Group Box */
-.face-shape-group-box {
+  }
+  
+  /* Group Box */
+  .face-shape-group-box {
     background: linear-gradient(145deg, #ffffff, #f8f8f8); /* Softer gradient */
     width: 400px;
     padding: 25px;
@@ -35,59 +35,59 @@
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Lighter shadow */
     text-align: center;
     transition: box-shadow 0.3s ease-in-out;
-}
-
-.face-shape-group-box:hover {
+  }
+  
+  .face-shape-group-box:hover {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Slightly stronger shadow on hover */
-}
-
-/* Title */
-.face-shape-title {
+  }
+  
+  /* Title */
+  .face-shape-title {
     font-size: 1.8rem;
     font-weight: bold;
-    color: #4B0082;
+    color: #4b0082;
     margin-bottom: 20px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Text shadow for depth */
-}
-
-/* File Input */
-.face-shape-file-input {
+  }
+  
+  /* File Input */
+  .face-shape-file-input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #4B0082;
+    border: 1px solid #4b0082;
     border-radius: 8px;
     cursor: pointer;
     background: #f9f9f9;
     margin-top: 15px;
     transition: box-shadow 0.3s ease-in-out;
-}
-
-.face-shape-file-input:hover {
+  }
+  
+  .face-shape-file-input:hover {
     box-shadow: 0 4px 10px rgba(75, 0, 130, 0.1); /* Lighter hover shadow */
-}
-
-/* Image Preview */
-.face-shape-image-preview-container {
+  }
+  
+  /* Image Preview */
+  .face-shape-image-preview-container {
     margin: 20px 0;
     padding: 10px;
     background: #fafafa;
     border-radius: 8px;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); /* Lighter inner shadow */
-}
-
-.face-shape-image-preview {
+  }
+  
+  .face-shape-image-preview {
     max-width: 100%;
     max-height: 150px;
     object-fit: cover;
     border-radius: 8px;
-    border: 1px solid #4B0082;
-}
-
-/* Buttons with 3D Effect */
-.face-shape-detect-button,
-.face-shape-camera-button,
-.face-shape-capture-button,
-.face-shape-view-results-button {
+    border: 1px solid #4b0082;
+  }
+  
+  /* Buttons with 3D Effect */
+  .face-shape-detect-button,
+  .face-shape-camera-button,
+  .face-shape-capture-button,
+  .face-shape-view-results-button {
     width: 100%;
     padding: 12px;
     font-size: 1rem;
@@ -97,54 +97,53 @@
     cursor: pointer;
     margin-top: 15px;
     margin-bottom: 10px;
-    background: linear-gradient(145deg, #4B0082, #370061); /* Gradient background */
+    background: linear-gradient(145deg, #4b0082, #370061); /* Gradient background */
     color: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Lighter shadow */
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-
-.face-shape-detect-button:hover,
-.face-shape-camera-button:hover,
-.face-shape-capture-button:hover,
-.face-shape-view-results-button:hover {
+  }
+  
+  .face-shape-detect-button:hover,
+  .face-shape-camera-button:hover,
+  .face-shape-capture-button:hover,
+  .face-shape-view-results-button:hover {
     transform: translateY(-2px); /* Lift effect */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
-}
-
-/* Webcam Video - Inverted (Mirror Effect) */
-.face-shape-webcam {
-    transform: scaleX(-1);
+  }
+  
+  /* Webcam Video */
+  .face-shape-webcam {
     width: 100%;
     max-width: 500px;
     border-radius: 8px;
-    border: 2px solid #4B0082;
+    border: 2px solid #4b0082;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Lighter shadow */
-}
-
-/* Glasses Container */
-.face-shape-glasses-container {
+  }
+  
+  /* Glasses Container */
+  .face-shape-glasses-container {
     display: flex;
     justify-content: center;
     gap: 10px;
     margin-top: 15px;
-}
-
-.face-shape-glasses-recommendation {
+  }
+  
+  .face-shape-glasses-recommendation {
     width: 100px;
     height: auto;
     border-radius: 8px;
     border: 1px solid #ddd;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Lighter shadow */
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-}
-
-.face-shape-glasses-recommendation:hover {
+  }
+  
+  .face-shape-glasses-recommendation:hover {
     transform: scale(1.1); /* Scale up on hover */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
-}
-
-/* Modal Overlay (Background Blur Effect) */
-.face-shape-modal-overlay {
+  }
+  
+  /* Modal Overlay (Background Blur Effect) */
+  .face-shape-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -155,10 +154,10 @@
     justify-content: center;
     align-items: center;
     backdrop-filter: blur(5px); /* Blur effect */
-}
-
-/* Modal Content */
-.face-shape-modal-content {
+  }
+  
+  /* Modal Content */
+  .face-shape-modal-content {
     background: linear-gradient(145deg, #ffffff, #f8f8f8); /* Softer gradient */
     padding: 25px;
     width: 350px;
@@ -166,87 +165,89 @@
     text-align: center;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Lighter shadow */
     animation: fadeIn 0.3s ease-in-out;
-    border: 2px solid #4B0082;
+    border: 2px solid #4b0082;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
     max-width: 90%;
-}
-
-/* Modal Header */
-.face-shape-modal-header {
+  }
+  
+  /* Modal Header */
+  .face-shape-modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
     padding: 10px;
     border-bottom: 1px solid #ccc;
-}
-
-/* Close Button */
-.face-shape-close-modal-button {
+  }
+  
+  /* Close Button */
+  .face-shape-close-modal-button {
     background: transparent;
     border: none;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #4B0082;
+    color: #4b0082;
     cursor: pointer;
     transition: color 0.3s ease-in-out;
-}
-
-.face-shape-close-modal-button:hover {
+  }
+  
+  .face-shape-close-modal-button:hover {
     color: red;
-}
-
-/* Modal Title */
-.face-shape-modal-header h2 {
-    color: #4B0082;
+  }
+  
+  /* Modal Title */
+  .face-shape-modal-header h2 {
+    color: #4b0082;
     font-size: 1.5rem;
     margin: 0;
     padding: 0;
-}
-
-/* Fade-in Animation */
-@keyframes fadeIn {
+  }
+  
+  /* Fade-in Animation */
+  @keyframes fadeIn {
     from {
-        opacity: 0;
-        transform: translateY(-10px);
+      opacity: 0;
+      transform: translateY(-10px);
     }
     to {
-        opacity: 1;
-        transform: translateY(0);
+      opacity: 1;
+      transform: translateY(0);
     }
-}
-
-/* Responsive Fix for Smaller Screens */
-@media screen and (max-width: 768px) {
+  }
+  
+  /* Responsive Fix for Smaller Screens */
+  @media screen and (max-width: 768px) {
     .face-shape-border-box {
-        flex-direction: column;
-        gap: 15px;
-        padding: 20px;
+      flex-direction: column;
+      gap: 15px;
+      padding: 20px;
     }
-
+  
     .face-shape-group-box {
-        width: 100%;
-        padding: 20px;
+      width: 100%;
+      padding: 20px;
     }
-}
-.face-shape-login-modal-overlay {
+  }
+  
+  /* Login Prompt Modal */
+  .face-shape-login-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.7); /* Blurred background */
-    backdrop-filter: blur(8px); 
+    backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-}
-
-.face-shape-login-modal-content {
+  }
+  
+  .face-shape-login-modal-content {
     background: #ffffff; /* Clean white modal */
     color: #352e4b; /* Dark violet text for contrast */
     padding: 50px 40px;
@@ -254,49 +255,35 @@
     width: 90%;
     max-width: 450px;
     text-align: center;
-    box-shadow: 
-        0 8px 20px rgba(0, 0, 0, 0.2), /* Deep shadow for 3D effect */
-        0 4px 10px rgba(0, 0, 0, 0.1); /* Softer inner shadow */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), /* Deep shadow for 3D effect */
+      0 4px 10px rgba(0, 0, 0, 0.1); /* Softer inner shadow */
     animation: fadeIn 0.3s ease-in-out;
     transform: translateY(-10px); /* Slight lift for depth */
-}
-
-.face-shape-login-modal-content h2 {
+  }
+  
+  .face-shape-login-modal-content h2 {
     font-size: 24px;
     margin-bottom: 10px;
-}
-
-.face-shape-login-modal-content p {
+  }
+  
+  .face-shape-login-modal-content p {
     font-size: 16px;
     margin-bottom: 20px;
     opacity: 0.9;
-}
-
-.face-shape-login-close-button {
+  }
+  
+  .face-shape-login-close-button {
     background-color: #352e4b; /* Violet button */
     color: #fff;
     border: none;
     padding: 12px 25px;
     border-radius: 8px;
     cursor: pointer;
-    box-shadow: 
-        0 4px 10px rgba(0, 0, 0, 0.3), 
-        0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 0 2px 5px rgba(0, 0, 0, 0.2);
     transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.face-shape-login-close-button:hover {
+  }
+  
+  .face-shape-login-close-button:hover {
     background-color: #2b2640; /* Darker violet for hover effect */
     transform: scale(1.05); /* Slight pop-out effect */
-}
-
-@keyframes fadeIn {
-    from { 
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to { 
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+  }

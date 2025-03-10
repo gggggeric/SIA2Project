@@ -6,6 +6,7 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes')
+const reviewRoutes = require('./routes/reviewRoutes')
 dotenv.config();
 connectDB();
 
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 app.use('/auth', authRoutes);
 app.use("/admin", adminRoutes); 
 app.use("/users", userRoutes); 
+app.use("/reviews", reviewRoutes)
 
 app.get('/', (req, res) => {
     res.send("API is running...");

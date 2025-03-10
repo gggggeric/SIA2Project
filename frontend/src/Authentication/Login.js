@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './Login.css'; 
-import { Link, useNavigate } from 'react-router-dom'; 
-import Navbar from '../Navigation/Navbar'; 
+import './Login.css';
+import { Link, useNavigate } from 'react-router-dom';
+import Navbar from '../Navigation/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -10,54 +10,48 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await axios.post('http://localhost:5001/auth/login', {
         email,
-        password
+        password,
       });
-  
+
       console.log('Login successful:', response.data);
-      console.log('JWT Token:', response.data.token);
-  
-      // Store token, email, userType, and userId in localStorage
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('email', email);
       localStorage.setItem('userType', response.data.userType);
-      localStorage.setItem('userId', response.data.userId);  // Store userId here
-  
-      // Show success toast at bottom-right
+      localStorage.setItem('userId', response.data.userId);
+
+      // Show success toast
       toast.success('Login successful!', {
         position: 'bottom-right',
-        autoClose: 3000,
+        autoClose: 3000, // Toast will auto-close after 3 seconds
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         theme: 'colored',
       });
-  
+
+      // Wait for the toast to auto-close, then navigate and reload
       setTimeout(() => {
         if (response.data.userType === 'admin') {
           navigate('/adminHome');
         } else {
           navigate('/');
         }
-      }, 2000);
-  
+        window.location.reload(); // Reload the page after navigation
+      }, 3000); // Match this delay with the toast's autoClose duration
     } catch (err) {
       console.error('Login error:', err);
-  
-      // Check if error response exists and handle specific messages
+
       if (err.response && err.response.data && err.response.data.message) {
         const errorMessage = err.response.data.message;
-  
-        // Show the specific backend error message in a toast
         toast.error(errorMessage, {
           position: 'bottom-right',
           autoClose: 3000,
@@ -68,7 +62,6 @@ const LoginPage = () => {
           theme: 'colored',
         });
       } else {
-        // Default error message in case of unexpected errors
         toast.error('Invalid email or password', {
           position: 'bottom-right',
           autoClose: 3000,
@@ -81,14 +74,14 @@ const LoginPage = () => {
       }
     }
   };
-  
+
   return (
     <>
-      <ToastContainer /> 
-      <Navbar /> 
+      <ToastContainer /> {/* Include ToastContainer to display toasts */}
+      <Navbar />
       <div className="auth-page-wrapper">
         <div className="login-container">
-          <div className="overlay"></div> {/* Dark overlay for better contrast */}
+          <div className="overlay"></div>
           {/* Left Side */}
           <div className="left-side">
             <h1>OpticAI</h1>
@@ -100,8 +93,6 @@ const LoginPage = () => {
           <div className="right-side">
             <h2 className="login-title">Login</h2>
             <p className="login-subtext">Welcome! Login to access your OpticAI dashboard.</p>
-
-            {error && <div className="error-message">{error}</div>}
 
             <form onSubmit={handleLogin}>
               <div className="input-group">
@@ -128,11 +119,11 @@ const LoginPage = () => {
               </div>
 
               <div className="remember-me">
-                <input 
-                  type="checkbox" 
-                  id="rememberMe" 
-                  checked={rememberMe} 
-                  onChange={() => setRememberMe(!rememberMe)} 
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onChange={() => setRememberMe(!rememberMe)}
                 />
                 <label htmlFor="rememberMe"> Remember me</label>
               </div>

@@ -19,7 +19,9 @@ import EmailVerification from "./Authentication/EmailVerification";
 import EditProfile from "./Profile/EditProfile";
 import UserActivationPage from "./Admin/UserActivationPage";
 import Footer from "./Footer/Footer"; // Import the Footer component
+import ReviewsPage from "./Home/Review";
 import "./App.css"; // Import global styles
+import AdminReviewsPage from "./Admin/AdminReviews";
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
             <Route path="/process/faceshape-detector" element={<FaceShapeDetector />} />
             <Route path="/process/near-opticalshops" element={<OpticalShops />} />
             <Route path="/instructions/requirements" element={<RequirementsPage />} />
+            <Route path="/reviews" element={<ReviewsPage />} />
 
             {/* <Route
               path="/home"
@@ -67,6 +70,14 @@ function App() {
               element={
                 <ProtectedRoute adminOnly={true}>
                   <AdminHome />
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path="/adminReply"
+              element={
+                <ProtectedRoute adminOnly={true}>
+                  <AdminReviewsPage />
                 </ProtectedRoute>
               }
             />
