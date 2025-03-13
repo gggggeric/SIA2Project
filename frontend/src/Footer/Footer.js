@@ -1,31 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'; // Removed ToastContainer import
 import './Footer.css';
 
 const Footer = () => {
   const [review, setReview] = useState('');
   const [userType, setUserType] = useState(localStorage.getItem('userType'));
 
-  // Function to update userType from localStorage
   const updateUserType = () => {
     setUserType(localStorage.getItem('userType'));
   };
 
-  // Manually update userType when the component mounts or when localStorage changes in the same tab
   useEffect(() => {
     updateUserType();
-  }, []); // Empty dependency array ensures this runs only on mount
+  }, []);
 
-  // Listen for changes in localStorage (for same-tab updates)
   useEffect(() => {
     const interval = setInterval(() => {
       updateUserType();
-    }, 1000); // Check for changes every second
+    }, 1000);
 
-    return () => clearInterval(interval); // Cleanup interval on unmount
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmit = async (e) => {
@@ -44,10 +40,7 @@ const Footer = () => {
         });
 
         if (response.ok) {
-          // Dismiss any existing toasts before showing a new one
           toast.dismiss();
-
-          // Show success toast with a unique toastId
           const toastId = toast.success('Review submitted successfully!', {
             position: 'bottom-right',
             autoClose: 3000,
@@ -60,17 +53,13 @@ const Footer = () => {
 
           setReview('');
 
-          // Dismiss the toast after navigation (if needed)
           setTimeout(() => {
             if (toast.isActive(toastId)) {
               toast.dismiss(toastId);
             }
           }, 3000);
         } else {
-          // Dismiss any existing toasts before showing a new one
           toast.dismiss();
-
-          // Show error toast
           toast.error('Failed to submit review. Please try again.', {
             position: 'bottom-right',
             autoClose: 3000,
@@ -83,11 +72,7 @@ const Footer = () => {
         }
       } catch (error) {
         console.error(error);
-
-        // Dismiss any existing toasts before showing a new one
         toast.dismiss();
-
-        // Show error toast
         toast.error('An error occurred. Please try again.', {
           position: 'bottom-right',
           autoClose: 3000,
@@ -99,10 +84,7 @@ const Footer = () => {
         });
       }
     } else {
-      // Dismiss any existing toasts before showing a new one
       toast.dismiss();
-
-      // Show warning toast
       toast.warning('Please enter a review before submitting.', {
         position: 'bottom-right',
         autoClose: 3000,
@@ -163,20 +145,6 @@ const Footer = () => {
           <p className="copyright">&copy; {new Date().getFullYear()} Optic AI </p>
         </div>
       </div>
-
-      {/* ToastContainer with proper configuration */}
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
     </footer>
   );
 };

@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "./ResetPassword.css"; 
-import resetImage from "../assets/reset.png"; 
-import Navbar from "../Navigation/Navbar"; 
+import { toast } from "react-toastify"; // Import toast (not ToastContainer)
+import "./ResetPassword.css"; // Import the CSS file
+import resetImage from "../assets/reset.png"; // Add your image here
+import Navbar from "../Navigation/Navbar"; // Import Navbar component
 
 const ResetPassword = () => {
-  const { token } = useParams(); 
+  const { token } = useParams(); // Get the token from the URL
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState("");
 
@@ -80,14 +79,14 @@ const ResetPassword = () => {
                   required
                   className="password-input"
                 />
-                <button type="submit" className="reset-btn">Reset Password</button>
+                <button type="submit" className="reset-btn">
+                  Reset Password
+                </button>
               </form>
             </div>
           </div>
         </div>
       </div>
-
-      <ToastContainer />
     </>
   );
 };

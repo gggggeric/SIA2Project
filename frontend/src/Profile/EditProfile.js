@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../Navigation/Navbar";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify"; // Import toast (not ToastContainer)
 import { FaPen } from "react-icons/fa"; // Import the pencil icon from react-icons
 import styles from "./EditProfile.module.css"; // Import CSS Module
 
@@ -61,7 +60,15 @@ const EditProfile = () => {
     e.preventDefault();
 
     if (!profileImage) {
-      toast.error("Please select a profile image to upload.");
+      toast.error("Please select a profile image to upload.", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
       return;
     }
 
@@ -152,7 +159,6 @@ const EditProfile = () => {
 
   return (
     <div className={styles.rootContainer}>
-      <ToastContainer />
       <div className={styles.contentContainer}>
         <div className={styles.container}>
           <Navbar /> {/* Include the Navbar here */}

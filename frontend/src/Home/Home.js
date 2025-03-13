@@ -5,6 +5,18 @@ import opticImage from "../assets/isometricImage.png";
 import video1 from '../assets/video2.mp4'; // Import video files
 import video2 from '../assets/video1.mp4';
 import video3 from '../assets/video3.mp4';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import carouselImage1 from "../assets/homecaro1.jpg"; 
+import carouselImage2 from "../assets/carousel2.jpg";
+import carouselImage3 from "../assets/carousel3.jpg";
+import landingGif from "../assets/GIF/gif.gif";
+import faceShapeGif from '../assets/GIF/face.gif';
+import eyeGradeGif from '../assets/GIF/gif3.gif';
+import opticalShopGif from '../assets/GIF/loc.gif';
+
+
 const HomePage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -24,225 +36,282 @@ const HomePage = () => {
     <Box sx={{ backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
       <Navbar />
 
-      {/* Hero Section */}
+  
+ {/* Hero Section */}
+<Box
+  sx={{
+    paddingTop: "80px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: { xs: "4rem 1rem", sm: "5rem 2rem", md: "5rem 4rem" },
+    flexDirection: { xs: "column-reverse", md: "row" },
+    gap: { xs: "2rem", md: "0" },
+  }}
+>
+  {/* Left Side Content */}
+  <Box sx={{ maxWidth: { xs: "100%", md: "50%" }, textAlign: { xs: "center", md: "left" } }}>
+    <Typography
+      variant="h3"
+      sx={{
+        color: "#2a2250",
+        fontWeight: "bold",
+        marginBottom: "1rem",
+        fontFamily: "'Poppins', sans-serif",
+        fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+      }}
+    >
+      Welcome to OpticAI!
+    </Typography>
+
+    <Typography
+      variant="h5"
+      sx={{
+        color: "#2a2250",
+        fontWeight: "500",
+        marginBottom: "1rem",
+        fontFamily: "'Poppins', sans-serif",
+        fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.8rem" },
+      }}
+    >
+      Empowering Vision, Enhancing Care
+    </Typography>
+
+    <Typography
+      variant="body1"
+      sx={{
+        color: "#555",
+        marginBottom: "2rem",
+        lineHeight: 1.6,
+        fontFamily: "'Open Sans', sans-serif",
+      }}
+    >
+   Optic AI transforms optical care using advanced AI to analyze face shapes for frame recommendations, predict eye grades accurately, and find nearby optical shops within 5KM. 
+   It offers personalized, seamless, and precise vision solutions in one platform.
+    </Typography>
+
+    <Button
+      variant="contained"
+      sx={{
+        backgroundColor: "#2a2250",
+        "&:hover": { backgroundColor: "#1e1a3d" },
+        padding: "0.8rem 2rem",
+        borderRadius: "8px",
+        fontFamily: "'Poppins', sans-serif",
+        fontSize: "1rem",
+        textTransform: "none",
+        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-2px)",
+          boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)",
+        },
+      }}
+    >
+      Get Started
+    </Button>
+  </Box>
+
+  {/* Right Side GIF */}
+  <Box sx={{ maxWidth: { xs: "100%", md: "50%" }, width: "100%" }}>
+    <Paper
+      elevation={12}
+      sx={{
+        padding: "1.5rem",
+        borderRadius: "20px",
+        backgroundColor: "#fff",
+        overflow: "hidden",
+        position: "relative",
+        boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.1)",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-5px)",
+          boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.2)",
+        },
+      }}
+    >
+      <img
+        src={landingGif}
+        alt="Optic AI Animated Illustration"
+        style={{
+          width: "100%",
+          borderTopLeftRadius: "20px",
+          borderTopRightRadius: "20px",
+        }}
+      />
       <Box
         sx={{
-          paddingTop: "80px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: { xs: "4rem 1rem", sm: "5rem 2rem", md: "5rem 4rem" },
-          flexDirection: { xs: "column-reverse", md: "row" }, // Image on the right
-          gap: { xs: "2rem", md: "0" },
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "10px",
+          backgroundColor: "#2a2250",
+          borderTopLeftRadius: "20px",
+          borderTopRightRadius: "20px",
         }}
-      >
-        {/* Left Side Content */}
-        <Box sx={{ maxWidth: { xs: "100%", md: "50%" }, textAlign: { xs: "center", md: "left" } }}>
-          <Typography
-            variant="h3"
-            sx={{
-              color: "#2a2250", // Theme color
-              fontWeight: "bold",
-              marginBottom: "1rem",
-              fontFamily: "'Poppins', sans-serif", // Modern font
-              fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
-            }}
-          >
-            Welcome to OpticAI!
-          </Typography>
+      />
+    </Paper>
+  </Box>
+</Box>
 
-          <Typography
-            variant="h5"
-            sx={{
-              color: "#2a2250",
-              fontWeight: "500",
-              marginBottom: "1rem",
-              fontFamily: "'Poppins', sans-serif", // Modern font
-              fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.8rem" },
-            }}
-          >
-            Empowering Vision, Enhancing Care
-          </Typography>
 
-          <Typography
-            variant="body1"
-            sx={{
-              color: "#555",
-              marginBottom: "2rem",
-              lineHeight: 1.6,
-              fontFamily: "'Open Sans', sans-serif", // Clean font
-            }}
-          >
-            Use smart intelligent systems to assist your waste disposal practices for a sustainable future.
-          </Typography>
 
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#2a2250", // Theme color
-              "&:hover": { backgroundColor: "#1e1a3d" },
-              padding: "0.8rem 2rem",
-              borderRadius: "8px",
-              fontFamily: "'Poppins', sans-serif", // Modern font
-              fontSize: "1rem",
-              textTransform: "none", // Remove uppercase
-              boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", // Subtle shadow
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-2px)",
-                boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
-              },
-            }}
-          >
-            Get Started
-          </Button>
-        </Box>
 
-        {/* Right Side Image */}
-        <Box sx={{ maxWidth: { xs: "100%", md: "50%" }, width: "100%" }}>
-          <Paper
-            elevation={12}
-            sx={{
-              padding: "1.5rem",
-              borderRadius: "20px",
-              backgroundColor: "#fff",
-              overflow: "hidden",
-              position: "relative",
-              boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.1)", // Added shadow for depth
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-5px)",
-                boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
-              },
-            }}
-          >
-            <img
-              src={opticImage}
-              alt="Optic AI Illustration"
-              style={{
-                width: "100%",
-                borderTopLeftRadius: "20px",
-                borderTopRightRadius: "20px",
-              }}
-            />
-            <Box
-              sx={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "10px",
-                backgroundColor: "#2a2250", // Theme color
-                borderTopLeftRadius: "20px",
-                borderTopRightRadius: "20px",
-              }}
-            />
-          </Paper>
-        </Box>
-      </Box>
+     {/* What Our System Does Section */}
+<Box
+  sx={{
+    padding: { xs: "4rem 1rem", sm: "5rem 2rem", md: "6rem 4rem" },
+    backgroundColor: "#fff",
+    textAlign: "center",
+  }}
+>
+  <Typography
+    variant="h4"
+    sx={{
+      color: "#2a2250",
+      fontWeight: "bold",
+      marginBottom: "3rem",
+      fontFamily: "'Poppins', sans-serif",
+      fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem" },
+    }}
+  >
+    What Our System Does
+  </Typography>
 
-      {/* What Our System Does Section */}
-      <Box
+  <Box
+    sx={{
+      display: "flex",
+      flexDirection: { xs: "column", md: "row" },
+      gap: "3rem",
+      justifyContent: "center",
+    }}
+  >
+    {/* Feature 1 */}
+    <Paper
+      elevation={6}
+      sx={{
+        padding: "2.5rem",
+        borderRadius: "16px",
+        maxWidth: "320px",
+        backgroundColor: "#f9f9f9",
+        boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.12)",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-10px)",
+          boxShadow: "0px 12px 32px rgba(0, 0, 0, 0.2)",
+        },
+      }}
+    >
+      <img
+        src={faceShapeGif}
+        alt="Analyze Face Shape GIF"
+        style={{ width: "100%", borderRadius: "12px", marginBottom: "1.5rem" }}
+      />
+      <Typography
+        variant="h5"
         sx={{
-          padding: { xs: "4rem 1rem", sm: "5rem 2rem", md: "6rem 4rem" },
-          backgroundColor: "#fff",
-          textAlign: "center",
+          color: "#2a2250",
+          fontWeight: "bold",
+          marginBottom: "1.5rem",
+          fontFamily: "'Poppins', sans-serif",
         }}
       >
-        <Typography
-          variant="h4"
-          sx={{
-            color: "#2a2250",
-            fontWeight: "bold",
-            marginBottom: "3rem",
-            fontFamily: "'Poppins', sans-serif", // Modern font
-            fontSize: { xs: "1.8rem", sm: "2.2rem", md: "2.5rem" },
-          }}
-        >
-          What Our System Does
-        </Typography>
+        Analyze Face Shape
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ color: "#555", lineHeight: 1.6, fontFamily: "'Open Sans', sans-serif" }}
+      >
+        Our system uses advanced facial recognition technology to analyze your face shape and
+        recommend the perfect eyeglass frame that complements your features.
+      </Typography>
+    </Paper>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            gap: "3rem",
-            justifyContent: "center",
-          }}
-        >
-          {/* Feature 1 */}
-          <Paper
-            elevation={6}
-            sx={{
-              padding: "2.5rem",
-              borderRadius: "16px",
-              maxWidth: "320px",
-              backgroundColor: "#f9f9f9",
-              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.12)", // Added shadow for depth
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-10px)",
-                boxShadow: "0px 12px 32px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
-              },
-            }}
-          >
-            <Typography variant="h5" sx={{ color: "#2a2250", fontWeight: "bold", marginBottom: "1.5rem", fontFamily: "'Poppins', sans-serif" }}>
-              Analyze Face Shape
-            </Typography>
-            <Typography variant="body1" sx={{ color: "#555", lineHeight: 1.6, fontFamily: "'Open Sans', sans-serif" }}>
-              Our system uses advanced facial recognition technology to analyze your face shape and recommend the perfect eyeglass frame that complements your features. Whether you have a round, oval, or square face, we’ve got you covered!
-            </Typography>
-          </Paper>
+    {/* Feature 2 */}
+    <Paper
+      elevation={6}
+      sx={{
+        padding: "2.5rem",
+        borderRadius: "16px",
+        maxWidth: "320px",
+        backgroundColor: "#f9f9f9",
+        boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.12)",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-10px)",
+          boxShadow: "0px 12px 32px rgba(0, 0, 0, 0.2)",
+        },
+      }}
+    >
+      <img
+        src={eyeGradeGif}
+        alt="Predict Eye Grade GIF"
+        style={{ width: "100%", borderRadius: "12px", marginBottom: "1.5rem" }}
+      />
+      <Typography
+        variant="h5"
+        sx={{
+          color: "#2a2250",
+          fontWeight: "bold",
+          marginBottom: "1.5rem",
+          fontFamily: "'Poppins', sans-serif",
+        }}
+      >
+        Predict Eye Grade
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ color: "#555", lineHeight: 1.6, fontFamily: "'Open Sans', sans-serif" }}
+      >
+        Using cutting-edge AI algorithms, our system predicts your eye grade prescription with high
+        accuracy. Simply input your data, and we’ll provide a reliable estimate.
+      </Typography>
+    </Paper>
 
-          {/* Feature 2 */}
-          <Paper
-            elevation={6}
-            sx={{
-              padding: "2.5rem",
-              borderRadius: "16px",
-              maxWidth: "320px",
-              backgroundColor: "#f9f9f9",
-              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.12)", // Added shadow for depth
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-10px)",
-                boxShadow: "0px 12px 32px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
-              },
-            }}
-          >
-            <Typography variant="h5" sx={{ color: "#2a2250", fontWeight: "bold", marginBottom: "1.5rem", fontFamily: "'Poppins', sans-serif" }}>
-              Predict Eye Grade
-            </Typography>
-            <Typography variant="body1" sx={{ color: "#555", lineHeight: 1.6, fontFamily: "'Open Sans', sans-serif" }}>
-              Using cutting-edge AI algorithms, our system predicts your eye grade prescription with high accuracy. Simply input your data, and we’ll provide you with a reliable estimate to help you make informed decisions about your vision care.
-            </Typography>
-          </Paper>
+    {/* Feature 3 */}
+    <Paper
+      elevation={6}
+      sx={{
+        padding: "2.5rem",
+        borderRadius: "16px",
+        maxWidth: "320px",
+        backgroundColor: "#f9f9f9",
+        boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.12)",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-10px)",
+          boxShadow: "0px 12px 32px rgba(0, 0, 0, 0.2)",
+        },
+      }}
+    >
+      <img
+        src={opticalShopGif}
+        alt="Locate Optical Shops GIF"
+        style={{ width: "100%", borderRadius: "12px", marginBottom: "1.5rem" }}
+      />
+      <Typography
+        variant="h5"
+        sx={{
+          color: "#2a2250",
+          fontWeight: "bold",
+          marginBottom: "1.5rem",
+          fontFamily: "'Poppins', sans-serif",
+        }}
+      >
+        Locate Optical Shops
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ color: "#555", lineHeight: 1.6, fontFamily: "'Open Sans', sans-serif" }}
+      >
+        Need to find an optical shop nearby? Our system locates all optical shops within a 5KM
+        radius, complete with directions and contact information.
+      </Typography>
+    </Paper>
+  </Box>
+</Box>
 
-          {/* Feature 3 */}
-          <Paper
-            elevation={6}
-            sx={{
-              padding: "2.5rem",
-              borderRadius: "16px",
-              maxWidth: "320px",
-              backgroundColor: "#f9f9f9",
-              boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.12)", // Added shadow for depth
-              transition: "transform 0.3s ease, box-shadow 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-10px)",
-                boxShadow: "0px 12px 32px rgba(0, 0, 0, 0.2)", // Enhanced shadow on hover
-              },
-            }}
-          >
-            <Typography variant="h5" sx={{ color: "#2a2250", fontWeight: "bold", marginBottom: "1.5rem", fontFamily: "'Poppins', sans-serif" }}>
-              Locate Optical Shops
-            </Typography>
-            <Typography variant="body1" sx={{ color: "#555", lineHeight: 1.6, fontFamily: "'Open Sans', sans-serif" }}>
-              Need to find an optical shop nearby? Our system locates all optical shops within a 5KM radius, complete with directions and contact information. Never struggle to find the right place for your eyewear needs again!
-            </Typography>
-          </Paper>
-        </Box>
-      </Box>
 
       {/* Understanding Vision Types Section */}
       <Box

@@ -5,8 +5,11 @@ const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
-const userRoutes = require('./routes/userRoutes')
-const reviewRoutes = require('./routes/reviewRoutes')
+const userRoutes = require('./routes/userRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const testRoutes = require('./routes/testRoutes');
+const astigRoutes = require('./routes/astigRoutes')
+const colorRoutes = require('./routes/colorBlindnessRoutes')
 dotenv.config();
 connectDB();
 
@@ -17,7 +20,10 @@ app.use(bodyParser.json());
 app.use('/auth', authRoutes);
 app.use("/admin", adminRoutes); 
 app.use("/users", userRoutes); 
-app.use("/reviews", reviewRoutes)
+app.use("/reviews", reviewRoutes);
+app.use("/test", testRoutes);
+app.use("/astigmatism", astigRoutes);
+app.use("/color-blindness", colorRoutes);
 
 app.get('/', (req, res) => {
     res.send("API is running...");

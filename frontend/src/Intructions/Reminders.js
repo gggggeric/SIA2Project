@@ -1,32 +1,32 @@
 import React from "react";
-import { FaArrowRight } from "react-icons/fa"; 
-import Navbar from "../Navigation/Navbar"; 
-import { useNavigate } from "react-router-dom"; 
+import { FaArrowRight } from "react-icons/fa";
+import Navbar from "../Navigation/Navbar";
+import { useNavigate } from "react-router-dom";
 import reminderIcon from "../assets/rem.png";
-import "./Reminders.css"; 
+import "./Reminders.css";
 
 const RemindersPage = () => {
   const navigate = useNavigate();
 
   const handleNextClick = () => {
-    navigate("/process/both-eye"); 
+    navigate("/process/both-eye");
   };
 
   return (
     <div className="min-h-screen bg-gray-100 pt-20">
-      <Navbar /> 
+      <Navbar />
 
       <section className="text-center">
-        <div className="container mx-auto p-5">
+        <div className="container mx-auto p-5 flex justify-center items-center h-full">
           <div className="reminders-box">
             <div className="reminders-content">
-
               <img src={reminderIcon} alt="Reminder Icon" className="reminder-icon" />
 
-
               <div className="reminders-text">
-                <h2 className="text-2xl font-bold mb-4">Reminders</h2>
-                <p className="text-lg mb-4">Here are some important reminders:</p>
+                <h2 className="reminders-heading">Reminders</h2>
+                <p className="reminders-paragraph">
+                  Here are some important reminders:
+                </p>
 
                 <ul className="reminders-list">
                   <li>Conduct the process in a room with good lighting (for face detection).</li>
@@ -40,7 +40,7 @@ const RemindersPage = () => {
             </div>
 
             <button className="next-btn" onClick={handleNextClick}>
-              <FaArrowRight size={50} /> {/* Large Icon */}
+              <FaArrowRight size={50} />
             </button>
           </div>
         </div>

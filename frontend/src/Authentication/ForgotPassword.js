@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify"; // Import ToastContainer and toast
-import "react-toastify/dist/ReactToastify.css"; // Import the Toastify CSS
+import { toast } from "react-toastify"; // Import toast (not ToastContainer)
 import "./ForgotPassword.css"; // Import the CSS file
 import resetImage from "../assets/forgot.png"; // Add your image here
 import Navbar from "../Navigation/Navbar"; // Import Navbar component
@@ -75,22 +74,14 @@ const ForgotPassword = () => {
                   required
                   className="email-input"
                 />
-                <button type="submit" className="send-btn">Send Reset Link</button>
+                <button type="submit" className="send-btn">
+                  Send Reset Link
+                </button>
               </form>
             </div>
           </div>
         </div>
       </div>
-
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        closeOnClick={true}
-        pauseOnHover={true}
-        draggable={true}
-        theme="colored"
-      />
     </>
   );
 };

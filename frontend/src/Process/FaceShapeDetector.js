@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { FaCamera } from "react-icons/fa";
 import Navbar from "../Navigation/Navbar";
 import "./FaceShapeDetector.css";
-
+import "./LoginModal.css"; // Import the CSS file
 // Import glasses images
 import angularGlasses from "../assets/glassesImages/angular.png";
 import aviatorGlasses from "../assets/glassesImages/aviator.png";

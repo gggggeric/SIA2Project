@@ -48,7 +48,7 @@ const UserCrudPage = () => {
                     theme: "colored",
                 });
             } else {
-                await axios.post("http://localhost:5001/users/users", formData);
+                await axios.post("http://localhost:5001/admin/users", formData);
                 toast.success("User added successfully!", {
                     position: "bottom-right",
                     autoClose: 3000,

@@ -164,29 +164,37 @@
   margin: 10px auto;
 }
 
-/* Logout Button */
 .sidebar-item.logout {
-  text-align: center;
-  margin-top: 30px;
+  padding: 12px 20px; /* Same as other items */
+  display: flex;
+  align-items: center; /* Align icon and text vertically */
+  gap: 10px; 
+  margin-top: 0; /* Remove unnecessary spacing */
 }
 
 .sidebar-item.logout button {
-  color: red;
+  color: #ddd;
   font-weight: bold;
   background: none;
   border: none;
-  font-size: 14px;  /* Reduced font size */
+  font-size: 14px;
   cursor: pointer;
-  transition: color 0.3s ease-in-out, background 0.3s ease-in-out, padding 0.3s ease-in-out;
+  width: 100%; 
+  text-align: left; 
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px; /* Ensures same size as other items */
+  border-radius: 8px;
+  box-sizing: border-box; /* Ensures padding doesn't break layout */
 }
 
 .sidebar-item.logout button:hover {
-  color: white;
   background-color: red;
-  padding: 10px 18px; /* Adjusted padding */
-  border-radius: 8px; /* Rounded corners for a more polished look */
-  transform: scale(1.05); /* Slight scale effect */
+  color: #fff; 
+  transform: scale(1.05);
 }
+
 
 /* Overlay */
 .overlay {
@@ -252,4 +260,32 @@
 /* Hover Effect (Optional) */
 .nav-item .nav-link:hover::after {
   width: 60%; /* Slight expansion on hover for emphasis */
+}
+
+.sidebar-profile-name {
+  color: #ffffff;
+}
+.gif-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.3); /* Semi-transparent background */
+  backdrop-filter: blur(5px); /* Apply a subtle blur effect */
+  border-radius: 10px; /* Rounded corners */
+  padding: 10px; /* Add some padding */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.gif-container img {
+  width: 150px;
+  height: auto;
+  border-radius: 8px; /* Rounded corners for the GIF */
+}
+
+.gif-container p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #000; /* Dark text for better readability */
+  font-weight: 500; /* Slightly bold text */
 }

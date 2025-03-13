@@ -4,8 +4,8 @@ import './Login.css'; // Reuse the same CSS file
 import { Link, useNavigate } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 import Navbar from '../Navigation/Navbar';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify'; // Import toast (not ToastContainer)
+import loginGif from '../assets/GIF/login3.gif';
 
 const SignUpPage = () => {
   const [name, setName] = useState('');
@@ -34,7 +34,7 @@ const SignUpPage = () => {
       const response = await axios.post('http://localhost:5001/auth/register', {
         name,
         email,
-        password
+        password,
       });
 
       toast.success('Account created! Check your email to verify.', {
@@ -55,11 +55,10 @@ const SignUpPage = () => {
       setTimeout(() => {
         navigate('/login');
       }, 3000);
-
     } catch (err) {
       console.error('Signup error:', err);
 
-      if (err.response && err.response.data.error === "Email already in use") {
+      if (err.response && err.response.data.error === 'Email already in use') {
         toast.error('Email already in use. Try a different one.', {
           position: 'bottom-right',
           autoClose: 3000,
@@ -86,14 +85,11 @@ const SignUpPage = () => {
   return (
     <>
       <Navbar />
-      <ToastContainer />
       <div className="auth-page-wrapper">
         <div className="login-container">
           {/* Left Side */}
-          <div className="left-side">
-            <h1>OpticAI</h1>
-            <h2>Welcome to OpticAI</h2>
-            <p>Empowering Vision, Enhancing Care</p>
+          <div className="auth-left-side">
+            <img src={loginGif} alt="Login Animation" className="login-gif" />
           </div>
 
           {/* Right Side */}
@@ -146,10 +142,17 @@ const SignUpPage = () => {
                 />
               </div>
 
-              <button type="submit" className="login-btn">Sign Up</button>
+              <button type="submit" className="login-btn">
+                Sign Up
+              </button>
 
               <div className="extra-links">
-                <p>Already have an account? <Link to="/login" className="login-link">Login</Link></p>
+                <p>
+                  Already have an account?{' '}
+                  <Link to="/login" className="login-link">
+                    Login
+                  </Link>
+                </p>
               </div>
             </form>
           </div>

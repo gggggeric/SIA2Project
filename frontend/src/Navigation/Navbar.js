@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Glasses, Eye, MapPin, User, Edit, LogOut, X, MessageCircle } from "lucide-react"; // Added MessageCircle icon
+import { Glasses, Eye, MapPin, User, Edit, LogOut, X, MessageCircle } from "lucide-react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./Navbar.css";
-import defaultProfile from '../assets/profile.jpg'; // Import the default profile image
-import { ToastContainer, toast } from 'react-toastify'; // Import toast
-import 'react-toastify/dist/ReactToastify.css'; // Import toast styles
+import defaultProfile from '../assets/profile.jpg';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import faceGif from '../assets/GIF/face.gif'; // Import the GIFs
+import eyeGif from '../assets/GIF/gif3.gif';
+import locationGif from '../assets/GIF/loc.gif';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -16,6 +19,7 @@ const Navbar = () => {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [currentPage, setCurrentPage] = useState("");
 
   const isActive = (path) => location.pathname === path;
 
@@ -28,8 +32,7 @@ const Navbar = () => {
             const response = await fetch(`http://localhost:5001/users/users/${userId}`);
             const data = await response.json();
             if (data) {
-              // If the profile picture is an empty string, use the default image
-              data.profile = data.profile || defaultProfile; // Use the imported default image
+              data.profile = data.profile || defaultProfile;
               setUserData(data);
             }
           } catch (error) {
@@ -42,6 +45,20 @@ const Navbar = () => {
     fetchUserData();
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    // Set the current page based on the pathname
+    const path = location.pathname;
+    if (path.includes("faceshape-detector")) {
+      setCurrentPage("face");
+    } else if (path.includes("requirements")) {
+      setCurrentPage("eye");
+    } else if (path.includes("near-opticalshops")) {
+      setCurrentPage("location");
+    } else {
+      setCurrentPage("");
+    }
+  }, [location]);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userType");
@@ -49,10 +66,9 @@ const Navbar = () => {
     localStorage.removeItem("userId");
     console.log("Logged out successfully");
 
-    // Show success toast
     toast.success("Successfully logged out!", {
       position: "bottom-right",
-      autoClose: 3000, // Toast will auto-close after 3 seconds
+      autoClose: 3000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: true,
@@ -60,16 +76,14 @@ const Navbar = () => {
       theme: "colored",
     });
 
-    // Navigate to home page after a short delay
     setTimeout(() => {
       navigate("/");
-      window.location.reload(); // Reload the page after logout
-    }, 3000); // Match this delay with the toast's autoClose duration
+      window.location.reload();
+    }, 3000);
   };
 
   return (
     <>
-      {/* Add ToastContainer to display toasts */}
       <ToastContainer />
 
       <nav className="navbar navbar-expand-lg navbar-light fixed-top">
@@ -130,7 +144,7 @@ const Navbar = () => {
           {isLoggedIn && userData && (
             <div className="sidebar-profile">
               <img
-                src={userData.profile} // This will always be a valid URL or the default image
+                src={userData.profile}
                 alt="Profile"
                 className="sidebar-profile-img"
               />
@@ -139,7 +153,6 @@ const Navbar = () => {
             </div>
           )}
 
-          {/* Conditionally render Services section for non-admin users and non-logged-in users */}
           {(isLoggedIn && userType !== "admin") || !isLoggedIn ? (
             <>
               <li className="sidebar-section-title">Services</li>
@@ -158,6 +171,17 @@ const Navbar = () => {
                   <MapPin size={20} className="sidebar-icon" /> View All the Near Optical Shops
                 </Link>
               </li>
+              <li className="sidebar-item">
+                <Link to="/process/astigmatism-exam" onClick={() => setSidebarOpen(false)}>
+                  <Eye size={20} className="sidebar-icon" /> Astigmatism Test
+                </Link>
+              </li>
+              <li className="sidebar-item">
+                <Link to="/process/colorblind-exam" onClick={() => setSidebarOpen(false)}>
+                  <Eye size={20} className="sidebar-icon" /> Color Blind Test
+                </Link>
+              </li>
+
             </>
           ) : null}
 
@@ -184,7 +208,6 @@ const Navbar = () => {
                   <User size={20} className="sidebar-icon" /> Deactivate Users
                 </Link>
               </li>
-              {/* Add a new link for managing reviews */}
               <li className="sidebar-item">
                 <Link to="/adminReply" onClick={() => setSidebarOpen(false)}>
                   <MessageCircle size={20} className="sidebar-icon" /> Manage Reviews
@@ -214,6 +237,26 @@ const Navbar = () => {
       </div>
 
       {sidebarOpen && <div className="overlay" onClick={() => setSidebarOpen(false)}></div>}
+
+      {/* Display the appropriate GIF based on the current page */}
+      {currentPage === "face" && (
+        <div className="gif-container">
+          <img src={faceGif} alt="Face Shape Detector" />
+          <p>You're on the Eye Frame Analyzer page</p>
+        </div>
+      )}
+      {currentPage === "eye" && (
+        <div className="gif-container">
+          <img src={eyeGif} alt="Eye Sight Testing" />
+          <p>You're on the Eye Sight Testing page</p>
+        </div>
+      )}
+      {currentPage === "location" && (
+        <div className="gif-container">
+          <img src={locationGif} alt="Near Optical Shops" />
+          <p>You're on the Near Optical Shops page</p>
+        </div>
+      )}
     </>
   );
 };

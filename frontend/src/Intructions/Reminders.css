@@ -1,68 +1,96 @@
-.reminders-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-}
-
+/* Container for the reminders box */
 .reminders-box {
-  display: flex;
-  align-items: center;
-  width: 1000px; 
-  padding: 60px; 
-  border-radius: 15px; 
-  border: 3px solid #352e4b; 
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  max-width: 1000px;
+  width: 100%;
+  margin: 50px auto; /* Center the entire box */
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.reminders-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Content inside the box */
 .reminders-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: center; /* Center contents horizontally */
+  text-align: center; /* Center text content */
+  gap: 30px;
 }
 
+/* Icon styling */
+.reminder-icon {
+  width: 40%;
+  border-radius: 15px;
+  transition: transform 0.3s ease;
+}
+
+.reminder-icon:hover {
+  transform: scale(1.05);
+}
+
+/* Text section */
 .reminders-text {
   flex: 1;
-  text-align: center;
+  text-align: center; /* Center text inside */
 }
 
-.reminders-text h2 {
+.reminders-heading {
   color: #352e4b;
-  font-size: 36px; 
-  margin-bottom: 30px;
+  font-size: 36px;
+  margin-bottom: 20px;
+  font-weight: 700;
 }
 
-.reminders-text p, .reminders-list, .reminders-note {
-  font-size: 22px; 
+.reminders-paragraph {
+  font-size: 18px;
   color: #555;
-  line-height: 1.8;
   margin-bottom: 20px;
 }
 
 .reminders-list {
   list-style-type: disc;
-  margin-left: 25px;
-  text-align: left;
+  margin-left: 20px;
+  font-size: 16px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  text-align: left; /* Keep list items aligned for readability */
 }
 
+.reminders-note {
+  font-size: 16px;
+  color: #777;
+  font-style: italic;
+}
+
+/* Next button */
 .next-btn {
-  font-size: 50px; 
-  color: #352e4b !important; 
-  cursor: pointer;
   position: absolute;
-  bottom: 30px;
-  right: 30px; 
-  background: none !important;
-  border: none !important;
-  outline: none !important;
+  bottom: 20px;
+  right: 20px;
+  background: #352e4b;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-
 .next-btn:hover {
-  color: #352e4b !important;
-  background: none !important;
+  background: #2b2640;
+  transform: scale(1.1);
 }

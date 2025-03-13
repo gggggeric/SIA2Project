@@ -3,6 +3,80 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const router = express.Router();
 const Review = require("../models/Review"); // Import the Review model
+const Test = require("../models/Test");
+const AstigmatismTest = require('../models/AstigmatismTest');
+const ColorBlindnessTest = require("../models/ColorBlindnessTest");
+
+// Fetch all test results grouped by result type
+router.get("/color-blindness-counts", async (req, res) => {
+  try {
+    const results = await ColorBlindnessTest.aggregate([
+      {
+        $group: {
+          _id: "$result",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    // Map results to counts
+    const counts = {
+      normal: 0,
+      mild: 0,
+      moderate: 0,
+      severe: 0,
+    };
+
+    results.forEach((result) => {
+      if (result._id.includes("normal")) counts.normal = result.count;
+      else if (result._id.includes("mild")) counts.mild = result.count;
+      else if (result._id.includes("moderate")) counts.moderate = result.count;
+      else if (result._id.includes("severe")) counts.severe = result.count;
+    });
+
+    res.status(200).json(counts);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching color blindness counts." });
+  }
+});
+
+
+// Fetch data for chart
+router.get('/astigmatism-chart', async (req, res) => {
+  try {
+    const allResults = await AstigmatismTest.find();
+
+    // Initialize counters
+    let leftEye = 0;
+    let rightEye = 0;
+    let bothEyes = 0;
+    let noAstigmatism = 0;
+
+    // Categorize results based on the response string
+    allResults.forEach((result) => {
+      if (result.result.includes('LEFT eye')) {
+        leftEye++;
+      } else if (result.result.includes('RIGHT eye')) {
+        rightEye++;
+      } else if (result.result.includes('BOTH eyes')) {
+        bothEyes++;
+      } else {
+        noAstigmatism++;
+      }
+    });
+
+    // Send categorized data
+    res.status(200).json({
+      leftEye,
+      rightEye,
+      bothEyes,
+      noAstigmatism,
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch chart data.' });
+  }
+});
+
 
 // Route to fetch reviews data
 router.get("/reviewsDashboard", async (req, res) => {
@@ -30,7 +104,6 @@ module.exports = router;
 router.get("/manageActive", async (req, res) => {
     try {
       const users = await User.find().select("name email isActivate").lean(); // Use isActivate instead of isActive
-      console.log("Fetched users from DB:", users);  // Log to ensure the data is correct
       res.json({ users });
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -144,6 +217,43 @@ router.delete("/users/:id", async (req, res) => {
         console.error("Error deleting user:", error);
         res.status(500).json({ message: "Internal server error" });
     }
+});
+
+
+// Endpoint to get diagnosis counts
+router.get("/diagnosis-counts", async (req, res) => {
+  try {
+    const diagnosisCounts = await Test.aggregate([
+      {
+        $group: {
+          _id: "$diagnosis", // Group by diagnosis
+          count: { $sum: 1 }, // Count occurrences
+        },
+      },
+    ]);
+
+    // Format the data for the chart
+    const formattedData = {
+      Nearsighted: 0,
+      Farsighted: 0,
+      NormalVision: 0,
+    };
+
+    diagnosisCounts.forEach((item) => {
+      if (item._id.includes("Nearsighted")) {
+        formattedData.Nearsighted = item.count;
+      } else if (item._id.includes("Farsighted")) {
+        formattedData.Farsighted = item.count;
+      } else if (item._id.includes("Normal")) {
+        formattedData.NormalVision = item.count;
+      }
+    });
+
+    res.status(200).json(formattedData);
+  } catch (error) {
+    console.error("Error fetching diagnosis counts:", error);
+    res.status(500).json({ error: "Failed to fetch diagnosis counts" });
+  }
 });
 
 module.exports = router;

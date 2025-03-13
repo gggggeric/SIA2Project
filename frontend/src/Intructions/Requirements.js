@@ -3,13 +3,13 @@ import { FaArrowRight } from "react-icons/fa";
 import Navbar from "../Navigation/Navbar";
 import { useNavigate } from "react-router-dom";
 import reqIcon from "../assets/req.png";
-import "./Requirements.css";
-
+import styles from "./Requirements.module.css"; // Import CSS Module
+import "../Process/LoginModal.css"; // Import the CSS file
 const RequirementsPage = () => {
   const navigate = useNavigate();
   const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
 
-  const isLoggedIn = localStorage.getItem("token"); 
+  const isLoggedIn = localStorage.getItem("token");
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -19,34 +19,34 @@ const RequirementsPage = () => {
 
   const handleNextClick = () => {
     if (!isLoggedIn) {
-      setIsLoginPromptOpen(true); 
+      setIsLoginPromptOpen(true);
       return;
     }
     navigate("/instructions/reminders");
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 pt-20">
+    <div className={styles.minHscreen}>
       <Navbar />
 
-      <section className="text-center">
-        <div className="container mx-auto p-5">
-          <div className="requirements-box">
-            <div className="requirements-content">
-              <img src={reqIcon} alt="Requirements Icon" className="req-icon" />
+      <section className={styles.textCenter}>
+        <div className={styles.container}>
+          <div className={styles.requirementsBox}>
+            <div className={styles.requirementsContent}>
+              <img src={reqIcon} alt="Requirements Icon" className={styles.reqIcon} />
 
-              <div className="requirements-text">
-                <h2 className="requirements-heading">Requirements</h2>
-                <p className="requirements-paragraph">
+              <div className={styles.requirementsText}>
+                <h2 className={styles.requirementsHeading}>Requirements</h2>
+                <p className={styles.requirementsParagraph}>
                   Here are the requirements for the project:
                 </p>
 
-                <ul className="requirements-list">
+                <ul className={styles.requirementsList}>
                   <li>Device’s integrated CAMERA or external camera</li>
                   <li>Device’s integrated MICROPHONE or any external microphone</li>
                 </ul>
 
-                <div className="requirements-note">
+                <div className={styles.requirementsNote}>
                   <p>
                     Make sure to fulfill all the necessary requirements before starting the project.
                   </p>
@@ -54,7 +54,7 @@ const RequirementsPage = () => {
               </div>
             </div>
 
-            <button className="next-btn" onClick={handleNextClick}>
+            <button className={styles.nextBtn} onClick={handleNextClick}>
               <FaArrowRight size={50} />
             </button>
           </div>
@@ -62,19 +62,19 @@ const RequirementsPage = () => {
       </section>
 
       {isLoginPromptOpen && (
-        <div className="requirements-login-modal-overlay">
-          <div className="requirements-login-modal-content">
-            <h2>Login Required</h2>
-            <p>You need to login first to proceed.</p>
-            <button
-              onClick={() => (window.location.href = "/login")}
-              className="requirements-login-close-button"
-            >
-              Go to Login
-            </button>
+          <div className="optical-shops-login-modal-overlay">
+            <div className="optical-shops-login-modal-content">
+              <h2>Login Required</h2>
+              <p>You need to login first to use this feature.</p>
+              <button
+                onClick={() => (window.location.href = "/login")}
+                className="optical-shops-login-close-button"
+              >
+                Go to Login
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 };

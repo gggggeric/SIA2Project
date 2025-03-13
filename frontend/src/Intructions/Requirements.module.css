@@ -1,0 +1,153 @@
+/* Container for the requirements box */
+.requirementsBox {
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  max-width: 1000px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: 50px auto; /* Center the whole box */
+}
+
+.requirementsBox:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Content inside the box */
+.requirementsContent {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center contents horizontally */
+  text-align: center; /* Center text content */
+  gap: 30px;
+}
+
+/* Icon styling */
+.reqIcon {
+  width: 40%;
+  border-radius: 15px;
+  transition: transform 0.3s ease;
+}
+
+.reqIcon:hover {
+  transform: scale(1.05);
+}
+
+/* Text section */
+.requirementsText {
+  flex: 1;
+  text-align: center; /* Center text inside */
+}
+
+.requirementsHeading {
+  color: #352e4b;
+  font-size: 36px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.requirementsParagraph {
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.requirementsList {
+  list-style-type: disc;
+  margin-left: 20px;
+  font-size: 16px;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  text-align: left; /* Keep list items aligned for readability */
+}
+
+.requirementsNote {
+  font-size: 16px;
+  color: #777;
+  font-style: italic;
+}
+
+/* Next button */
+.nextBtn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: #352e4b;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nextBtn:hover {
+  background: #2b2640;
+  transform: scale(1.1);
+}
+
+/* Login modal overlay */
+.requirementsLoginModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.requirementsLoginModalContent {
+  background: #ffffff;
+  color: #352e4b;
+  padding: 40px;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 450px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.requirementsLoginCloseButton {
+  background-color: #352e4b;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.requirementsLoginCloseButton:hover {
+  background-color: #2b2640;
+}
+
+/* Utility classes */
+.minHscreen {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}

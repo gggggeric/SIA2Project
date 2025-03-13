@@ -1,14 +1,18 @@
+/* OpticalShops.css */
+
 /* Scope all styles to prevent conflicts */
 .optical-shops-page {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    padding-bottom: 60px; /* Added more padding at the bottom */
     font-family: Arial, sans-serif;
     width: 100vw;
     height: 90vh;
     margin: 0;
     box-sizing: border-box;
+    background: linear-gradient(135deg, #f5f5f5, #e0e0e0); /* Subtle gradient background */
 }
 
 /* Navbar spacing */
@@ -25,15 +29,16 @@
 .page-title {
     color: #4B0082; /* Updated to requested color */
     text-align: center;
-    font-size: 2rem;
+    font-size: 2.5rem;
     margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
 }
 
 /* Layout: Side-by-side map and list */
 .map-location-container {
     display: flex;
     justify-content: center;
-    gap: 15px;
+    gap: 20px;
     width: 100%;
     height: 75vh;
 }
@@ -46,6 +51,13 @@
     border-radius: 12px;
     overflow: hidden;
     width: 100%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* 3D shadow effect */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.map-container:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
 }
 
 /* Location List */
@@ -58,14 +70,23 @@
     padding: 20px;
     text-align: left;
     width: 100%;
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* 3D shadow effect */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.location-list:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
 }
 
 /* Location List Title */
 .location-list h2 {
     color: #4B0082;
-    font-size: 1.6rem;
-    margin-bottom: 12px;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
     text-align: center;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
 }
 
 /* Location Items */
@@ -80,7 +101,7 @@
     border-bottom: 1px solid #ddd;
     font-size: 1.1rem;
     color: #333;
-    transition: background 0.3s ease-in-out;
+    transition: background 0.3s ease-in-out, transform 0.3s ease;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -88,6 +109,7 @@
 
 .location-list li:hover {
     background: #f4f4f9;
+    transform: translateX(5px); /* Slight shift on hover */
     cursor: pointer;
 }
 
@@ -100,38 +122,47 @@
     font-size: 1rem;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 3D shadow effect */
 }
 
 .direction-btn:hover {
     background: #4B0082;
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
 }
 
 /* Popup Content Fix */
 .popup-content {
     min-width: 160px; /* Ensures enough space for text */
     text-align: center;
-    padding: 5px;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 3D shadow effect */
 }
 
 /* Fix for squished buttons inside popups */
 .popup-content .direction-btn {
     display: block;
     width: 100%; /* Makes button take full width */
-    padding: 6px 10px;
-    margin-top: 5px;
+    padding: 8px 12px;
+    margin-top: 10px;
     background-color: #007bff;
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 5px;
     font-size: 0.9rem;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .popup-content .direction-btn:hover {
     background-color: #0056b3;
+    transform: translateY(-2px); /* Slight lift on hover */
 }
 
+/* Login Modal */
 .optical-shops-login-modal-overlay {
     position: fixed;
     top: 0;
@@ -149,7 +180,7 @@
 .optical-shops-login-modal-content {
     background: #ffffff; /* Clean white modal */
     color: #352e4b; /* Dark violet text for contrast */
-    padding: 50px 40px;
+    padding: 40px;
     border-radius: 20px;
     width: 90%;
     max-width: 450px;
@@ -199,4 +230,16 @@
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Error and Loading Text */
+.error-text, .loading-text {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #dc3545; /* Red for errors */
+    margin-top: 20px;
+}
+
+.loading-text {
+    color: #4B0082; /* Purple for loading */
 }

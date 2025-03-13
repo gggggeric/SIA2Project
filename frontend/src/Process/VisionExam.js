@@ -5,6 +5,7 @@ import styles from "./VisionExam.module.css";
 import eyeTestImage from "../assets/eyetest1.png";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import io from "socket.io-client";
 
 const VisionExamPage = () => {
   const webcamRef = useRef(null);
@@ -14,11 +15,10 @@ const VisionExamPage = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [distanceFeedback, setDistanceFeedback] = useState("");
 
-  const [detectedSpeech, setDetectedSpeech] = useState(() => {
-    const savedSpeech = localStorage.getItem("detectedSpeech");
-    return savedSpeech
-      ? JSON.parse(savedSpeech)
-      : { bothEyes: null, rightEye: null, leftEye: null };
+  const [detectedSpeech, setDetectedSpeech] = useState({
+    botheyes: null,
+    righteye: null,
+    lefteye: null,
   });
 
   const [currentTestDistance, setCurrentTestDistance] = useState("");
@@ -26,6 +26,136 @@ const VisionExamPage = () => {
   const [isListening, setIsListening] = useState(false);
   const [micPermission, setMicPermission] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [currentTestType, setCurrentTestType] = useState(null);
+  const [expectedLetters, setExpectedLetters] = useState("");
+  const [rowLabel, setRowLabel] = useState("");
+  const [isTestRunning, setIsTestRunning] = useState(false);
+  const [countdown, setCountdown] = useState(null);
+  const [isCountdownModalOpen, setIsCountdownModalOpen] = useState(false);
+
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [waitingMessage, setWaitingMessage] = useState("");
+
+  const [socket, setSocket] = useState(null);
+
+  const speak = (text) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1;
+    speechSynthesis.speak(utterance);
+  };
+
+  useEffect(() => {
+    const newSocket = io("http://localhost:5000");
+    setSocket(newSocket);
+    return () => newSocket.close();
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("vision_test_update", (data) => {
+        console.log("WebSocket event received:", data);
+        switch (data.type) {
+          case "start":
+            setCurrentTestType(data.test_type);
+            setRowLabel(data.row_label);
+            setExpectedLetters(data.letters);
+            setIsTestRunning(true);
+            setIsCountdownModalOpen(true);
+            speak(`Please read the row labeled ${data.row_label}: ${data.letters}`);
+            break;
+          case "countdown":
+            setCountdown(data.count);
+            speak(data.count.toString());
+            break;
+          case "waiting":
+            setIsWaiting(true);
+            setWaitingMessage(data.message);
+            speak(data.message);
+            break;
+          case "retry":
+            toast.warn(data.message);
+            speak(data.message);
+            break;
+          case "delay":
+            toast.info(data.message);
+            speak(data.message);
+            break;
+          case "listening":
+            toast.info(data.message);
+            speak(data.message);
+            break;
+          case "error":
+            toast.error(data.message);
+            setIsTestRunning(false);
+            speak(data.message);
+            break;
+          case "result":
+            const eyeKey = data.eye.toLowerCase().replace(" ", "");
+            setDetectedSpeech((prev) => ({
+              ...prev,
+              [eyeKey]: {
+                results: data.results,
+                smallest_readable_row: data.smallest_readable_row,
+                estimated_eye_grade: data.estimated_eye_grade,
+                diagnosis: data.diagnosis,
+              },
+            }));
+
+            // Show pop-up notification with eye grade and diagnosis
+            toast.success(
+              `Test completed for ${data.eye}:\nEye Grade: ${data.estimated_eye_grade}\nDiagnosis: ${data.diagnosis}`,
+              {
+                autoClose: 5000,
+                position: "top-center",
+              }
+            );
+
+            // Save results to localStorage
+            const savedResults = JSON.parse(localStorage.getItem("testResults") || "{}");
+            savedResults[eyeKey] = {
+              estimated_eye_grade: data.estimated_eye_grade,
+              diagnosis: data.diagnosis,
+            };
+            localStorage.setItem("testResults", JSON.stringify(savedResults));
+
+            // Send results to the backend for saving
+            const userId = localStorage.getItem("userId"); // Ensure userId is stored in localStorage
+            if (userId) {
+              axios
+                .post("http://localhost:5001/test/save-test-results", {
+                  userId,
+                  testType: eyeKey,
+                  estimatedEyeGrade: data.estimated_eye_grade,
+                  diagnosis: data.diagnosis,
+                })
+                .then((response) => {
+                  console.log("Test results saved to the database:", response.data);
+                })
+                .catch((error) => {
+                  console.error("Error saving test results:", error);
+                });
+            }
+
+            setIsTestRunning(false);
+            setIsWaiting(false);
+            speak(`Test completed. Results are ready.`);
+            break;
+          default:
+            break;
+        }
+      });
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    if (countdown === 1) {
+      const timer = setTimeout(() => {
+        setIsCountdownModalOpen(false);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
 
   useEffect(() => {
     localStorage.setItem("detectedSpeech", JSON.stringify(detectedSpeech));
@@ -100,6 +230,7 @@ const VisionExamPage = () => {
           setDistance(null);
           setDistanceFeedback("");
         } else {
+          setErrorMessage(null);
           const detectedDistance = response.data.distance_cm;
           setDistance(detectedDistance);
           setExpectedDistance(response.data.expected_distance_cm);
@@ -129,7 +260,14 @@ const VisionExamPage = () => {
       return;
     }
 
+    // Reset the results for the current test type
+    setDetectedSpeech((prev) => ({
+      ...prev,
+      [testType]: null,
+    }));
+
     setIsListening(true);
+    setIsTestRunning(true);
 
     try {
       let endpoint = "";
@@ -141,38 +279,20 @@ const VisionExamPage = () => {
         endpoint = "/vision-test/left-eye";
       }
 
-      // Call the backend to start the vision test
       const response = await axios.post(`http://127.0.0.1:5000${endpoint}`, {}, {
         headers: { "Content-Type": "application/json" },
       });
 
-      // Extract the expected chart letters from the backend's response
-      const expectedText = response.data.near_spoken_text || response.data.far_spoken_text;
-
-      if (expectedText) {
-        // Show an alert with the expected chart letters
-        alert(`Please read the chart showing: ${expectedText}`);
-
-        // Show a toast notification
-        toast.info(`Please read the chart showing: ${expectedText}`, {
-          position: "top-center",
-          autoClose: 5000, // Close after 5 seconds
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+      if (response.data) {
+        setDetectedSpeech((prev) => ({
+          ...prev,
+          [testType]: response.data,
+        }));
       }
-
-      setDetectedSpeech((prev) => ({
-        ...prev,
-        [testType]: response.data,
-      }));
-
-      setIsListening(false);
     } catch (error) {
       console.error(`❌ Error during ${testType} test:`, error);
       setIsListening(false);
+      setIsTestRunning(false);
     }
   };
 
@@ -220,13 +340,25 @@ const VisionExamPage = () => {
       </section>
 
       <div className={styles.buttons}>
-        <button className={styles.elegantButton} onClick={() => handleSpeechRecognition("bothEyes")}>
+        <button
+          className={styles.elegantButton}
+          onClick={() => handleSpeechRecognition("bothEyes")}
+          disabled={isTestRunning}
+        >
           Test Both Eyes
         </button>
-        <button className={styles.elegantButton} onClick={() => handleSpeechRecognition("rightEye")}>
+        <button
+          className={styles.elegantButton}
+          onClick={() => handleSpeechRecognition("rightEye")}
+          disabled={isTestRunning}
+        >
           Test Right Eye
         </button>
-        <button className={styles.elegantButton} onClick={() => handleSpeechRecognition("leftEye")}>
+        <button
+          className={styles.elegantButton}
+          onClick={() => handleSpeechRecognition("leftEye")}
+          disabled={isTestRunning}
+        >
           Test Left Eye
         </button>
         <button className={styles.elegantButton} onClick={() => setIsModalOpen(true)}>
@@ -234,25 +366,36 @@ const VisionExamPage = () => {
         </button>
       </div>
 
+      {isWaiting && (
+        <div className={styles.waitingModal}>
+          <div className={styles.waitingContent}>
+            <h2>Please Wait</h2>
+            <p>{waitingMessage}</p>
+          </div>
+        </div>
+      )}
+
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <div className={styles.testResults}>
           <h3>Test Results</h3>
           <div className={styles.horizontalResults}>
             {Object.entries(detectedSpeech).map(([eye, result]) => (
               <div key={eye} className={styles.resultBox}>
-                <h4>{eye === 'bothEyes' ? '👀 Both Eyes' : eye === 'rightEye' ? '👁️ Right Eye' : '👁️ Left Eye'}</h4>
-                {Object.entries(result).map(([key, value]) => (
-                  <p key={key}>
-                    <strong>{key.replace('_', ' ')}:</strong> {value || 'Unknown'}
-                  </p>
-                ))}
+                <h4>{eye === 'botheyes' ? '👀 Both Eyes' : eye === 'righteye' ? '👁️ Right Eye' : '👁️ Left Eye'}</h4>
+                {result ? (
+                  <>
+                    <p><strong>Estimated Eye Grade:</strong> {result.estimated_eye_grade}</p>
+                    <p><strong>Diagnosis:</strong> {result.diagnosis}</p>
+                  </>
+                ) : (
+                  <p>No test results available.</p>
+                )}
               </div>
             ))}
           </div>
         </div>
       </Modal>
 
-      {/* Toast Container */}
       <ToastContainer
         position="top-center"
         autoClose={5000}

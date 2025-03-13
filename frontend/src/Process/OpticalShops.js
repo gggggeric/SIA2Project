@@ -6,7 +6,7 @@ import Navbar from "../Navigation/Navbar";
 import eyeglassIcon from "../assets/eyeglass.png"; // Eyeglass icon for user
 import pinIconUrl from "../assets/redping.png"; // Classic red pin for optical shops
 import "./OpticalShops.css"; // Ensure styles are applied
-
+import "./LoginModal.css"; // Import the CSS file
 // Custom user location marker (Eyeglass Icon)
 const userIcon = L.icon({
   iconUrl: eyeglassIcon,

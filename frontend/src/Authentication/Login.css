@@ -26,7 +26,7 @@
 }
 
 /* Left Side */
-.login-container .left-side {
+.login-container .auth-left-side {
   flex: 1;
   background: linear-gradient(135deg, #352e4b, #6a5acd);
   color: white;
@@ -40,13 +40,13 @@
   border-right: 3px solid #6a5acd;
 }
 
-.login-container .left-side h1 {
+.login-container  {
   font-size: 30px;
   font-weight: 700;
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
 }
 
-.login-container .left-side p {
+.login-container  {
   font-size: 16px;
   margin-top: 10px;
   opacity: 0.9;
@@ -202,4 +202,10 @@
     width: 100%;
     padding: 30px;
   }
+}
+
+.login-gif {
+  width: 100%;
+  max-width: 400px; /* Adjust size as needed */
+  border-radius: 12px; /* Optional for rounded corners */
 }

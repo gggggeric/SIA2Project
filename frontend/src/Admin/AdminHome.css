@@ -1,5 +1,3 @@
-/* AdminHome.css */
-
 .admin-home-container {
   display: flex;
   flex-direction: column;
@@ -28,13 +26,18 @@
 
 .charts-container {
   display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.chart-row {
+  display: flex;
   justify-content: space-between;
   gap: 30px;
-  margin-top: 20px;
 }
 
 .chart-item {
-  width: 32%; /* Adjust width for better spacing */
+  flex: 1;
   padding: 20px;
   border-radius: 12px;
   background-color: #ffffff;
@@ -44,6 +47,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.chart-item.full-width {
+  flex: 100%; /* Make the diagnosis chart span the full width */
 }
 
 .chart-item:hover {
@@ -69,7 +76,7 @@
 
 /* Make the charts responsive */
 @media screen and (max-width: 768px) {
-  .charts-container {
+  .chart-row {
     flex-direction: column;
     align-items: center;
   }

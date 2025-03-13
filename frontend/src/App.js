@@ -7,7 +7,6 @@ import RequirementsPage from "./Intructions/Requirements";
 import ProtectedRoute from "./ProtectedRoute";
 import RemindersPage from "./Intructions/Reminders";
 import VisionExamPage from "./Process/VisionExam";
-import LandingPage from "./Home/Landing";
 import About from "./Home/About";
 import ForgotPassword from "./Authentication/ForgotPassword";
 import ResetPassword from "./Authentication/ResetPassword";
@@ -22,6 +21,8 @@ import Footer from "./Footer/Footer"; // Import the Footer component
 import ReviewsPage from "./Home/Review";
 import "./App.css"; // Import global styles
 import AdminReviewsPage from "./Admin/AdminReviews";
+import AstigmatismTest from "./Process/AstigmatismExam";
+import ColorBlindTest from "./Process/ColorBlindTest";
 
 function App() {
   return (
@@ -40,7 +41,8 @@ function App() {
             <Route path="/process/near-opticalshops" element={<OpticalShops />} />
             <Route path="/instructions/requirements" element={<RequirementsPage />} />
             <Route path="/reviews" element={<ReviewsPage />} />
-
+            <Route path="/process/astigmatism-exam" element={<AstigmatismTest />} />
+            <Route path="/process/colorblind-exam" element={<ColorBlindTest />} />
             {/* <Route
               path="/home"
               element={
