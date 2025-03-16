@@ -15,7 +15,8 @@ import landingGif from "../assets/GIF/gif.gif";
 import faceShapeGif from '../assets/GIF/face.gif';
 import eyeGradeGif from '../assets/GIF/gif3.gif';
 import opticalShopGif from '../assets/GIF/loc.gif';
-
+import astigmatismTestGif from "../assets/GIF/gif6.gif"; // New import for astigmatism test GIF
+import colorBlindTestGif from "../assets/GIF/gif6.gif"; // New import for color blindness test GIF
 
 const HomePage = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -159,7 +160,7 @@ const HomePage = () => {
 
 
      {/* What Our System Does Section */}
-<Box
+     <Box
   sx={{
     padding: { xs: "4rem 1rem", sm: "5rem 2rem", md: "6rem 4rem" },
     backgroundColor: "#fff",
@@ -185,6 +186,7 @@ const HomePage = () => {
       flexDirection: { xs: "column", md: "row" },
       gap: "3rem",
       justifyContent: "center",
+      flexWrap: "wrap",
     }}
   >
     {/* Feature 1 */}
@@ -309,9 +311,90 @@ const HomePage = () => {
         radius, complete with directions and contact information.
       </Typography>
     </Paper>
+
+    {/* Feature 4 - Astigmatism Test */}
+    <Paper
+      elevation={6}
+      sx={{
+        padding: "2.5rem",
+        borderRadius: "16px",
+        maxWidth: "320px",
+        backgroundColor: "#f9f9f9",
+        boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.12)",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-10px)",
+          boxShadow: "0px 12px 32px rgba(0, 0, 0, 0.2)",
+        },
+      }}
+    >
+      <img
+        src={astigmatismTestGif}
+        alt="Astigmatism Test GIF"
+        style={{ width: "100%", borderRadius: "12px", marginBottom: "1.5rem" }}
+      />
+      <Typography
+        variant="h5"
+        sx={{
+          color: "#2a2250",
+          fontWeight: "bold",
+          marginBottom: "1.5rem",
+          fontFamily: "'Poppins', sans-serif",
+        }}
+      >
+        Astigmatism Test
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ color: "#555", lineHeight: 1.6, fontFamily: "'Open Sans', sans-serif" }}
+      >
+        Our system includes a quick and easy astigmatism test to determine if you have astigmatism
+        and provide recommendations for corrective lenses.
+      </Typography>
+    </Paper>
+
+    {/* Feature 5 - Color Blindness Test */}
+    <Paper
+      elevation={6}
+      sx={{
+        padding: "2.5rem",
+        borderRadius: "16px",
+        maxWidth: "320px",
+        backgroundColor: "#f9f9f9",
+        boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.12)",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-10px)",
+          boxShadow: "0px 12px 32px rgba(0, 0, 0, 0.2)",
+        },
+      }}
+    >
+      <img
+        src={colorBlindTestGif}
+        alt="Color Blindness Test GIF"
+        style={{ width: "100%", borderRadius: "12px", marginBottom: "1.5rem" }}
+      />
+      <Typography
+        variant="h5"
+        sx={{
+          color: "#2a2250",
+          fontWeight: "bold",
+          marginBottom: "1.5rem",
+          fontFamily: "'Poppins', sans-serif",
+        }}
+      >
+        Color Blindness Test
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ color: "#555", lineHeight: 1.6, fontFamily: "'Open Sans', sans-serif" }}
+      >
+        Take our color blindness test to identify any color vision deficiencies and receive guidance
+        on how to manage and adapt to your condition.
+      </Typography>
+    </Paper>
   </Box>
 </Box>
-
 
       {/* Understanding Vision Types Section */}
       <Box

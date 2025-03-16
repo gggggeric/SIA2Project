@@ -23,6 +23,7 @@ import "./App.css"; // Import global styles
 import AdminReviewsPage from "./Admin/AdminReviews";
 import AstigmatismTest from "./Process/AstigmatismExam";
 import ColorBlindTest from "./Process/ColorBlindTest";
+import TermsOfService from "./Home/TermsOfService";
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
             <Route path="/reviews" element={<ReviewsPage />} />
             <Route path="/process/astigmatism-exam" element={<AstigmatismTest />} />
             <Route path="/process/colorblind-exam" element={<ColorBlindTest />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
             {/* <Route
               path="/home"
               element={

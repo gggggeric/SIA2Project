@@ -18,7 +18,7 @@ router.post('/astigmatism-test', async (req, res) => {
     // Update or create the test result for the user
     const testResult = await AstigmatismTest.findOneAndUpdate(
       { userId },
-      { userId, lines, result },
+      { userId, lines, result, timestamp: Date.now() }, // Added timestamp here
       { upsert: true, new: true }
     );
 

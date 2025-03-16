@@ -163,39 +163,63 @@
   background: rgba(255, 255, 255, 0.3); /* Lighter separator */
   margin: 10px auto;
 }
-
+/* Sidebar Logout Button */
 .sidebar-item.logout {
-  padding: 12px 20px; /* Same as other items */
+  padding: 12px 20px; /* Same padding as other items */
   display: flex;
   align-items: center; /* Align icon and text vertically */
-  gap: 10px; 
+  gap: 10px; /* Space between icon and text */
+  margin-top: 0; /* Remove unnecessary spacing */
+}
+/* Sidebar Logout Button */
+/* Sidebar Logout Button */
+.sidebar-item.logout {
+  padding: 12px 20px; /* Same padding as Edit Profile */
+  display: flex;
+  align-items: center; /* Align icon and text vertically */
+  gap: 10px; /* Space between icon and text */
   margin-top: 0; /* Remove unnecessary spacing */
 }
 
+/* Sidebar Logout Button */
+.sidebar-item.logout {
+  padding: 12px 20px; /* Same padding as other items */
+  display: flex;
+  align-items: center; /* Align icon and text vertically */
+  gap: 10px; /* Space between icon and text */
+  margin: 0; /* Remove any extra margin */
+  width: 100%; /* Full width */
+}
+
 .sidebar-item.logout button {
-  color: #ddd;
+  color: red; /* Red text and icon */
   font-weight: bold;
   background: none;
   border: none;
-  font-size: 14px;
+  font-size: 14px; /* Same font size as Edit Profile */
   cursor: pointer;
-  width: 100%; 
-  text-align: left; 
+  width: 100%; /* Full width */
+  text-align: left; /* Align text to the left */
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 20px; /* Ensures same size as other items */
-  border-radius: 8px;
+  gap: 10px; /* Space between icon and text */
+  padding: 0; /* Remove any extra padding */
+  border-radius: 8px; /* Rounded corners */
   box-sizing: border-box; /* Ensures padding doesn't break layout */
+  transition: none; /* Remove transition for hover */
 }
 
+/* Ensure the icon is also red */
+.sidebar-item.logout button .sidebar-icon {
+  color: red; /* Red icon */
+}
+
+/* Remove hover effect */
 .sidebar-item.logout button:hover {
-  background-color: red;
-  color: #fff; 
-  transform: scale(1.05);
+  background-color: transparent; /* No background on hover */
+  color: red; /* Keep text red on hover */
+  border: 1px solid transparent; /* No border on hover */
 }
-
-
 /* Overlay */
 .overlay {
   position: fixed;

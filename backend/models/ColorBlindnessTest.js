@@ -9,6 +9,10 @@ const colorBlindnessTestSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  correctCount: {
+    type: Number, // Add this field to store the number of correct answers
+    required: true,
+  },
   testType: {
     type: String,
     default: "color_blindness",

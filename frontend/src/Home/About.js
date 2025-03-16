@@ -73,7 +73,7 @@ const About = () => {
   };
 
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px" }}>
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 16px", backgroundColor: "#fff" }}>
       <Navbar />
 
       {/* About Us Section */}
@@ -83,15 +83,20 @@ const About = () => {
           padding: 4,
           margin: "24px 0",
           borderRadius: 4,
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#fff",
           textAlign: "center",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <Typography variant="h3" gutterBottom>
+        <Typography
+          variant="h3"
+          gutterBottom
+          sx={{ fontWeight: "bold", textTransform: "uppercase", color: "#2a2250" }}
+        >
           About Us
         </Typography>
-        <Typography variant="body1" paragraph>
-          Welcome to <strong>Optic AI</strong>! Our system is designed to
+        <Typography variant="body1" paragraph sx={{ color: "#555" }}>
+          Welcome to <strong style={{ color: "#2a2250" }}>Optic AI</strong>! Our system is designed to
           revolutionize optical care by integrating AI-powered solutions to
           enhance user experience and provide better vision-related services.
         </Typography>
@@ -115,7 +120,7 @@ const About = () => {
           {
             title: "What Our System Does",
             content: (
-              <ul style={{ textAlign: "left", paddingLeft: 16 }}>
+              <ul style={{ textAlign: "left", paddingLeft: 16, color: "#555" }}>
                 <li>
                   <strong>Eye Grade Prediction:</strong> Uses AI to analyze and
                   predict the grade of your eyes.
@@ -139,7 +144,7 @@ const About = () => {
               sx={{
                 padding: 3,
                 borderRadius: 4,
-                height: "100%",
+                height: "450px", // Increased height to better display images
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
@@ -148,13 +153,15 @@ const About = () => {
                   transform: "translateY(-5px)",
                   boxShadow: 6,
                 },
+                backgroundColor: "#fff",
+                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
               }}
             >
               {/* Use image or GIF based on the section */}
               {item.image ? (
                 <CardMedia
                   component="img"
-                  height="140"
+                  height="200" // Increased height for images
                   image={item.image} // Static image
                   alt={item.title}
                   sx={{ borderRadius: 4, marginBottom: 2 }}
@@ -162,16 +169,20 @@ const About = () => {
               ) : (
                 <CardMedia
                   component="img"
-                  height="140"
+                  height="200" // Increased height for GIF
                   image={item.gif} // GIF
                   alt={item.title}
                   sx={{ borderRadius: 4, marginBottom: 2 }}
                 />
               )}
-              <Typography variant="h5" gutterBottom>
+              <Typography
+                variant="h5"
+                gutterBottom
+                sx={{ fontWeight: "bold", textTransform: "uppercase", color: "#2a2250" }}
+              >
                 {item.title}
               </Typography>
-              <Typography variant="body1">{item.content}</Typography>
+              <Typography variant="body1" sx={{ color: "#555" }}>{item.content}</Typography>
             </Paper>
           </Grid>
         ))}
@@ -184,10 +195,16 @@ const About = () => {
           padding: 4,
           margin: "24px 0",
           borderRadius: 4,
-          backgroundColor: "#f5f5f5",
+          backgroundColor: "#fff",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <Typography variant="h3" gutterBottom align="center">
+        <Typography
+          variant="h3"
+          gutterBottom
+          align="center"
+          sx={{ fontWeight: "bold", textTransform: "uppercase", color: "#2a2250" }}
+        >
           Meet Our Team
         </Typography>
         <Grid container spacing={3}>
@@ -198,9 +215,11 @@ const About = () => {
                   borderRadius: 4,
                   transition: "transform 0.3s, box-shadow 0.3s",
                   "&:hover": {
-                    transform: "translateY(-10px)",
+                    transform: "perspective(1000px) rotateY(10deg) scale(1.05)",
                     boxShadow: 6,
                   },
+                  backgroundColor: "#fff",
+                  boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
                 }}
                 onClick={() => openModal(member)}
               >
@@ -212,13 +231,17 @@ const About = () => {
                   sx={{ borderTopLeftRadius: 4, borderTopRightRadius: 4 }}
                 />
                 <CardContent>
-                  <Typography variant="h6" align="center">
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    sx={{ fontWeight: "bold", color: "#2a2250" }}
+                  >
                     {member.name}
                   </Typography>
                   <Typography
                     variant="body2"
-                    color="text.secondary"
                     align="center"
+                    sx={{ color: "#555" }} // Changed role text color to gray
                   >
                     {member.role}
                   </Typography>
@@ -242,6 +265,7 @@ const About = () => {
             borderRadius: 4,
             boxShadow: 24,
             p: 4,
+            backgroundColor: "#fff",
           }}
         >
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -255,16 +279,19 @@ const About = () => {
               alt={selectedMember?.name}
               style={{ width: 100, height: 100, borderRadius: "50%" }}
             />
-            <Typography variant="h5">{selectedMember?.name}</Typography>
-            <Typography variant="subtitle1" color="text.secondary">
+            <Typography variant="h5" sx={{ color: "#2a2250" }}>{selectedMember?.name}</Typography>
+            <Typography variant="subtitle1" sx={{ color: "#555" }}> {/* Changed role text color to gray */}
               {selectedMember?.role}
             </Typography>
-            <Typography variant="body1" sx={{ mt: 2 }}>
+            <Typography variant="body1" sx={{ mt: 2, color: "#555" }}>
               {selectedMember?.description}
             </Typography>
-            <Typography variant="body2" sx={{ mt: 2 }}>
+            <Typography variant="body2" sx={{ mt: 2, color: "#555" }}>
               <strong>Email:</strong>{" "}
-              <a href={`mailto:${selectedMember?.email}`}>
+              <a
+                href={`mailto:${selectedMember?.email}`}
+                style={{ color: "#2a2250" }}
+              >
                 {selectedMember?.email}
               </a>
             </Typography>

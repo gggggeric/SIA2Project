@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Glasses, Eye, MapPin, User, Edit, LogOut, X, MessageCircle } from "lucide-react";
+import { Glasses, Eye, MapPin, User, Edit, LogOut, X, MessageCircle, EyeOff, Droplet, UserMinus } from "lucide-react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "./Navbar.css";
@@ -173,15 +173,14 @@ const Navbar = () => {
               </li>
               <li className="sidebar-item">
                 <Link to="/process/astigmatism-exam" onClick={() => setSidebarOpen(false)}>
-                  <Eye size={20} className="sidebar-icon" /> Astigmatism Test
+                  <EyeOff size={20} className="sidebar-icon" /> Astigmatism Test
                 </Link>
               </li>
               <li className="sidebar-item">
                 <Link to="/process/colorblind-exam" onClick={() => setSidebarOpen(false)}>
-                  <Eye size={20} className="sidebar-icon" /> Color Blind Test
+                  <Droplet size={20} className="sidebar-icon" /> Color Blind Test
                 </Link>
               </li>
-
             </>
           ) : null}
 
@@ -205,7 +204,7 @@ const Navbar = () => {
               </li>
               <li className="sidebar-item">
                 <Link to="/adminUserActivation" onClick={() => setSidebarOpen(false)}>
-                  <User size={20} className="sidebar-icon" /> Deactivate Users
+                  <UserMinus size={20} className="sidebar-icon" /> Deactivate Users
                 </Link>
               </li>
               <li className="sidebar-item">
@@ -225,7 +224,6 @@ const Navbar = () => {
                   <Edit size={20} className="sidebar-icon" /> Edit Profile
                 </Link>
               </li>
-              <hr className="sidebar-separator" />
               <li className="sidebar-item logout">
                 <button onClick={handleLogout}>
                   <LogOut size={20} className="sidebar-icon" /> Logout

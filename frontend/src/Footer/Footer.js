@@ -127,6 +127,7 @@ const Footer = () => {
             <a href="/">Home</a>
             <a href="/about">About Us</a>
             <Link to="/reviews">View Reviews</Link>
+            <Link to="/terms-of-service">Terms of Service</Link> {/* Added Terms of Service link */}
           </div>
           <div className="footer-social">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">

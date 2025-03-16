@@ -11,7 +11,6 @@ const VisionExamPage = () => {
   const webcamRef = useRef(null);
   const [image, setImage] = useState(null);
   const [distance, setDistance] = useState(null);
-  const [expectedDistance, setExpectedDistance] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [distanceFeedback, setDistanceFeedback] = useState("");
 
@@ -38,6 +37,9 @@ const VisionExamPage = () => {
   const [waitingMessage, setWaitingMessage] = useState("");
 
   const [socket, setSocket] = useState(null);
+
+  // Flag to track if the user is within the correct distance
+  const [isWithinCorrectDistance, setIsWithinCorrectDistance] = useState(false);
 
   const speak = (text) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -139,6 +141,7 @@ const VisionExamPage = () => {
 
             setIsTestRunning(false);
             setIsWaiting(false);
+            setIsWithinCorrectDistance(false); // Reset distance check after test
             speak(`Test completed. Results are ready.`);
             break;
           default:
@@ -175,17 +178,20 @@ const VisionExamPage = () => {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      captureImage();
-    }, 5000);
+    let interval;
+    if (!isWithinCorrectDistance) {
+      interval = setInterval(() => {
+        captureImage();
+      }, 5000);
+    }
     return () => clearInterval(interval);
-  }, []);
+  }, [isWithinCorrectDistance]);
 
   useEffect(() => {
-    if (image) {
-      calculateFaceDistance();
+    if (image && !isWithinCorrectDistance) {
+      checkDistance();
     }
-  }, [image]);
+  }, [image, isWithinCorrectDistance]);
 
   useEffect(() => {
     const startWebcam = async () => {
@@ -218,10 +224,10 @@ const VisionExamPage = () => {
     }
   };
 
-  const calculateFaceDistance = async () => {
+  const checkDistance = async () => {
     if (image) {
       try {
-        const response = await axios.post("http://127.0.0.1:5000/calculate-distance", {
+        const response = await axios.post("http://127.0.0.1:5000//calculate-distance", {
           image: image.split(",")[1],
         });
 
@@ -233,20 +239,18 @@ const VisionExamPage = () => {
           setErrorMessage(null);
           const detectedDistance = response.data.distance_cm;
           setDistance(detectedDistance);
-          setExpectedDistance(response.data.expected_distance_cm);
 
           if (detectedDistance < 40) {
-            setDistanceFeedback("Move back for better accuracy.");
-          } else if (detectedDistance >= 40 && detectedDistance <= 50) {
-            setDistanceFeedback("Perfect distance for Myopia test.");
-          } else if (detectedDistance >= 60 && detectedDistance <= 100) {
-            setDistanceFeedback("Perfect distance for Hyperopia test.");
+            setDistanceFeedback("Move back to position yourself between 40-60 cm.");
+          } else if (detectedDistance >= 40 && detectedDistance <= 60) {
+            setDistanceFeedback("You are within the required distance (40-60 cm).");
+            setIsWithinCorrectDistance(true); // Stop distance calculation
           } else {
-            setDistanceFeedback("Move closer for better accuracy.");
+            setDistanceFeedback("Move closer to position yourself between 40-60 cm.");
           }
         }
       } catch (error) {
-        console.error("Error calculating distance:", error);
+        console.error("Error checking distance:", error);
         setErrorMessage("An error occurred while processing the image.");
         setDistance(null);
         setDistanceFeedback("");
@@ -257,6 +261,12 @@ const VisionExamPage = () => {
   const handleSpeechRecognition = async (testType) => {
     if (!micPermission) {
       alert("Microphone access is required for speech recognition.");
+      return;
+    }
+
+    // Check distance before starting the test
+    if (!isWithinCorrectDistance) {
+      toast.error("Please position yourself between 40-60 cm from the camera.");
       return;
     }
 
@@ -324,7 +334,6 @@ const VisionExamPage = () => {
               distance && (
                 <p>
                   <strong>Face Distance:</strong> {distance} cm <br />
-                  <strong>Expected Distance:</strong> {expectedDistance} cm <br />
                   <strong>Distance Feedback:</strong> {distanceFeedback}
                 </p>
               )
@@ -343,21 +352,21 @@ const VisionExamPage = () => {
         <button
           className={styles.elegantButton}
           onClick={() => handleSpeechRecognition("bothEyes")}
-          disabled={isTestRunning}
+          disabled={isTestRunning || !isWithinCorrectDistance}
         >
           Test Both Eyes
         </button>
         <button
           className={styles.elegantButton}
           onClick={() => handleSpeechRecognition("rightEye")}
-          disabled={isTestRunning}
+          disabled={isTestRunning || !isWithinCorrectDistance}
         >
           Test Right Eye
         </button>
         <button
           className={styles.elegantButton}
           onClick={() => handleSpeechRecognition("leftEye")}
-          disabled={isTestRunning}
+          disabled={isTestRunning || !isWithinCorrectDistance}
         >
           Test Left Eye
         </button>

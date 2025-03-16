@@ -8,18 +8,25 @@ const AstigmatismTest = require('../models/AstigmatismTest');
 const ColorBlindnessTest = require("../models/ColorBlindnessTest");
 
 // Fetch all test results grouped by result type
+// Fetch all test results grouped by result type
 router.get("/color-blindness-counts", async (req, res) => {
   try {
     const results = await ColorBlindnessTest.aggregate([
       {
+        // Optional: Filter out invalid or unwanted result values
+        $match: {
+          result: { $in: ["normal", "mild", "moderate", "severe"] }, // Only include valid results
+        },
+      },
+      {
         $group: {
-          _id: "$result",
-          count: { $sum: 1 },
+          _id: "$result", // Group by the result field
+          count: { $sum: 1 }, // Count the number of documents in each group
         },
       },
     ]);
 
-    // Map results to counts
+    // Initialize counts object
     const counts = {
       normal: 0,
       mild: 0,
@@ -27,11 +34,12 @@ router.get("/color-blindness-counts", async (req, res) => {
       severe: 0,
     };
 
+    // Map results to counts
     results.forEach((result) => {
-      if (result._id.includes("normal")) counts.normal = result.count;
-      else if (result._id.includes("mild")) counts.mild = result.count;
-      else if (result._id.includes("moderate")) counts.moderate = result.count;
-      else if (result._id.includes("severe")) counts.severe = result.count;
+      if (result._id === "normal") counts.normal = result.count;
+      else if (result._id === "mild") counts.mild = result.count;
+      else if (result._id === "moderate") counts.moderate = result.count;
+      else if (result._id === "severe") counts.severe = result.count;
     });
 
     res.status(200).json(counts);
@@ -39,8 +47,6 @@ router.get("/color-blindness-counts", async (req, res) => {
     res.status(500).json({ error: "Error fetching color blindness counts." });
   }
 });
-
-
 // Fetch data for chart
 router.get('/astigmatism-chart', async (req, res) => {
   try {

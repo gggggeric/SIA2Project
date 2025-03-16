@@ -10,7 +10,7 @@ import speech_recognition as sr
 from io import BytesIO
 from PIL import Image
 import time
-
+import re
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -55,8 +55,13 @@ FOCAL_LENGTH = 500      # Adjust based on camera calibration
 LOW_ACCURACY_THRESHOLD = 50.0  # Threshold for low accuracy
 HIGH_ACCURACY_THRESHOLD = 80.0  # Threshold for normal vision
 
+# Global flag to track if the user is within the correct distance
+is_within_correct_distance = False
+
 @app.route("/calculate-distance", methods=["POST"])
 def calculate_distance():
+    global is_within_correct_distance
+
     data = request.json
     if "image" not in data:
         return jsonify({"error": "No image data provided"}), 400
@@ -78,9 +83,11 @@ def calculate_distance():
         face_width_in_pixels = w
         distance = (FOCAL_LENGTH * REAL_FACE_WIDTH) / face_width_in_pixels
 
-        if not (30 <= distance <= 100):
-            return jsonify({"error": "Please position yourself between 30-100 cm from the screen."}), 400
+        if not (40 <= distance <= 60):  # Ensure user is within 40-60 cm
+            is_within_correct_distance = False
+            return jsonify({"error": "Please position yourself between 40-60 cm from the screen."}), 400
 
+        is_within_correct_distance = True
         return jsonify({"distance_cm": round(distance, 2), "message": "Correct distance. Proceed with the test."})
     except Exception as e:
         logger.error(f"Processing error: {str(e)}")
@@ -115,25 +122,17 @@ def predict_face_shape():
         logger.error(f"Processing error: {str(e)}")
         return jsonify({"error": f"Processing error: {str(e)}"}), 500
 
-def diagnose_vision(near_accuracy, far_accuracy, near_text, far_text):
-    # Function to find the closest matching chart line
-    def find_closest_chart_line(text):
-        text_cleaned = text.replace(" ", "").upper()  # Remove spaces and convert to uppercase
-        for key, value in chart_lines.items():
-            if text_cleaned in value:  # Check if the cleaned text is a substring of the chart line
-                return key
-        return None
-
-    # Find the closest matching chart line for near_text and far_text
-    near_chart_line = find_closest_chart_line(near_text)
-    far_chart_line = find_closest_chart_line(far_text)
-
+def diagnose_vision(results):
+    """
+    Diagnose vision based on the smallest readable row and accuracy thresholds.
+    """
     # Determine the smallest readable row
     smallest_readable_row = None
-    if near_chart_line:
-        smallest_readable_row = near_chart_line
-    elif far_chart_line:
-        smallest_readable_row = far_chart_line
+    for row_label in chart_lines.keys():
+        if results[row_label]["accuracy"] >= LOW_ACCURACY_THRESHOLD:
+            smallest_readable_row = row_label
+        else:
+            break  # Stop at the first row where accuracy is below the threshold
 
     # Diagnose vision based on the smallest readable row
     if smallest_readable_row:
@@ -147,61 +146,35 @@ def diagnose_vision(near_accuracy, far_accuracy, near_text, far_text):
     # Unable to determine
     return "Vision Condition Unclear: Further testing may be required."
 
-def estimate_eye_grade(near_text, far_text):
+def estimate_eye_grade(results):
+    """
+    Estimate the eye grade based on the smallest readable row and accuracy.
+    """
     grade_map = {
-        "20/200": "-4.00",  # Severe myopia
-        "20/100": "-3.00",  # Moderate myopia
-        "20/70": "-2.00",   # Mild myopia
-        "20/50": "-1.50",   # Mild myopia
-        "20/40": "-1.00",   # Mild myopia
-        "20/30": "-0.75",   # Very mild myopia
-        "20/25": "-0.50",   # Very mild myopia
-        "20/20": "0.00",    # Normal vision
+        "20/200": -4.00,  # Severe myopia
+        "20/100": -3.00,  # Moderate myopia
+        "20/70": -2.00,   # Mild myopia
+        "20/50": -1.50,   # Mild myopia
+        "20/40": -1.00,   # Mild myopia
+        "20/30": -0.75,   # Very mild myopia
+        "20/25": -0.50,   # Very mild myopia
+        "20/20": 0.00,    # Normal vision
     }
-
-    farsighted_grade_map = {
-        "20/200": "+4.00",  # Severe hyperopia
-        "20/100": "+3.00",  # Moderate hyperopia
-        "20/70": "+2.00",   # Mild hyperopia
-        "20/50": "+1.50",   # Mild hyperopia
-        "20/40": "+1.00",   # Mild hyperopia
-        "20/30": "+0.75",   # Very mild hyperopia
-        "20/25": "+0.50",   # Very mild hyperopia
-        "20/20": "0.00",    # Normal vision
-    }
-
-    # Function to find the closest matching chart line
-    def find_closest_chart_line(text):
-        text_cleaned = text.replace(" ", "").upper()  # Remove spaces and convert to uppercase
-        for key, value in chart_lines.items():
-            if text_cleaned in value:  # Check if the cleaned text is a substring of the chart line
-                return key
-        return None
-
-    # Find the closest matching chart line for near_text and far_text
-    near_chart_line = find_closest_chart_line(near_text)
-    far_chart_line = find_closest_chart_line(far_text)
-
-    # Log the values for debugging
-    logger.info(f"Near Text: {near_text}, Near Chart Line: {near_chart_line}")
-    logger.info(f"Far Text: {far_text}, Far Chart Line: {far_chart_line}")
 
     # Determine the smallest readable row
     smallest_readable_row = None
-    if near_chart_line:
-        smallest_readable_row = near_chart_line
-    elif far_chart_line:
-        smallest_readable_row = far_chart_line
+    for row_label in chart_lines.keys():
+        if results[row_label]["accuracy"] >= LOW_ACCURACY_THRESHOLD:
+            smallest_readable_row = row_label
+        else:
+            break  # Stop at the first row where accuracy is below the threshold
 
     # Estimate eye grade based on the smallest readable row
     if smallest_readable_row:
-        if smallest_readable_row in grade_map:
-            return grade_map[smallest_readable_row]
-        elif smallest_readable_row in farsighted_grade_map:
-            return farsighted_grade_map[smallest_readable_row]
+        return grade_map.get(smallest_readable_row, -4.00)  # Default to severe myopia if no mapping exists
 
-    # Unable to determine
-    return "Unknown"
+    # If no row meets the threshold, assume the worst case (e.g., 20/200)
+    return grade_map["20/200"]  # Default to severe myopia if no readable row is found
 
 def test_vision(recognizer, source, expected_text, test_type, row_label):
     max_attempts = 3  # Maximum number of attempts to get a valid response
@@ -233,6 +206,10 @@ def test_vision(recognizer, source, expected_text, test_type, row_label):
             logger.info("User input received. Processing...")
 
             spoken_text = recognizer.recognize_google(audio).strip().upper()
+
+            if spoken_text.lower() == "skip":
+                logger.info("User chose to skip this row.")
+                return 0, "skip"
 
             # Log raw and cleaned user response
             logger.info(f"User said (raw): '{spoken_text}'")
@@ -295,28 +272,26 @@ def run_vision_test(eye_type):
                     "spoken_text": spoken_text
                 }
 
-                if accuracy < LOW_ACCURACY_THRESHOLD:
-                    logger.info(f"Accuracy below threshold. Stopping test.")
-                    break
+                if spoken_text == "skip":
+                    logger.info(f"User skipped row {row_label}. Moving to next row.")
+                    results[row_label]["accuracy"] = 0  # Mark skipped rows as failed
+                    continue
 
+                if accuracy < LOW_ACCURACY_THRESHOLD:
+                    logger.info(f"Accuracy below threshold. Moving to next row.")
+                    results[row_label]["accuracy"] = 0  # Mark failed rows
+
+            # Determine the smallest readable row
             smallest_readable_row = None
             for row_label in rows_to_test:
                 if results[row_label]["accuracy"] >= LOW_ACCURACY_THRESHOLD:
                     smallest_readable_row = row_label
                 else:
-                    break
+                    break  # Stop at the first row where accuracy is below the threshold
 
-            estimated_eye_grade = estimate_eye_grade(
-                results[smallest_readable_row]["spoken_text"] if smallest_readable_row else "",
-                ""
-            )
-
-            # Determine vision type (Nearsighted, Farsighted, or Normal)
-            near_accuracy = results.get("20/20", {}).get("accuracy", 0)
-            far_accuracy = results.get("20/200", {}).get("accuracy", 0)
-            near_text = results.get("20/20", {}).get("spoken_text", "")
-            far_text = results.get("20/200", {}).get("spoken_text", "")
-            diagnosis = diagnose_vision(near_accuracy, far_accuracy, near_text, far_text)
+            # Estimate eye grade and diagnose vision
+            estimated_eye_grade = estimate_eye_grade(results)
+            diagnosis = diagnose_vision(results)
 
             # Print results in the backend
             logger.info(f"Vision Test Results for {eye_type}:")
@@ -357,6 +332,18 @@ def vision_test_left():
 @app.route("/vision-test/right-eye", methods=["POST"])
 def vision_test_right():
     return run_vision_test("Right Eye")
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Astigmatism Line Mapping
 ASTIGMATISM_MAP = {
@@ -426,35 +413,88 @@ def astigmatism_test():
 
 
 #color blindess
-
 # Correct answers for each image
 correct_answers = {
-    "img1": "74",
-    "img2": "27",
-    "img3": "42"
+    "2 (1).png": "2",
+    "2 (2).png": "2",
+    "2 (3).png": "2",
+    "2 (4).png": "2",
+    "2 (5).png": "2",
+    "2 (6).png": "2",
+    "3.png": "3",
+    "5 (2).png": "5",
+    "5.png": "5",
+    "6.png": "6",
+    "7 (2).png": "7",
+    "7 (3).png": "7",
+    "7.png": "7",
+    "8.png": "8",
+    "9.png": "9",
+    "10.png": "10",
+    "12 (2).png": "12",
+    "12.png": "12",
+    "14.png": "14",
+    "16.png": "16",
+    "18.png": "18",
+    "21.png": "21",
+    "26 (2).png": "26",
+    "26.png": "26",
+    "53.png": "53",
+    "27.png": "27",
+    "29.png": "29",
+    "39.png": "39",
+    "42 (2).png": "42",
+    "42 (3).png": "42",
+    "42.png": "42",
+    "45 (2).png": "45",
+    "45.png": "45",
+    "53.png": "53",
+    "56.png": "56",
+    "57.png": "57",
+    "59.png": "59",
+    "70.png": "70",
+    "71 (2).png": "71",
+    "71.png": "71",
+    "74 (2).png": "74",
+    "74.png": "74",
+    "83.png": "83",
+    "96.png": "96",
+    "97.png": "97",
 }
 
 @app.route('/color-blindness-test', methods=['POST'])
 def color_blindness_test():
     data = request.json.get('answers', [])
-    if not data or len(data) != 3:
-        return jsonify({"error": "Please provide 3 answers."}), 400
+    if not data or len(data) != 45:
+        return jsonify({"error": "Please provide 45 answers."}), 400
+
+    # Log incoming data for debugging
+    print("Incoming data:", data)
 
     score = 0
-    for i, key in enumerate(correct_answers.keys()):
-        if data[i].strip() == correct_answers[key]:
+    for answer in data:
+        image_name = answer.get("imageName")
+        user_answer = answer.get("userAnswer")
+
+        # Normalize the image name by removing the hash part
+        normalized_image_name = re.sub(r'\.[a-f0-9]+\.png$', '.png', image_name)
+
+        print(f"Checking: {normalized_image_name} -> User Answer: {user_answer}, Correct Answer: {correct_answers.get(normalized_image_name)}")
+
+        if normalized_image_name in correct_answers and str(user_answer).strip() == str(correct_answers[normalized_image_name]).strip():
             score += 1
 
-    if score == 3:
-        result = "You have normal color vision."
-    elif score == 2:
-        result = "You may have mild color blindness."
-    elif score == 1:
-        result = "You may have moderate color blindness."
-    else:
-        result = "You may have severe color blindness."
+    print("Total correct answers:", score)
 
-    return jsonify({"result": result})
+    if score >= 40:
+        result = "normal"  # Simplified result string
+    elif score >= 30:
+        result = "mild"    # Simplified result string
+    elif score >= 20:
+        result = "moderate"  # Simplified result string
+    else:
+        result = "severe"  # Simplified result string
+    return jsonify({"result": result, "correctCount": score})
 
 if __name__ == "__main__":
     socketio.run(app, port=5000, debug=True, use_reloader=False)
