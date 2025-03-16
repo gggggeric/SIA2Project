@@ -124,3 +124,17 @@
     height: 200px;
   }
 }
+.export-all-button {
+  background-color: #4B0082;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.export-all-button:hover {
+  background-color: #3A006B;
+}

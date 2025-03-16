@@ -257,7 +257,7 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background-color: #4B0082;
+  background-color: #2a2250;
   color: white;
   border: none;
   border-radius: 5px;
@@ -267,5 +267,5 @@
 }
 
 .exportBtn:hover {
-  background-color: #3A006B;
+  background-color: #2a2250;
 }
