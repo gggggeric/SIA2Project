@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify'; // Removed ToastContainer import
+import { toast } from 'react-toastify';
+import { Filter } from 'bad-words'; // Correct import for the Filter class
 import './Footer.css';
 
 const Footer = () => {
   const [review, setReview] = useState('');
   const [userType, setUserType] = useState(localStorage.getItem('userType'));
+
+  // Initialize the bad-words filter
+  const filter = new Filter();
 
   const updateUserType = () => {
     setUserType(localStorage.getItem('userType'));
@@ -26,6 +30,22 @@ const Footer = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check for bad words using the filter
+    if (filter.isProfane(review)) {
+      toast.dismiss();
+      toast.error('Your review contains inappropriate language. Please revise it.', {
+        position: 'bottom-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: 'colored',
+      });
+      return;
+    }
+
     if (review.trim()) {
       const userEmail = localStorage.getItem('email');
       const user = userEmail || `Anonymous#${Math.floor(Math.random() * 10000)}`;
@@ -127,7 +147,7 @@ const Footer = () => {
             <a href="/">Home</a>
             <a href="/about">About Us</a>
             <Link to="/reviews">View Reviews</Link>
-            <Link to="/terms-of-service">Terms of Service</Link> {/* Added Terms of Service link */}
+            <Link to="/terms-of-service">Terms of Service</Link>
           </div>
           <div className="footer-social">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">

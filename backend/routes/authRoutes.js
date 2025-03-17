@@ -101,7 +101,7 @@ router.post('/login', async (req, res) => {
 
         // Check if user is activated
         if (user.isActivate === "Deactivated") {
-            return res.status(400).json({ message: 'Please verify your email before logging in.' });
+            return res.status(400).json({ message: 'Your account has been deactivated. Please contact support to reactivate.' });
         }
 
         // Check if the email is verified
@@ -113,6 +113,10 @@ router.post('/login', async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: 'Invalid password' });
         }
+
+        // Update the lastActivity timestamp
+        user.lastActivity = Date.now();
+        await user.save();
 
         // Generate JWT token with user ID, email, and userType
         const token = jwt.sign(

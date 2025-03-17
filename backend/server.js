@@ -10,6 +10,8 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const testRoutes = require('./routes/testRoutes');
 const astigRoutes = require('./routes/astigRoutes')
 const colorRoutes = require('./routes/colorBlindnessRoutes')
+const scheduler = require("./config/scheduler"); 
+const faceRoutes = require('./routes/faceShapeRoutes');
 dotenv.config();
 connectDB();
 
@@ -23,6 +25,7 @@ app.use("/users", userRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/test", testRoutes);
 app.use("/astigmatism", astigRoutes);
+app.use("/face-shape", faceRoutes);
 app.use("/color-blindness", colorRoutes);
 
 app.get('/', (req, res) => {

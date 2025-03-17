@@ -6,8 +6,11 @@ const Review = require("../models/Review"); // Import the Review model
 const Test = require("../models/Test");
 const AstigmatismTest = require('../models/AstigmatismTest');
 const ColorBlindnessTest = require("../models/ColorBlindnessTest");
+const vader = require('vader-sentiment');
+const { LanguageServiceClient } = require("@google-cloud/language");
+const client = new LanguageServiceClient();
+const sendMail = require("../config/mailer"); // Import the sendMail function
 
-// Fetch all test results grouped by result type
 // Fetch all test results grouped by result type
 router.get("/color-blindness-counts", async (req, res) => {
   try {
@@ -84,6 +87,18 @@ router.get('/astigmatism-chart', async (req, res) => {
 });
 
 
+async function analyzeSentiment(text) {
+  const document = {
+    content: text,
+    type: "PLAIN_TEXT",
+  };
+
+  const [result] = await client.analyzeSentiment({ document });
+  return result.documentSentiment;
+}
+
+
+
 // Route to fetch reviews data
 router.get("/reviewsDashboard", async (req, res) => {
   try {
@@ -94,19 +109,45 @@ router.get("/reviewsDashboard", async (req, res) => {
     const anonymousCount = reviews.filter((review) => review.user.startsWith("Anonymous#")).length;
     const nonAnonymousCount = reviews.length - anonymousCount;
 
-    // Send the counts as a response
+    // Perform sentiment analysis on each review
+    const analyzedReviews = reviews.map((review) => {
+      // Ensure the review.review field exists and is a string
+      if (!review.review || typeof review.review !== "string") {
+        console.warn("Skipping review with invalid or missing text:", review._id);
+        return null; // Skip this review
+      }
+
+      const result = vader.SentimentIntensityAnalyzer.polarity_scores(review.review); // Analyze the review text
+     
+      return {
+        review: review.review,
+        sentiment: result.compound, // Compound score (ranges from -1 to 1)
+      };
+    }).filter(review => review !== null); // Filter out null values (invalid reviews)
+
+    // Calculate overall sentiment counts
+    let positive = 0;
+    let neutral = 0;
+    let negative = 0;
+    analyzedReviews.forEach((review) => {
+      if (review.sentiment > 0.05) positive++; // Positive if compound score > 0.05
+      else if (review.sentiment < -0.05) negative++; // Negative if compound score < -0.05
+      else neutral++; // Neutral otherwise
+    });
+
+   
+    // Send the counts, reviews, and sentiment analysis as a response
     res.status(200).json({
       anonymousCount,
       nonAnonymousCount,
+      reviews: analyzedReviews,
+      sentiment: { positive, neutral, negative }, // Ensure this is included
     });
   } catch (error) {
     console.error("Error fetching reviews:", error);
     res.status(500).json({ message: "Failed to fetch reviews data" });
   }
 });
-
-module.exports = router;
-
 router.get("/manageActive", async (req, res) => {
     try {
       const users = await User.find().select("name email isActivate").lean(); // Use isActivate instead of isActive
@@ -118,25 +159,41 @@ router.get("/manageActive", async (req, res) => {
   });
   
   
-  router.put("/user/:id/activate", async (req, res) => {
-    const { isActivate } = req.body;  // Make sure you're using isActivate in the request body
-    try {
-      const updatedUser = await User.findByIdAndUpdate(
-        req.params.id, 
-        { isActivate }, 
-        { new: true }
-      );
-  
-      if (!updatedUser) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      res.json({ message: "User activation status updated successfully", user: updatedUser });
-    } catch (error) {
-      console.error("Error updating user activation status:", error);
-      res.status(500).json({ message: "Internal server error" });
+ 
+router.put("/user/:id/activate", async (req, res) => {
+  const { isActivate } = req.body; // Make sure you're using isActivate in the request body
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-  });
+
+    // Update the user's activation status
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      { isActivate },
+      { new: true }
+    );
+
+    // If the user is being deactivated, send a deactivation notice
+    if (isActivate === "Deactivated") {
+      const subject = "Account Deactivation Notice";
+      const text = `Dear ${user.name},\n\nYour account has been deactivated. If this was a mistake, please contact our support team.\n\nBest regards,\nOptic AI Team`;
+
+      // Use the sendMail function to send the deactivation notice
+      await sendMail(user.email, subject, text);
+      console.log(`Deactivation notice sent to ${user.email}`);
+    }
+
+    // Respond with success message and updated user data
+    res.json({ message: "User activation status updated successfully", user: updatedUser });
+  } catch (error) {
+    console.error("Error updating user activation status or sending email:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
   
 router.get("/userDashboard", async (req, res) => {
     try {

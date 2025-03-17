@@ -105,30 +105,49 @@ const FaceShapeDetector = () => {
       setIsLoginPromptOpen(true);
       return;
     }
-
+  
     if (!image) {
       setError("Please upload or capture an image.");
       return;
     }
-
+  
     setLoading(true);
     setError(null);
-
+  
     try {
-      const response = await fetch("http://localhost:5000/predict-face-shape", {
+      // Step 1: Send image to Python server for face shape prediction
+      const predictionResponse = await fetch("http://localhost:5000/predict-face-shape", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image }),
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        setResult(data);
-      } else {
-        setError(data.error || "Failed to detect face shape.");
+  
+      const predictionData = await predictionResponse.json();
+      if (!predictionResponse.ok) {
+        throw new Error(predictionData.error || "Failed to detect face shape.");
       }
+  
+      // Step 2: Save the result to the Node.js backend
+      const userId = localStorage.getItem("userId"); // Get the logged-in user's ID
+      const saveResponse = await fetch("http://localhost:5001/face-shape/save-face-shape", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          faceShape: predictionData.face_shape,
+          recommendedGlasses: predictionData.recommended_glasses,
+        }),
+      });
+  
+      const saveData = await saveResponse.json();
+      if (!saveResponse.ok) {
+        throw new Error(saveData.error || "Failed to save face shape.");
+      }
+  
+      // Step 3: Update the state with the prediction result
+      setResult(predictionData);
     } catch (err) {
-      setError("Server error. Please try again.");
+      setError(err.message || "Server error. Please try again.");
     } finally {
       setLoading(false);
     }

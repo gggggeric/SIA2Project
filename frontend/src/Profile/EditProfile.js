@@ -41,26 +41,30 @@ const EditProfile = () => {
 
   const fetchAllUserData = async () => {
     try {
-      const [userResponse, colorBlindnessResponse, astigmatismResponse] = await Promise.all([
+      const [userResponse, colorBlindnessResponse, astigmatismResponse, faceShapeResponse] = await Promise.all([
         axios.get(`http://localhost:5001/users/users/${userId}`),
         axios.get(`http://localhost:5001/color-blindness/color-blindness-test/${userId}`),
         axios.get(`http://localhost:5001/astigmatism/astigmatism-test/${userId}`),
+        axios.get(`http://localhost:5001/face-shape/face-shape-history/${userId}`), // Fetch face shape data
       ]);
 
       // Convert single objects to arrays
       const colorBlindnessTests = colorBlindnessResponse.data ? [colorBlindnessResponse.data] : [];
       const astigmatismTests = astigmatismResponse.data ? [astigmatismResponse.data] : [];
+      const faceShapeTests = faceShapeResponse.data || []; // Face shape data
 
       setUserData({
         user: userResponse.data,
         colorBlindnessTests,
         astigmatismTests,
+        faceShapeTests, // Add face shape data to userData
       });
 
       return {
         user: userResponse.data,
         colorBlindnessTests,
         astigmatismTests,
+        faceShapeTests, // Return face shape data
       };
     } catch (error) {
       console.error("Error fetching user data for export", error);
@@ -91,7 +95,20 @@ const EditProfile = () => {
       return;
     }
 
-    const doc = new jsPDF();
+    // Create PDF with A4 format and better settings
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    // Set document properties
+    doc.setProperties({
+      title: "User Vision Test Report - Optic AI",
+      subject: "Vision Test Analysis",
+      author: "TUP-Taguig",
+      creator: "Optic AI",
+    });
 
     // Convert the logo to a data URL
     const img = new Image();
@@ -102,41 +119,87 @@ const EditProfile = () => {
       canvas.height = img.height;
       const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
-      const dataUrl = canvas.toDataURL("image/png");
+      const logoDataUrl = canvas.toDataURL("image/png");
 
+      // ===== HEADER SECTION =====
       // Add the logo
-      doc.addImage(dataUrl, "PNG", 10, 10, 30, 30);
+      doc.addImage(logoDataUrl, "PNG", 15, 15, 25, 25);
 
-      // Title Section
+      // Add header text with right alignment
       doc.setFontSize(16).setFont("helvetica", "bold");
-      doc.text("Technological University of the Philippines - Taguig", 50, 20);
-      doc.setFontSize(14).text("Optic AI - Vision Testing System", 50, 30);
+      doc.text("Technological University of the Philippines - Taguig", 195, 20, {
+        align: "right",
+      });
 
-      // Team Names (Left Side)
-      doc.setFontSize(12).setFont("helvetica", "normal");
-      doc.text("Team Members:", 10, 50);
-      doc.text("Morit Geric T.", 10, 60);
-      doc.text("Bacala Nicole", 10, 70);
-      doc.text("Gone Krizel", 10, 80);
-      doc.text("Giana Mico", 10, 90);
-
-      // Divider
-      doc.setDrawColor(0).setLineWidth(0.5).line(10, 100, 200, 100);
-
-      // User Info
-      doc.setFontSize(12).setFont("helvetica", "normal");
-      doc.text(`Name: ${userData.user.name}`, 10, 110);
-      doc.text(`Email: ${userData.user.email}`, 10, 120);
-      doc.text(`Address: ${userData.user.address}`, 10, 130);
-
-      // Vision Test Results Section
       doc.setFontSize(14).setFont("helvetica", "bold");
-      doc.text("Vision Test Results", 10, 150);
+      doc.text("Optic AI - Vision Testing System", 195, 28, { align: "right" });
+
+      // Add date with right alignment
+      const today = new Date();
+      doc.setFontSize(10).setFont("helvetica", "normal");
+      doc.text(`Report Date: ${today.toLocaleDateString()}`, 195, 35, {
+        align: "right",
+      });
+
+      // Add decorative header line
+      doc.setDrawColor(0, 51, 102); // Dark blue
+      doc.setLineWidth(0.8);
+      doc.line(15, 42, 195, 42);
+
+      // ===== TEAM MEMBERS SECTION =====
+      doc.setFontSize(12).setFont("helvetica", "bold");
+      doc.text("Team Members:", 15, 50);
+
+      doc.setFontSize(11).setFont("helvetica", "normal");
+      const teamMembers = [
+        "Morit Geric T.",
+        "Bacala Nicole",
+        "Gone Krizel",
+        "Giana Mico",
+      ];
+
+      // Create two-column layout for team members
+      const leftCol = teamMembers.slice(0, 2);
+      const rightCol = teamMembers.slice(2);
+
+      leftCol.forEach((member, idx) => {
+        doc.text(`• ${member}`, 20, 58 + idx * 7);
+      });
+
+      rightCol.forEach((member, idx) => {
+        doc.text(`• ${member}`, 90, 58 + idx * 7);
+      });
+
+      // Add section divider
+      doc.setDrawColor(180, 180, 180); // Light gray
+      doc.setLineWidth(0.3);
+      doc.line(15, 75, 195, 75);
+
+      // ===== USER INFO SECTION =====
+      doc.setFontSize(14).setFont("helvetica", "bold");
+      doc.text("User Information", 15, 85);
+
+      doc.setFontSize(11).setFont("helvetica", "normal");
+      doc.text(`Name: ${userData.user.name}`, 15, 95);
+      doc.text(`Email: ${userData.user.email}`, 15, 105);
+      doc.text(`Address: ${userData.user.address}`, 15, 115);
+
+      // Add section divider
+      doc.setDrawColor(180, 180, 180); // Light gray
+      doc.setLineWidth(0.3);
+      doc.line(15, 125, 195, 125);
+
+      // ===== VISION TEST RESULTS SECTION =====
+      doc.setFontSize(14).setFont("helvetica", "bold");
+      doc.text("Vision Test Results", 15, 135);
 
       // Color Blindness Test
-      doc.setFontSize(12).text("Color Blindness Test", 10, 160);
+      doc.setFontSize(12).setFont("helvetica", "bold"); // Bold heading
+      doc.text("Color Blindness Test", 15, 145);
+      doc.setFont("helvetica", "normal"); // Reset font to normal
+
       if (userData.colorBlindnessTests.length > 0) {
-        let startY = 170;
+        let startY = 155;
         doc.setFontSize(10).setFont("helvetica", "bold");
         doc.text("Test #", 15, startY);
         doc.text("Result", 40, startY);
@@ -152,50 +215,128 @@ const EditProfile = () => {
           doc.text(`${new Date(test.timestamp).toLocaleDateString()}`, 130, startY);
         });
       } else {
-        doc.text("No color blindness test data available.", 15, 170);
+        doc.text("No color blindness test data available.", 15, 155);
       }
 
       // Astigmatism Test
-      doc.setFontSize(12).text("Astigmatism Test", 10, 200);
+      doc.setFontSize(12).setFont("helvetica", "bold"); // Bold heading
+      doc.text("Astigmatism Test", 15, 185);
+      doc.setFont("helvetica", "normal"); // Reset font to normal
+
       if (userData.astigmatismTests.length > 0) {
-        let startY = 210;
+        let startY = 195;
         doc.setFontSize(10).setFont("helvetica", "bold");
         doc.text("Test #", 15, startY);
         doc.text("Result", 40, startY);
         doc.text("Date", 130, startY);
-
+      
         doc.setFont("helvetica", "normal");
         userData.astigmatismTests.forEach((test, index) => {
           startY += 10;
-
+      
           // Simplify astigmatism result
-          const resultText = test.result === "invalid data"
-            ? "Data Unavailable"
-            : test.result.toLowerCase().includes("both")
-            ? "Both Eyes"
-            : `Astigmatism symptoms appear in ${test.result.toUpperCase()} eyes.`;
-
-          const wrappedResult = doc.splitTextToSize(resultText, 100); // Wrap text for clean layout
-
+          const resultText =
+            test.result === "invalid data"
+              ? "Data Unavailable"
+              : test.result.toLowerCase().includes("both")
+              ? "Both Eyes"
+              : `Astigmatism symptoms appear in ${test.result.toUpperCase()} eyes.`;
+      
+          // Wrap the result text to fit within a specific width
+          const wrappedResult = doc.splitTextToSize(resultText, 80); // Adjust width as needed
+      
           // Parse and format the timestamp
-          const timestamp = test.timestamp?.$date?.$numberLong; // Access the nested timestamp
-          const testDate = timestamp
-            ? new Date(parseInt(timestamp)).toLocaleDateString()
-            : "Invalid Date";
-
+          let testDate = "Invalid Date";
+          if (test.timestamp) {
+            // Handle nested timestamp (MongoDB format)
+            if (test.timestamp.$date && test.timestamp.$date.$numberLong) {
+              const timestamp = test.timestamp.$date.$numberLong;
+              testDate = new Date(parseInt(timestamp)).toLocaleDateString();
+            }
+            // Handle plain number timestamp
+            else if (typeof test.timestamp === "number") {
+              testDate = new Date(test.timestamp).toLocaleDateString();
+            }
+            // Handle ISO string timestamp
+            else if (typeof test.timestamp === "string") {
+              testDate = new Date(test.timestamp).toLocaleDateString();
+            }
+            // Handle direct Date object
+            else if (test.timestamp instanceof Date) {
+              testDate = test.timestamp.toLocaleDateString();
+            }
+          }
+      
+          // Add Test #
           doc.text(`${index + 1}`, 15, startY);
+      
+          // Add Result (wrapped text)
           doc.text(wrappedResult, 40, startY);
+      
+          // Add Date
           doc.text(testDate, 130, startY);
-
-          startY += wrappedResult.length * 5; // Adjust spacing based on text length
+      
+          // Adjust spacing based on the number of lines in wrappedResult
+          startY += wrappedResult.length * 5; // Increase spacing for wrapped text
         });
       } else {
-        doc.text("No astigmatism test data available.", 15, 210);
+        doc.text("No astigmatism test data available.", 15, 195);
       }
 
-      // Footer
-      doc.setFontSize(10).setFont("helvetica", "italic");
-      doc.text("Generated by Optic AI - Vision Testing System", 10, 280);
+      // ===== FACE SHAPE SECTION =====
+      doc.setFontSize(14).setFont("helvetica", "bold");
+      doc.text("Face Shape Analysis", 15, 225);
+
+      if (userData.faceShapeTests.length > 0) {
+        let startY = 235;
+        doc.setFontSize(10).setFont("helvetica", "bold");
+        doc.text("Test #", 15, startY);
+        doc.text("Face Shape", 40, startY);
+        doc.text("Recommended Glasses", 80, startY);
+        doc.text("Date", 130, startY);
+
+        doc.setFont("helvetica", "normal");
+        userData.faceShapeTests.forEach((test, index) => {
+          startY += 10;
+
+          // Add Test #
+          doc.text(`${index + 1}`, 15, startY);
+
+          // Add Face Shape
+          doc.text(`${test.faceShape}`, 40, startY);
+
+          // Add Recommended Glasses (with text wrapping)
+          const recommendedGlasses = test.recommendedGlasses;
+          const wrappedGlasses = doc.splitTextToSize(recommendedGlasses, 50); // Wrap text to fit within 50mm width
+          doc.text(wrappedGlasses, 80, startY);
+
+          // Add Date
+          doc.text(`${new Date(test.timestamp).toLocaleDateString()}`, 130, startY);
+
+          // Adjust spacing based on the number of lines in wrappedGlasses
+          startY += wrappedGlasses.length * 5; // Increase spacing for wrapped text
+        });
+      } else {
+        doc.text("No face shape data available.", 15, 235);
+      }
+
+      // ===== FOOTER SECTION =====
+      // Add decorative footer line
+      doc.setDrawColor(0, 51, 102); // Dark blue
+      doc.setLineWidth(0.5);
+      doc.line(15, 280, 195, 280);
+
+      // Add footer text with date and time
+      doc.setFontSize(8).setFont("helvetica", "italic");
+      doc.text("Generated by Optic AI - Vision Testing System", 15, 286);
+
+      doc.setFontSize(8).setFont("helvetica", "normal");
+      doc.text(
+        `Generated on: ${today.toLocaleDateString()} at ${today.toLocaleTimeString()}`,
+        195,
+        286,
+        { align: "right" }
+      );
 
       // Save the PDF
       doc.save("user_vision_report.pdf");

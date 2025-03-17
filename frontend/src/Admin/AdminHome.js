@@ -3,14 +3,27 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../Navigation/Navbar";
 import "./AdminHome.css";
-import { Bar, Pie } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from "chart.js";
+import { Bar, Pie, Line, Doughnut, Radar, PolarArea } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, PointElement, LineElement, RadialLinearScale, Title, Tooltip, Legend } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import tuplogo from "../assets/tuplogo.png"; // Import the logo
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend, ChartDataLabels);
+// Register Chart.js components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ArcElement,
+  PointElement,
+  LineElement,
+  RadialLinearScale,
+  Title,
+  Tooltip,
+  Legend,
+  ChartDataLabels
+);
 
 const AdminHome = () => {
   const navigate = useNavigate();
@@ -25,6 +38,8 @@ const AdminHome = () => {
     moderate: 0,
     severe: 0,
   });
+  const [reviews, setReviews] = useState([]); // Initialize reviews as an empty array
+  const [sentimentResults, setSentimentResults] = useState({ positive: 0, neutral: 0, negative: 0 }); // State for sentiment analysis results
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -45,10 +60,14 @@ const AdminHome = () => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get("http://localhost:5001/admin/reviewsDashboard");
+        console.log("Backend Response:", response.data); // Log the entire response
+
         setReviewsCount({
           anonymous: response.data.anonymousCount,
           nonAnonymous: response.data.nonAnonymousCount,
         });
+        setReviews(response.data.reviews || []); // Ensure reviews is an array
+        setSentimentResults(response.data.sentiment || { positive: 0, neutral: 0, negative: 0 }); // Set sentiment results
       } catch (error) {
         console.error("Error fetching reviews:", error);
       }
@@ -87,218 +106,422 @@ const AdminHome = () => {
     fetchAstigmatismCounts();
     fetchColorBlindnessCounts();
   }, []);
+// Function to export a single chart as PDF
+const exportChartToPDF = (chartId, chartTitle, chartDescription, summaryAndAnalysis) => {
+  // Add sentiment analysis to the summary if the chart is the sentiment donut chart
+  if (chartId === "sentimentDonutChart" && sentimentResults) {
+    summaryAndAnalysis += `\n\n**Sentiment Analysis:** Positive: ${sentimentResults.positive}, Neutral: ${sentimentResults.neutral}, Negative: ${sentimentResults.negative}`;
+  }
 
-  // Function to export a single chart as PDF
-  const exportChartToPDF = (chartId, chartTitle, chartDescription, summaryAndAnalysis) => {
-    const chartElement = document.getElementById(chartId);
-    if (!chartElement) {
-      console.error("Chart element not found!");
-      return;
-    }
+  const chartElement = document.getElementById(chartId);
+  if (!chartElement) {
+    console.error("Chart element not found!");
+    return;
+  }
 
-    html2canvas(chartElement).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const doc = new jsPDF();
+  // Create PDF with A4 format and better settings
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4",
+  });
 
-      // Convert the logo to a data URL
-      const img = new Image();
-      img.src = tuplogo;
-      img.onload = () => {
-        const logoCanvas = document.createElement("canvas");
-        logoCanvas.width = img.width;
-        logoCanvas.height = img.height;
-        const ctx = logoCanvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        const logoDataUrl = logoCanvas.toDataURL("image/png");
+  // Set document properties
+  doc.setProperties({
+    title: `${chartTitle} - Optic AI Report`,
+    subject: "Chart Analysis",
+    author: "TUP-Taguig",
+    creator: "Optic AI",
+  });
 
-        // Add the logo
-        doc.addImage(logoDataUrl, "PNG", 10, 10, 30, 30);
+  // Generate high-quality chart image
+  html2canvas(chartElement, { scale: 3 }).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
 
-        // Title Section
-        doc.setFontSize(16).setFont("helvetica", "bold");
-        doc.text("Technological University of the Philippines - Taguig", 50, 20);
-        doc.setFontSize(14).text("Optic AI - Vision Testing System", 50, 30);
-
-        // Team Names (Left Side)
-        doc.setFontSize(12).setFont("helvetica", "normal");
-        doc.text("Team Members:", 10, 50);
-        doc.text("Morit Geric T.", 10, 60);
-        doc.text("Bacala Nicole", 10, 70);
-        doc.text("Gone Krizel", 10, 80);
-        doc.text("Giana Mico", 10, 90);
-
-        // Divider
-        doc.setDrawColor(0).setLineWidth(0.5).line(10, 100, 200, 100);
-
-        // Chart Title (Centered)
-        doc.setFontSize(14).setFont("helvetica", "bold");
-        const chartTitleWidth = doc.getTextWidth(chartTitle);
-        const chartTitleX = (doc.internal.pageSize.getWidth() - chartTitleWidth) / 2; // Center the title
-        doc.text(chartTitle, chartTitleX, 110);
-
-        // Add the description (Centered)
-        doc.setFontSize(12).setFont("helvetica", "normal");
-        doc.setTextColor(50, 50, 50); // Dark gray text
-        const descriptionLines = doc.splitTextToSize(chartDescription, 180); // Wrap text to fit width
-        const descriptionX = (doc.internal.pageSize.getWidth() - 180) / 2; // Center the description
-        doc.text(descriptionLines, descriptionX, 120); // Position below the chart title
-
-        // Add the chart image (Centered)
-        const imgWidth = 150; // Adjusted width for smaller image
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const chartX = (doc.internal.pageSize.getWidth() - imgWidth) / 2; // Center the chart
-        const chartY = 120 + descriptionLines.length * 5 + 10; // Position below the description
-        doc.addImage(imgData, "PNG", chartX, chartY, imgWidth, imgHeight);
-
-        // Add Summary and Analysis (Centered)
-        doc.setFontSize(12).setFont("helvetica", "bold");
-        doc.text("Summary and Analysis:", descriptionX, chartY + imgHeight + 15); // Position below the chart
-        doc.setFontSize(12).setFont("helvetica", "normal");
-        const summaryLines = doc.splitTextToSize(summaryAndAnalysis, 180); // Wrap text to fit width
-        doc.text(summaryLines, descriptionX, chartY + imgHeight + 25); // Position below the summary title
-
-        // Footer
-        doc.setFontSize(10).setFont("helvetica", "italic");
-        doc.text("Generated by Optic AI - Vision Testing System", 10, 280);
-
-        // Save the PDF
-        doc.save(`${chartTitle.replace(/ /g, "_")}.pdf`);
-      };
-    });
-  };
-
-  // Function to export all charts as a single PDF
-  const exportAllChartsToPDF = async () => {
-    const doc = new jsPDF();
-  
     // Convert the logo to a data URL
     const img = new Image();
     img.src = tuplogo;
-    img.onload = async () => {
+    img.onload = () => {
       const logoCanvas = document.createElement("canvas");
       logoCanvas.width = img.width;
       logoCanvas.height = img.height;
       const ctx = logoCanvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
       const logoDataUrl = logoCanvas.toDataURL("image/png");
-  
+
+      // ===== HEADER SECTION =====
       // Add the logo
-      doc.addImage(logoDataUrl, "PNG", 10, 10, 30, 30);
-  
-      // Title Section
+      doc.addImage(logoDataUrl, "PNG", 15, 15, 25, 25);
+
+      // Add header text with right alignment
       doc.setFontSize(16).setFont("helvetica", "bold");
-      doc.text("Technological University of the Philippines - Taguig", 50, 20);
-      doc.setFontSize(14).text("Optic AI - Vision Testing System", 50, 30);
-  
-      // Team Names (Left Side)
-      doc.setFontSize(12).setFont("helvetica", "normal");
-      doc.text("Team Members:", 10, 50);
-      doc.text("Morit Geric T.", 10, 60);
-      doc.text("Bacala Nicole", 10, 70);
-      doc.text("Gone Krizel", 10, 80);
-      doc.text("Giana Mico", 10, 90);
-  
-      // Divider
-      doc.setDrawColor(0).setLineWidth(0.5).line(10, 100, 200, 100);
-  
-      // Add all charts to the PDF
-      const chartIds = [
-        "userTypeChart",
-        "activationStatusChart",
-        "reviewsChart",
-        "diagnosisChart",
-        "astigmatismChart",
-        "colorBlindnessChart",
-      ];
-  
-      let currentY = 110; // Starting Y position for the first chart
-  
-      for (const chartId of chartIds) {
-        const chartElement = document.getElementById(chartId);
-        if (!chartElement) {
-          console.error(`Chart element ${chartId} not found!`);
-          continue;
-        }
-  
-        // Increase the DPI for better quality
-        const canvas = await html2canvas(chartElement, { scale: 2 }); // Scale up for HD
-        const imgData = canvas.toDataURL("image/png");
-  
-        // Add the chart title
-        const chartTitle = chartElement.parentElement.querySelector("h3").innerText;
-        doc.setFontSize(14).setFont("helvetica", "bold");
-        doc.text(chartTitle, 10, currentY);
-  
-        // Add the chart image (smaller size)
-        const imgWidth = 120; // Smaller width for charts
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        doc.addImage(imgData, "PNG", 10, currentY + 10, imgWidth, imgHeight);
-  
-        // Update the Y position for the next chart
-        currentY += imgHeight + 30; // Add extra spacing between charts
-  
-        // Add a new page if necessary
-        if (currentY > 250) {
-          doc.addPage();
-          currentY = 20; // Reset Y position for the new page
-        }
-      }
-  
-      // Add a new page for the Overall Summary and Analysis
-      doc.addPage();
-      currentY = 20; // Reset Y position for the new page
-  
-      // Add Overall Summary and Analysis
+      doc.text("Technological University of the Philippines - Taguig", 195, 20, { align: "right" });
+
       doc.setFontSize(14).setFont("helvetica", "bold");
-      doc.text("Overall Summary and Analysis", 10, currentY);
-  
-      const overallSummary = `
-        **Summary:**
-  
-        - **User Types:** The system currently has ${userTypeCount.users} regular users and ${userTypeCount.admins} administrators. This indicates a healthy user base with a smaller number of administrators managing the system.
-  
-        - **Activation Status:** Out of the total accounts, ${activationStatusCount.activated} are activated, while ${activationStatusCount.deactivated} are deactivated. This suggests that most users are actively using the system, while the deactivated accounts may represent inactive or banned users.
-  
-        - **Reviews:** There are ${reviewsCount.anonymous} anonymous reviews and ${reviewsCount.nonAnonymous} non-anonymous reviews. The higher number of anonymous reviews suggests that users prefer to remain anonymous when providing feedback, possibly due to privacy concerns.
-  
-        - **Diagnosis:** The diagnosis distribution shows ${diagnosisCounts.Nearsighted} users with nearsightedness, ${diagnosisCounts.Farsighted} with farsightedness, and ${diagnosisCounts.NormalVision} with normal vision. This highlights the importance of vision testing and corrective measures, as a significant number of users experience vision issues.
-  
-        - **Astigmatism:** The astigmatism distribution reveals ${astigmatismCounts.leftEye} cases in the left eye, ${astigmatismCounts.rightEye} in the right eye, ${astigmatismCounts.bothEyes} in both eyes, and ${astigmatismCounts.noAstigmatism} with no astigmatism. This data underscores the need for regular eye examinations, as astigmatism is relatively common.
-  
-        - **Color Blindness:** The color blindness distribution shows ${colorBlindnessCounts.normal} users with normal vision, ${colorBlindnessCounts.mild} with mild color blindness, ${colorBlindnessCounts.moderate} with moderate color blindness, and ${colorBlindnessCounts.severe} with severe color blindness. This emphasizes the importance of accessibility considerations in design and user interfaces.
-  
-        **Analysis:**
-  
-        - The majority of users are regular users, indicating a healthy and active user base. The smaller number of administrators suggests efficient system management.
-  
-        - Most accounts are activated, which reflects active usage of the system. The deactivated accounts may represent users who are no longer active or have been banned.
-  
-        - Anonymous reviews are more common, which could indicate that users prefer to provide feedback without revealing their identity. This may be due to privacy concerns or a desire to remain anonymous.
-  
-        - Normal vision is the most common diagnosis, but a significant number of users experience nearsightedness and farsightedness. This highlights the importance of regular vision testing and corrective measures.
-  
-        - Astigmatism is relatively common, with many users experiencing it in one or both eyes. This underscores the need for regular eye examinations and corrective measures.
-  
-        - A notable percentage of users experience some form of color blindness, which highlights the importance of accessibility considerations in design and user interfaces. Ensuring that the system is accessible to all users, including those with color blindness, is crucial for inclusivity.
-      `;
-  
-      doc.setFontSize(12).setFont("helvetica", "normal");
-      const summaryLines = doc.splitTextToSize(overallSummary, 180); // Wrap text to fit width
-      doc.text(summaryLines, 10, currentY + 10);
-  
-      // Footer
-      doc.setFontSize(10).setFont("helvetica", "italic");
-      doc.text("Generated by Optic AI - Vision Testing System", 10, 280);
-  
-      // Watermark
-      doc.setFontSize(40).setFont("helvetica", "bold");
-      doc.setTextColor(230, 230, 230); // Light gray text
-      doc.text("Optic AI", 50, 150, { angle: 45 });
-  
-      // Save the PDF
-      doc.save("All_Charts_Report.pdf");
+      doc.text("Optic AI - Vision Testing System", 195, 28, { align: "right" });
+
+      // Add date with right alignment
+      const today = new Date();
+      doc.setFontSize(10).setFont("helvetica", "normal");
+      doc.text(`Report Date: ${today.toLocaleDateString()}`, 195, 35, { align: "right" });
+
+      // Add decorative header line
+      doc.setDrawColor(204, 0, 0); // Red line
+      doc.setLineWidth(0.8);
+      doc.line(15, 42, 195, 42);
+
+      // ===== TEAM MEMBERS SECTION =====
+      doc.setFontSize(12).setFont("helvetica", "bold");
+      doc.text("Team Members:", 15, 50);
+
+      doc.setFontSize(11).setFont("helvetica", "normal");
+      const teamMembers = ["Morit Geric T.", "Bacala Nicole", "Gone Krizel", "Giana Mico"];
+
+      // Create two-column layout for team members
+      const leftCol = teamMembers.slice(0, 2);
+      const rightCol = teamMembers.slice(2);
+
+      leftCol.forEach((member, idx) => {
+        doc.text(`• ${member}`, 20, 58 + idx * 7);
+      });
+
+      rightCol.forEach((member, idx) => {
+        doc.text(`• ${member}`, 90, 58 + idx * 7);
+      });
+
+      // Add section divider
+      doc.setDrawColor(204, 0, 0); // Red line
+      doc.setLineWidth(0.3);
+      doc.line(15, 75, 195, 75);
+
+      // ===== CHART TITLE SECTION =====
+      // Add chart title with decorative line
+      doc.setFontSize(14).setFont("helvetica", "bold");
+      doc.text(chartTitle, 15, 85);
+
+      doc.setDrawColor(204, 0, 0); // Red line under title
+      doc.setLineWidth(0.5);
+      doc.line(15, 87, 80, 87);
+
+      // ===== DESCRIPTION SECTION =====
+      // Add the description with proper formatting
+      doc.setFontSize(11).setFont("helvetica", "italic");
+      doc.setTextColor(60, 60, 60); // Dark gray text
+      const descriptionLines = doc.splitTextToSize(chartDescription, 170); // Wrap text to fit width
+      doc.text(descriptionLines, 15, 95);
+
+      // Calculate vertical position after description
+      const descriptionHeight = descriptionLines.length * 5;
+      let currentY = 95 + descriptionHeight + 8;
+
+      // ===== CHART IMAGE SECTION =====
+      // Add the chart image (centered with border)
+      const imgWidth = 160; // Width for chart
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const chartX = (210 - imgWidth) / 2; // Center the chart
+
+      // Add light gray background for chart
+      doc.setFillColor(248, 248, 248); // Very light gray
+      doc.roundedRect(chartX - 2, currentY - 2, imgWidth + 4, imgHeight + 4, 1, 1, "F");
+
+      // Add subtle border around chart
+      doc.setDrawColor(200, 200, 200); // Light gray border
+      doc.setLineWidth(0.3);
+      doc.roundedRect(chartX - 2, currentY - 2, imgWidth + 4, imgHeight + 4, 1, 1, "S");
+
+      // Add the chart image
+      doc.addImage(imgData, "PNG", chartX, currentY, imgWidth, imgHeight);
+
+      // Update Y position for the summary section
+      currentY += imgHeight + 15;
+
+      // ===== SUMMARY & ANALYSIS SECTION =====
+      // Create a highlighted heading for summary
+      doc.setFillColor(240, 240, 240); // Light gray background
+      doc.roundedRect(15, currentY, 180, 8, 1, 1, "F");
+
+      doc.setDrawColor(204, 0, 0); // Red line
+      doc.setLineWidth(0.3);
+      doc.roundedRect(15, currentY, 180, 8, 1, 1, "S");
+
+      doc.setFontSize(12).setFont("helvetica", "bold");
+      doc.setTextColor(204, 0, 0); // Red text
+      doc.text("Summary and Analysis", 105, currentY + 5.5, { align: "center" });
+      doc.setTextColor(0); // Reset to black
+
+      // Add the summary text
+      currentY += 12;
+      doc.setFontSize(11).setFont("helvetica", "normal");
+      const summaryLines = doc.splitTextToSize(summaryAndAnalysis, 175);
+      doc.text(summaryLines, 15, currentY);
+
+      // ===== FOOTER SECTION =====
+      // Add decorative footer line
+      doc.setDrawColor(204, 0, 0); // Red line
+      doc.setLineWidth(0.5);
+      doc.line(15, 280, 195, 280);
+
+      // Add footer text with date and time
+      doc.setFontSize(8).setFont("helvetica", "italic");
+      doc.text("Generated by Optic AI - Vision Testing System", 15, 286);
+
+      doc.setFontSize(8).setFont("helvetica", "normal");
+      doc.text(`Generated on: ${today.toLocaleDateString()} at ${today.toLocaleTimeString()}`, 195, 286, { align: "right" });
+
+      // Save the PDF with a clean filename
+      const cleanFileName = chartTitle.replace(/[^\w\s]/gi, "").replace(/\s+/g, "_");
+      doc.save(`${cleanFileName}_Report.pdf`);
     };
+  });
+};
+
+// Function to export all charts as a single PDF
+const exportAllChartsToPDF = async () => {
+  const doc = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4",
+  });
+
+  // Set document properties
+  doc.setProperties({
+    title: "Optic AI - Vision Testing System Report",
+    subject: "Analytics Report",
+    author: "TUP-Taguig",
+    creator: "Optic AI",
+  });
+
+  // Convert the logo to a data URL
+  const img = new Image();
+  img.src = tuplogo;
+  img.onload = async () => {
+    const logoCanvas = document.createElement("canvas");
+    logoCanvas.width = img.width;
+    logoCanvas.height = img.height;
+    const ctx = logoCanvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+    const logoDataUrl = logoCanvas.toDataURL("image/png");
+
+    // ===== HEADER SECTION =====
+    // Add the logo
+    doc.addImage(logoDataUrl, "PNG", 15, 15, 25, 25);
+
+    // Add header text with right alignment
+    doc.setFontSize(16).setFont("helvetica", "bold");
+    doc.setTextColor(204, 0, 0); // Red color for main header
+    doc.text("Technological University of the Philippines - Taguig", 195, 20, { align: "right" });
+
+    doc.setFontSize(14).setFont("helvetica", "bold");
+    doc.text("Optic AI - Vision Testing System", 195, 28, { align: "right" });
+
+    // Add date with right alignment
+    const today = new Date();
+    doc.setFontSize(10).setFont("helvetica", "normal");
+    doc.setTextColor(0); // Reset to black for normal text
+    doc.text(`Report Date: ${today.toLocaleDateString()}`, 195, 35, { align: "right" });
+
+    // Add decorative header line
+    doc.setDrawColor(204, 0, 0); // Red line
+    doc.setLineWidth(0.8);
+    doc.line(15, 42, 195, 42);
+
+    // ===== TEAM MEMBERS SECTION =====
+    doc.setFontSize(12).setFont("helvetica", "bold");
+    doc.setTextColor(0); // Black color for "Team Members:"
+    doc.text("Team Members:", 15, 50);
+
+    doc.setFontSize(11).setFont("helvetica", "normal");
+    doc.setTextColor(0); // Reset to black for normal text
+    const teamMembers = ["Morit Geric T.", "Bacala Nicole", "Gone Krizel", "Giana Mico"];
+
+    // Create two-column layout for team members
+    const leftCol = teamMembers.slice(0, 2);
+    const rightCol = teamMembers.slice(2);
+
+    leftCol.forEach((member, idx) => {
+      doc.text(`• ${member}`, 20, 58 + idx * 7);
+    });
+
+    rightCol.forEach((member, idx) => {
+      doc.text(`• ${member}`, 90, 58 + idx * 7);
+    });
+
+    // Add section divider
+    doc.setDrawColor(204, 0, 0); // Red for divider
+    doc.setLineWidth(0.3);
+    doc.line(15, 75, 195, 75);
+
+    // ===== CHARTS SECTION =====
+    const chartIds = [
+      "userTypeChart",
+      "activationStatusChart",
+      "reviewsChart",
+      "diagnosisChart",
+      "astigmatismChart",
+      "colorBlindnessChart",
+      "sentimentDonutChart", // Add sentiment donut chart
+    ];
+
+    let currentY = 85; // Starting Y position for the first chart
+    let chartCount = 0;
+
+    for (const chartId of chartIds) {
+      const chartElement = document.getElementById(chartId);
+      if (!chartElement) {
+        console.error(`Chart element ${chartId} not found!`);
+        continue;
+      }
+
+      // Add a new page if necessary (after 2 charts)
+      if (chartCount > 0 && chartCount % 2 === 0) {
+        doc.addPage();
+        currentY = 25; // Reset Y position for the new page
+      }
+
+      // Increase the DPI for better quality
+      const canvas = await html2canvas(chartElement, { scale: 3 }); // Higher scale for better quality
+      const imgData = canvas.toDataURL("image/png");
+
+      // Add chart title with decorative line
+      const chartTitle = chartElement.parentElement.querySelector("h3").innerText;
+      doc.setFontSize(13).setFont("helvetica", "bold");
+      doc.setTextColor(0); // Black color for chart titles
+      doc.text(chartTitle, 15, currentY);
+
+      doc.setDrawColor(204, 0, 0); // Red line under title
+      doc.setLineWidth(0.5);
+      doc.line(15, currentY + 2, 80, currentY + 2);
+
+      doc.setTextColor(0); // Reset to black for normal text
+
+      // For sentiment chart, we'll use fixed dimensions without calculating aspect ratio
+      if (chartId === "sentimentDonutChart") {
+        const imgWidth = 800; // Increased width for better visibility
+        const imgHeight = 100; // Slightly taller for improved readability
+
+        const canvas = await html2canvas(chartElement, { scale: 4 }); // Higher scale for better quality
+        const imgData = canvas.toDataURL("image/png");
+
+        const centerX = (210 - imgWidth) / 2;
+        doc.addImage(imgData, "PNG", centerX, currentY + 6, imgWidth, imgHeight);
+
+        currentY += imgHeight + 30; // Extra spacing for better layout
+      } else {
+        // For other charts, use proportional dimensions
+        const imgWidth = 160;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const centerX = (210 - imgWidth) / 2;
+        doc.addImage(imgData, "PNG", centerX, currentY + 6, imgWidth, imgHeight);
+
+        // Update the Y position for the next chart
+        currentY += imgHeight + 25;
+      }
+
+      chartCount++;
+    }
+
+    // ===== SUMMARY PAGE =====
+    doc.addPage();
+
+    // Add summary title with decorative elements
+    doc.setFillColor(204, 0, 0); // Red background
+    doc.rect(15, 15, 180, 10, "F");
+    doc.setTextColor(255); // White text on red background
+    doc.setFontSize(14).setFont("helvetica", "bold");
+    doc.text("OVERALL SUMMARY AND ANALYSIS", 105, 22, { align: "center" });
+    doc.setTextColor(0); // Reset to black
+
+    let summaryY = 35;
+
+    // Summary sections with better formatting
+    const sections = [
+      {
+        title: "User Types",
+        content: `The system currently has ${userTypeCount.users} regular users and ${userTypeCount.admins} administrators. This indicates a healthy user base with a smaller number of administrators managing the system.`,
+      },
+      {
+        title: "Activation Status",
+        content: `Out of the total accounts, ${activationStatusCount.activated} are activated, while ${activationStatusCount.deactivated} are deactivated. This suggests that most users are actively using the system.`,
+      },
+      {
+        title: "Reviews",
+        content: `There are ${reviewsCount.anonymous} anonymous reviews and ${reviewsCount.nonAnonymous} non-anonymous reviews. The higher number of anonymous reviews suggests users prefer to remain anonymous when providing feedback.`,
+      },
+      {
+        title: "Diagnosis",
+        content: `The diagnosis distribution shows ${diagnosisCounts.Nearsighted} users with nearsightedness, ${diagnosisCounts.Farsighted} with farsightedness, and ${diagnosisCounts.NormalVision} with normal vision.`,
+      },
+      {
+        title: "Astigmatism",
+        content: `The astigmatism distribution reveals ${astigmatismCounts.leftEye} cases in the left eye, ${astigmatismCounts.rightEye} in the right eye, ${astigmatismCounts.bothEyes} in both eyes, and ${astigmatismCounts.noAstigmatism} with no astigmatism.`,
+      },
+      {
+        title: "Color Blindness",
+        content: `The color blindness distribution shows ${colorBlindnessCounts.normal} users with normal vision, ${colorBlindnessCounts.mild} with mild color blindness, ${colorBlindnessCounts.moderate} with moderate color blindness, and ${colorBlindnessCounts.severe} with severe color blindness.`,
+      },
+      {
+        title: "Sentiment Analysis",
+        content: `The sentiment analysis shows ${sentimentResults.positive} positive, ${sentimentResults.neutral} neutral, and ${sentimentResults.negative} negative sentiments. The majority of sentiments are positive, indicating overall user satisfaction with the system.`,
+      },
+    ];
+
+    // Add each section with nice formatting
+    sections.forEach((section) => {
+      doc.setFontSize(12).setFont("helvetica", "bold");
+      doc.setTextColor(0); // Black for section titles
+      doc.text(`• ${section.title}:`, 20, summaryY);
+
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(0); // Black for content text
+      const contentLines = doc.splitTextToSize(section.content, 170);
+      doc.text(contentLines, 25, summaryY + 7);
+
+      summaryY += 7 + contentLines.length * 6 + 5; // Title height + content height + spacing
+    });
+
+    // Add analysis title with similar styling
+    summaryY += 5;
+    doc.setFillColor(204, 0, 0); // Red background
+    doc.rect(15, summaryY, 180, 10, "F");
+    doc.setTextColor(255); // White text on red background
+    doc.setFontSize(14).setFont("helvetica", "bold");
+    doc.text("ANALYSIS", 105, summaryY + 7, { align: "center" });
+    doc.setTextColor(0); // Reset to black
+
+    summaryY += 20;
+
+    // Analysis text
+    doc.setFontSize(11).setFont("helvetica", "normal");
+    const analysis = `The data indicates that the Optic AI system is serving a diverse user base with various vision conditions. The majority of users have normal vision, but significant numbers experience vision issues that require attention. The prevalence of astigmatism and color blindness highlights the importance of comprehensive vision testing. The system's user engagement appears healthy with most accounts remaining active. The preference for anonymous reviews suggests users value privacy when providing feedback about their vision health experiences.`;
+
+    const analysisLines = doc.splitTextToSize(analysis, 175);
+    doc.text(analysisLines, 15, summaryY);
+
+    // ===== FOOTER SECTION =====
+    // Add footer to all pages
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i);
+
+      // Add decorative footer line
+      doc.setDrawColor(204, 0, 0); // Red line
+      doc.setLineWidth(0.5);
+      doc.line(15, 280, 195, 280);
+
+      // Add footer text
+      doc.setFontSize(8).setFont("helvetica", "italic");
+      doc.text("Generated by Optic AI - Vision Testing System", 15, 286);
+
+      // Add page numbers
+      doc.setFontSize(9).setFont("helvetica", "normal");
+      doc.text(`Page ${i} of ${pageCount}`, 195, 286, { align: "right" });
+    }
+
+    // Save the PDF
+    doc.save("Optic_AI_Vision_Testing_Report.pdf");
   };
+};
+
   // Chart Data for User Types (Bar Chart)
   const userTypeChartData = {
     labels: ["Users", "Admins"],
@@ -324,12 +547,11 @@ const AdminHome = () => {
         backgroundColor: ["#28a745", "#dc3545"],
         borderColor: ["#28a745", "#dc3545"],
         borderWidth: 2,
-        hoverBackgroundColor: ["#1E7E34", "#A71D2A"],
       },
     ],
   };
 
-  // Chart Data for Reviews (Bar Chart)
+  // Chart Data for Reviews (Line Chart)
   const reviewsChartData = {
     labels: ["Anonymous", "Non-Anonymous"],
     datasets: [
@@ -339,27 +561,27 @@ const AdminHome = () => {
         backgroundColor: ["#FF6384", "#36A2EB"],
         borderColor: ["#FF6384", "#36A2EB"],
         borderWidth: 2,
-        hoverBackgroundColor: ["#FF4D6A", "#2D8ACB"],
+        fill: false, // No fill for line chart
+        tension: 0.4, // Smooth line
       },
     ],
   };
 
-  // Chart Data for Diagnosis Distribution (Bar Chart)
+  // Chart Data for Diagnosis Distribution (Radar Chart)
   const diagnosisChartData = {
     labels: ["Nearsighted", "Farsighted", "Normal Vision"],
     datasets: [
       {
         label: "Diagnosis Count",
         data: [diagnosisCounts.Nearsighted, diagnosisCounts.Farsighted, diagnosisCounts.NormalVision],
-        backgroundColor: ["#FF6384", "#36A2EB", "#4BC0C0"],
-        borderColor: ["#FF6384", "#36A2EB", "#4BC0C0"],
+        backgroundColor: "rgba(255, 99, 132, 0.2)",
+        borderColor: "rgba(255, 99, 132, 1)",
         borderWidth: 2,
-        hoverBackgroundColor: ["#FF4D6A", "#2D8ACB", "#3BA6A6"],
       },
     ],
   };
 
-  // Chart Data for Astigmatism Distribution (Bar Chart)
+  // Chart Data for Astigmatism Distribution (Polar Area Chart)
   const astigmatismChartData = {
     labels: ["Left Eye", "Right Eye", "Both Eyes", "No Astigmatism"],
     datasets: [
@@ -369,12 +591,11 @@ const AdminHome = () => {
         backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
         borderColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0"],
         borderWidth: 2,
-        hoverBackgroundColor: ["#FF4D6A", "#2D8ACB", "#FFB732", "#3BA6A6"],
       },
     ],
   };
 
-  // Chart Data for Color Blindness Distribution (Bar Chart)
+  // Chart Data for Color Blindness Distribution (Doughnut Chart)
   const colorBlindnessChartData = {
     labels: ["Normal Vision", "Mild Color Blindness", "Moderate Color Blindness", "Severe Color Blindness"],
     datasets: [
@@ -384,7 +605,20 @@ const AdminHome = () => {
         backgroundColor: ["#4BC0C0", "#36A2EB", "#FFCE56", "#FF6384"],
         borderColor: ["#4BC0C0", "#36A2EB", "#FFCE56", "#FF6384"],
         borderWidth: 2,
-        hoverBackgroundColor: ["#3BA6A6", "#2D8ACB", "#FFB732", "#FF4D6A"],
+      },
+    ],
+  };
+
+  // Chart Data for Sentiment Analysis (Donut Chart)
+  const sentimentDonutChartData = {
+    labels: ["Positive", "Neutral", "Negative"],
+    datasets: [
+      {
+        label: "Sentiment Analysis",
+        data: [sentimentResults.positive, sentimentResults.neutral, sentimentResults.negative],
+        backgroundColor: ["#4CAF50", "#FFC107", "#F44336"], // Green, Yellow, Red
+        borderColor: ["#4CAF50", "#FFC107", "#F44336"], // Green, Yellow, Red
+        borderWidth: 2,
       },
     ],
   };
@@ -451,17 +685,17 @@ const AdminHome = () => {
             <div className="chart-item">
               <h3>Reviews Statistics</h3>
               <div id="reviewsChart" className="chart-container">
-                <Bar data={reviewsChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+                <Line data={reviewsChartData} options={{ responsive: true, maintainAspectRatio: false }} />
               </div>
               <p className="chart-description">
-                This bar chart shows the number of anonymous versus non-anonymous reviews submitted by users.
+                This line chart shows the number of anonymous versus non-anonymous reviews submitted by users.
               </p>
               <button
                 onClick={() =>
                   exportChartToPDF(
                     "reviewsChart",
                     "Reviews Statistics",
-                    "This bar chart shows the number of anonymous versus non-anonymous reviews submitted by users.",
+                    "This line chart shows the number of anonymous versus non-anonymous reviews submitted by users.",
                     `**Summary:** The chart indicates that there are ${reviewsCount.anonymous} anonymous reviews and ${reviewsCount.nonAnonymous} non-anonymous reviews.
                     **Analysis:** The higher number of anonymous reviews suggests that users prefer to remain anonymous when providing feedback, possibly due to privacy concerns.`
                   )
@@ -478,17 +712,17 @@ const AdminHome = () => {
             <div className="chart-item full-width">
               <h3>Diagnosis Distribution</h3>
               <div id="diagnosisChart" className="chart-container">
-                <Bar data={diagnosisChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+                <Radar data={diagnosisChartData} options={{ responsive: true, maintainAspectRatio: false }} />
               </div>
               <p className="chart-description">
-                This chart provides an overview of the diagnosis distribution, including nearsightedness, farsightedness, and normal vision.
+                This radar chart provides an overview of the diagnosis distribution, including nearsightedness, farsightedness, and normal vision.
               </p>
               <button
                 onClick={() =>
                   exportChartToPDF(
                     "diagnosisChart",
                     "Diagnosis Distribution",
-                    "This chart provides an overview of the diagnosis distribution, including nearsightedness, farsightedness, and normal vision.",
+                    "This radar chart provides an overview of the diagnosis distribution, including nearsightedness, farsightedness, and normal vision.",
                     `**Summary:** The chart shows that ${diagnosisCounts.Nearsighted} users are nearsighted, ${diagnosisCounts.Farsighted} are farsighted, and ${diagnosisCounts.NormalVision} have normal vision.
                     **Analysis:** The majority of users have normal vision, with a significant number of users experiencing nearsightedness and farsightedness. This highlights the importance of vision testing and corrective measures.`
                   )
@@ -502,17 +736,17 @@ const AdminHome = () => {
             <div className="chart-item full-width">
               <h3>Astigmatism Distribution</h3>
               <div id="astigmatismChart" className="chart-container">
-                <Bar data={astigmatismChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+                <PolarArea data={astigmatismChartData} options={{ responsive: true, maintainAspectRatio: false }} />
               </div>
               <p className="chart-description">
-                This chart details the distribution of astigmatism cases, categorized by left eye, right eye, both eyes, and no astigmatism.
+                This polar area chart details the distribution of astigmatism cases, categorized by left eye, right eye, both eyes, and no astigmatism.
               </p>
               <button
                 onClick={() =>
                   exportChartToPDF(
                     "astigmatismChart",
                     "Astigmatism Distribution",
-                    "This chart details the distribution of astigmatism cases, categorized by left eye, right eye, both eyes, and no astigmatism.",
+                    "This polar area chart details the distribution of astigmatism cases, categorized by left eye, right eye, both eyes, and no astigmatism.",
                     `**Summary:** The chart indicates that ${astigmatismCounts.leftEye} users have astigmatism in the left eye, ${astigmatismCounts.rightEye} in the right eye, ${astigmatismCounts.bothEyes} in both eyes, and ${astigmatismCounts.noAstigmatism} have no astigmatism.
                     **Analysis:** The data shows that astigmatism is relatively common, with a significant number of users experiencing it in one or both eyes. This underscores the need for regular eye examinations.`
                   )
@@ -526,19 +760,61 @@ const AdminHome = () => {
             <div className="chart-item full-width">
               <h3>Color Blindness Distribution</h3>
               <div id="colorBlindnessChart" className="chart-container">
-                <Bar data={colorBlindnessChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+                <Doughnut data={colorBlindnessChartData} options={{ responsive: true, maintainAspectRatio: false }} />
               </div>
               <p className="chart-description">
-                This chart illustrates the distribution of color blindness cases, ranging from normal vision to severe color blindness.
+                This doughnut chart illustrates the distribution of color blindness cases, ranging from normal vision to severe color blindness.
               </p>
               <button
                 onClick={() =>
                   exportChartToPDF(
                     "colorBlindnessChart",
                     "Color Blindness Distribution",
-                    "This chart illustrates the distribution of color blindness cases, ranging from normal vision to severe color blindness.",
+                    "This doughnut chart illustrates the distribution of color blindness cases, ranging from normal vision to severe color blindness.",
                     `**Summary:** The chart shows that ${colorBlindnessCounts.normal} users have normal vision, ${colorBlindnessCounts.mild} have mild color blindness, ${colorBlindnessCounts.moderate} have moderate color blindness, and ${colorBlindnessCounts.severe} have severe color blindness.
                     **Analysis:** The majority of users have normal vision, but a notable percentage experience some form of color blindness. This highlights the importance of accessibility considerations in design and user interfaces.`
+                  )
+                }
+                className="export-button"
+              >
+                Export to PDF
+              </button>
+            </div>
+          </div>
+
+          {/* Third Row: Sentiment Analysis Donut Chart */}
+          <div className="chart-row">
+            <div className="chart-item">
+              <h3>Sentiment Analysis</h3>
+              <div id="sentimentDonutChart" className="chart-container">
+                <Pie
+                  data={sentimentDonutChartData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: "70%", // Makes it a donut chart
+                    plugins: {
+                      datalabels: {
+                        color: "#fff",
+                        font: {
+                          weight: "bold",
+                        },
+                      },
+                    },
+                  }}
+                />
+              </div>
+              <p className="chart-description">
+                This donut chart shows the distribution of sentiment analysis results, including positive, neutral, and negative sentiments.
+              </p>
+              <button
+                onClick={() =>
+                  exportChartToPDF(
+                    "sentimentDonutChart",
+                    "Sentiment Analysis",
+                    "This donut chart shows the distribution of sentiment analysis results, including positive, neutral, and negative sentiments.",
+                    `**Summary:** The chart shows that there are ${sentimentResults.positive} positive, ${sentimentResults.neutral} neutral, and ${sentimentResults.negative} negative sentiments.
+          **Analysis:** The majority of sentiments are positive, indicating overall user satisfaction with the system.`
                   )
                 }
                 className="export-button"

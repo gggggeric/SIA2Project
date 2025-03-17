@@ -14,10 +14,11 @@ import {
 import { Close } from "@mui/icons-material";
 
 // Import team images
-import gianan from "../assets/developers/mico.jpg";
-import morit from "../assets/developers/morit1.jpg";
-import bacala from "../assets/developers/nicole.JPG";
-import gone from "../assets/developers/krizel.jpg";
+import gianan from "../assets/developers/giananFormal.jpg";
+import morit from "../assets/developers/gericFormal.jpg";
+import bacala from "../assets/developers/bacalaFormal.jpg";
+import gone from "../assets/developers/goneFormal.jpg";
+import maamPops from "../assets/developers/maamPopsFormal.jpg"; // Import professor's image
 
 // Import static images for Mission and Vision
 import missionImage from "../assets/mission.png"; // Replace with your image path
@@ -187,6 +188,66 @@ const About = () => {
           </Grid>
         ))}
       </Grid>
+
+      {/* Professor Section */}
+      <Paper
+        elevation={3}
+        sx={{
+          padding: 4,
+          margin: "24px 0",
+          borderRadius: 4,
+          backgroundColor: "#fff",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <Typography
+          variant="h4"
+          gutterBottom
+          align="center"
+          sx={{ fontWeight: "bold", textTransform: "uppercase", color: "#2a2250" }}
+        >
+          Our Professor
+        </Typography>
+        <Grid container justifyContent="center">
+          <Card
+            sx={{
+              borderRadius: 4,
+              transition: "transform 0.3s, box-shadow 0.3s",
+              "&:hover": {
+                transform: "perspective(1000px) rotateY(10deg) scale(1.05)",
+                boxShadow: 6,
+              },
+              backgroundColor: "#fff",
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+              maxWidth: 300,
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="200"
+              image={maamPops} // Professor's image
+              alt="Professor"
+              sx={{ borderTopLeftRadius: 4, borderTopRightRadius: 4 }}
+            />
+            <CardContent>
+              <Typography
+                variant="h6"
+                align="center"
+                sx={{ fontWeight: "bold", color: "#2a2250" }}
+              >
+                Ma'am Pops
+              </Typography>
+              <Typography
+                variant="body2"
+                align="center"
+                sx={{ color: "#555" }} // Changed role text color to gray
+              >
+                Project Adviser
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Paper>
 
       {/* Team Section */}
       <Paper

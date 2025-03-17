@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema({
     enum: ["Activated", "Deactivated"], 
     default: "Deactivated" 
   }, // New field for activation status
+  lastActivity: { type: Date, default: Date.now }, // Timestamp for last activity
 });
 
 module.exports = mongoose.model("User", UserSchema);
