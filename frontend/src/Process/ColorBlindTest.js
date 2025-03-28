@@ -3,64 +3,37 @@ import { useNavigate } from "react-router-dom";
 import Navbar from "../Navigation/Navbar";
 import { Box, Typography, Button, TextField, Paper, Modal } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
-import { CheckCircle, Visibility, NavigateNext, Send } from "@mui/icons-material"; 
+import { CheckCircle, Visibility, NavigateNext, Send } from "@mui/icons-material";
 import "react-toastify/dist/ReactToastify.css";
 import "./ColorBlindTest.css";
 import "./LoginModal.css";
 
-// Import all images
-import img1 from "../assets/colorBlindImages/2 (1).png";
+// Import only the 20 images (removed 39, 53, 59, 21, and 12 (2))
 import img2 from "../assets/colorBlindImages/2 (2).png";
 import img3 from "../assets/colorBlindImages/2 (3).png";
 import img4 from "../assets/colorBlindImages/2 (4).png";
 import img5 from "../assets/colorBlindImages/2 (5).png";
 import img6 from "../assets/colorBlindImages/2 (6).png";
-import img7 from "../assets/colorBlindImages/3.png";
 import img8 from "../assets/colorBlindImages/5 (2).png";
 import img9 from "../assets/colorBlindImages/5.png";
-import img10 from "../assets/colorBlindImages/6.png";
 import img11 from "../assets/colorBlindImages/7 (2).png";
 import img12 from "../assets/colorBlindImages/7 (3).png";
 import img13 from "../assets/colorBlindImages/7.png";
 import img14 from "../assets/colorBlindImages/8.png";
-import img15 from "../assets/colorBlindImages/9.png";
 import img16 from "../assets/colorBlindImages/10.png";
-import img17 from "../assets/colorBlindImages/12 (2).png";
 import img18 from "../assets/colorBlindImages/12.png";
 import img19 from "../assets/colorBlindImages/14.png";
 import img20 from "../assets/colorBlindImages/16.png";
-import img21 from "../assets/colorBlindImages/18.png";
-import img22 from "../assets/colorBlindImages/21.png";
-import img23 from "../assets/colorBlindImages/26 (2).png";
 import img24 from "../assets/colorBlindImages/26.png";
-import img25 from "../assets/colorBlindImages/53.png";
 import img26 from "../assets/colorBlindImages/27.png";
 import img27 from "../assets/colorBlindImages/29.png";
-import img28 from "../assets/colorBlindImages/39.png";
-import img29 from "../assets/colorBlindImages/42 (2).png";
-import img30 from "../assets/colorBlindImages/42 (3).png";
-import img31 from "../assets/colorBlindImages/42.png";
-import img32 from "../assets/colorBlindImages/45 (2).png";
-import img33 from "../assets/colorBlindImages/45.png";
-import img34 from "../assets/colorBlindImages/53.png";
 import img35 from "../assets/colorBlindImages/56.png";
 import img36 from "../assets/colorBlindImages/57.png";
-import img37 from "../assets/colorBlindImages/59.png";
-import img38 from "../assets/colorBlindImages/70.png";
-import img39 from "../assets/colorBlindImages/71 (2).png";
-import img40 from "../assets/colorBlindImages/71.png";
-import img41 from "../assets/colorBlindImages/74 (2).png";
-import img42 from "../assets/colorBlindImages/74.png";
-import img43 from "../assets/colorBlindImages/83.png";
-import img44 from "../assets/colorBlindImages/96.png";
-import img45 from "../assets/colorBlindImages/97.png";
 
+// Images array (20 images)
 const images = [
-  img1, img2, img3, img4, img5, img6, img7, img8, img9, img10,
-  img11, img12, img13, img14, img15, img16, img17, img18, img19, img20,
-  img21, img22, img23, img24, img25, img26, img27, img28, img29, img30,
-  img31, img32, img33, img34, img35, img36, img37, img38, img39, img40,
-  img41, img42, img43, img44, img45,
+  img2, img3, img4, img5, img6, img8, img9, img11, img12, img13,
+  img14, img16, img18, img19, img20, img24, img26, img27, img35, img36
 ];
 
 // Shuffle function using Fisher-Yates algorithm
@@ -73,7 +46,7 @@ const shuffleArray = (array) => {
 };
 
 const ColorBlindTest = () => {
-  const [answers, setAnswers] = useState(Array(45).fill(""));
+  const [answers, setAnswers] = useState(Array(20).fill("")); // 20 answers now
   const [result, setResult] = useState("");
   const [correctCount, setCorrectCount] = useState(0);
   const [openModal, setOpenModal] = useState(false);
@@ -81,7 +54,7 @@ const ColorBlindTest = () => {
   const [isLoginPromptOpen, setIsLoginPromptOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [shuffledImages, setShuffledImages] = useState([]);
-  const [isInstructionsOpen, setIsInstructionsOpen] = useState(true); // State for instructions pop-up
+  const [isInstructionsOpen, setIsInstructionsOpen] = useState(true);
 
   const isLoggedIn = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
@@ -94,7 +67,6 @@ const ColorBlindTest = () => {
       fetchPreviousResult();
     }
 
-    // Shuffle the images when the component mounts
     setShuffledImages(shuffleArray([...images]));
   }, [isLoggedIn, navigate, userId]);
 
@@ -131,10 +103,9 @@ const ColorBlindTest = () => {
       return;
     }
 
-    // Prepare the user's answers with image names
     const userAnswers = shuffledImages.map((image, index) => {
-      const imageName = image.split("/").pop(); // Extract the image filename
-      const normalizedImageName = imageName.replace(/\.[a-f0-9]+\.png$/, ".png"); // Normalize the image name
+      const imageName = image.split("/").pop();
+      const normalizedImageName = imageName.replace(/\.[a-f0-9]+\.png$/, ".png");
       return { imageName: normalizedImageName, userAnswer: answers[index] };
     });
 
@@ -163,7 +134,7 @@ const ColorBlindTest = () => {
 
         if (nodeResponse.ok) {
           toast.success("Test result saved to database!");
-          fetchPreviousResult(); // Refresh previous results
+          fetchPreviousResult();
         } else {
           toast.error(`Error: ${nodeData.error}`);
         }
@@ -235,7 +206,6 @@ const ColorBlindTest = () => {
           padding: { xs: "2rem 1rem", sm: "3rem 2rem", md: "4rem 4rem" },
         }}
       >
-        {/* Test Images Section */}
         <Box
           sx={{
             display: "flex",
@@ -291,7 +261,6 @@ const ColorBlindTest = () => {
           })}
         </Box>
 
-        {/* Actions Section */}
         <Box
           sx={{
             display: "flex",
@@ -361,7 +330,6 @@ const ColorBlindTest = () => {
           </Button>
         </Box>
 
-        {/* Previous Results Section */}
         {previousResult && (
           <Box
             sx={{
@@ -410,7 +378,7 @@ const ColorBlindTest = () => {
                 fontFamily: "'Open Sans', sans-serif",
               }}
             >
-              Correct Answers: {correctCount} / 45
+              Correct Answers: {correctCount} / {images.length}
             </Typography>
             <Button
               variant="contained"
@@ -433,7 +401,6 @@ const ColorBlindTest = () => {
         )}
       </Box>
 
-      {/* Modal for Current Test Result */}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -461,7 +428,7 @@ const ColorBlindTest = () => {
             {result}
           </Typography>
           <Typography sx={{ mt: 2, color: "#555", fontSize: "1.1rem" }}>
-            Correct Answers: {correctCount} / 45
+            Correct Answers: {correctCount} / {images.length}
           </Typography>
           <Button
             onClick={handleCloseModal}
@@ -480,107 +447,104 @@ const ColorBlindTest = () => {
       </Modal>
 
       <Modal
-      open={isInstructionsOpen}
-      onClose={handleCloseInstructions}
-      aria-labelledby="instructions-modal-title"
-      aria-describedby="instructions-modal-description"
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: 450,
-          bgcolor: "background.paper",
-          background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)", // Gradient background
-          boxShadow: 24,
-          p: 4,
-          borderRadius: "15px",
-          textAlign: "center",
-          border: "2px solid #2a2250",
-          animation: "fadeIn 0.5s ease-in-out", // Fade-in animation
-          "@keyframes fadeIn": {
-            "0%": { opacity: 0, transform: "translate(-50%, -60%)" },
-            "100%": { opacity: 1, transform: "translate(-50%, -50%)" },
-          },
-        }}
+        open={isInstructionsOpen}
+        onClose={handleCloseInstructions}
+        aria-labelledby="instructions-modal-title"
+        aria-describedby="instructions-modal-description"
       >
-        {/* Title */}
-        <Typography
-          id="instructions-modal-title"
-          variant="h5"
-          component="h2"
-          sx={{
-            color: "#2a2250",
-            fontWeight: "bold",
-            fontFamily: "'Poppins', sans-serif",
-            mb: 3,
-            textTransform: "uppercase",
-          }}
-        >
-          Test Instructions
-        </Typography>
-
-        {/* Instructions List */}
         <Box
           sx={{
-            textAlign: "left",
-            "& .instruction-item": {
-              display: "flex",
-              alignItems: "center",
-              gap: "1rem",
-              mb: 2,
-              color: "#555",
-              fontSize: "1.1rem",
-              fontFamily: "'Open Sans', sans-serif",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 450,
+            bgcolor: "background.paper",
+            background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: "15px",
+            textAlign: "center",
+            border: "2px solid #2a2250",
+            animation: "fadeIn 0.5s ease-in-out",
+            "@keyframes fadeIn": {
+              "0%": { opacity: 0, transform: "translate(-50%, -60%)" },
+              "100%": { opacity: 1, transform: "translate(-50%, -50%)" },
             },
           }}
         >
-          <div className="instruction-item">
-            <Visibility sx={{ color: "#2a2250", fontSize: "1.5rem" }} /> {/* Icon */}
-            <span>Look at each image carefully.</span>
-          </div>
-          <div className="instruction-item">
-            <CheckCircle sx={{ color: "#2a2250", fontSize: "1.5rem" }} /> {/* Icon */}
-            <span>Enter the number or shape you see in the image.</span>
-          </div>
-          <div className="instruction-item">
-            <NavigateNext sx={{ color: "#2a2250", fontSize: "1.5rem" }} /> {/* Icon */}
-            <span>Navigate through the images using the "Previous" and "Next" buttons.</span>
-          </div>
-          <div className="instruction-item">
-            <Send sx={{ color: "#2a2250", fontSize: "1.5rem" }} /> {/* Icon */}
-            <span>Once all answers are filled, click "Submit" to get your result.</span>
-          </div>
-        </Box>
+          <Typography
+            id="instructions-modal-title"
+            variant="h5"
+            component="h2"
+            sx={{
+              color: "#2a2250",
+              fontWeight: "bold",
+              fontFamily: "'Poppins', sans-serif",
+              mb: 3,
+              textTransform: "uppercase",
+            }}
+          >
+            Test Instructions
+          </Typography>
 
-        {/* Close Button */}
-        <Button
-          onClick={handleCloseInstructions}
-          variant="contained"
-          sx={{
-            mt: 3,
-            background: "linear-gradient(135deg, #2a2250, #1e1a3d)", // Gradient button
-            color: "#fff",
-            padding: "0.8rem 2rem",
-            borderRadius: "10px",
-            textTransform: "none",
-            fontSize: "1rem",
-            fontWeight: "bold",
-            transition: "transform 0.3s ease, box-shadow 0.3s ease",
-            "&:hover": {
-              transform: "translateY(-2px)",
-              boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)",
-              background: "linear-gradient(135deg, #1e1a3d, #2a2250)", // Reverse gradient on hover
-            },
-          }}
-        >
-          Close
-        </Button>
-      </Box>
-    </Modal>
-      {/* Login Prompt Modal */}
+          <Box
+            sx={{
+              textAlign: "left",
+              "& .instruction-item": {
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+                mb: 2,
+                color: "#555",
+                fontSize: "1.1rem",
+                fontFamily: "'Open Sans', sans-serif",
+              },
+            }}
+          >
+            <div className="instruction-item">
+              <Visibility sx={{ color: "#2a2250", fontSize: "1.5rem" }} />
+              <span>Look at each image carefully.</span>
+            </div>
+            <div className="instruction-item">
+              <CheckCircle sx={{ color: "#2a2250", fontSize: "1.5rem" }} />
+              <span>Enter the number or shape you see in the image.</span>
+            </div>
+            <div className="instruction-item">
+              <NavigateNext sx={{ color: "#2a2250", fontSize: "1.5rem" }} />
+              <span>Navigate through the images using the "Previous" and "Next" buttons.</span>
+            </div>
+            <div className="instruction-item">
+              <Send sx={{ color: "#2a2250", fontSize: "1.5rem" }} />
+              <span>Once all answers are filled, click "Submit" to get your result.</span>
+            </div>
+          </Box>
+
+          <Button
+            onClick={handleCloseInstructions}
+            variant="contained"
+            sx={{
+              mt: 3,
+              background: "linear-gradient(135deg, #2a2250, #1e1a3d)",
+              color: "#fff",
+              padding: "0.8rem 2rem",
+              borderRadius: "10px",
+              textTransform: "none",
+              fontSize: "1rem",
+              fontWeight: "bold",
+              transition: "transform 0.3s ease, box-shadow 0.3s ease",
+              "&:hover": {
+                transform: "translateY(-2px)",
+                boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.2)",
+                background: "linear-gradient(135deg, #1e1a3d, #2a2250)",
+              },
+            }}
+          >
+            Close
+          </Button>
+        </Box>
+      </Modal>
+
       {isLoginPromptOpen && (
         <div className="optical-shops-login-modal-overlay">
           <div className="optical-shops-login-modal-content">

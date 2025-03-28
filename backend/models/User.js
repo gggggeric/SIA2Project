@@ -17,6 +17,7 @@ const UserSchema = new mongoose.Schema({
     default: "Deactivated" 
   }, // New field for activation status
   lastActivity: { type: Date, default: Date.now }, // Timestamp for last activity
+  gender: { type: String, default: "" } // New field for gender (plain string)
 });
 
 module.exports = mongoose.model("User", UserSchema);

@@ -1,0 +1,277 @@
+2025-03-28 04:29:05,053 - engineio.server - INFO - Server initialized for threading.
+2025-03-28 04:29:07,499 - absl - WARNING - Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+2025-03-28 04:29:07,536 - __main__ - INFO - Face shape model loaded successfully
+2025-03-28 04:29:07,605 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.226.28:5000
+2025-03-28 04:29:07,609 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-03-28 04:29:07,610 - werkzeug - INFO -  * Restarting with stat
+2025-03-28 04:29:19,021 - engineio.server - INFO - Server initialized for threading.
+2025-03-28 04:29:21,070 - absl - WARNING - Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+2025-03-28 04:29:21,100 - __main__ - INFO - Face shape model loaded successfully
+2025-03-28 04:29:21,111 - werkzeug - WARNING -  * Debugger is active!
+2025-03-28 04:29:21,127 - werkzeug - INFO -  * Debugger PIN: 105-902-128
+2025-03-28 04:29:21,774 - engineio.server - INFO - F1Aicu7-zKA7KtrcAAAA: Sending packet OPEN data {'sid': 'F1Aicu7-zKA7KtrcAAAA', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-03-28 04:29:21,779 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:29:21] "GET /socket.io/?EIO=4&transport=polling&t=t40tf04o HTTP/1.1" 200 -
+2025-03-28 04:29:22,177 - engineio.server - INFO - F1Aicu7-zKA7KtrcAAAA: Received packet MESSAGE data 0
+2025-03-28 04:29:22,179 - engineio.server - INFO - F1Aicu7-zKA7KtrcAAAA: Sending packet MESSAGE data 0{"sid":"lv8UDyX_EUni84XBAAAB"}
+2025-03-28 04:29:22,180 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:29:22] "POST /socket.io/?EIO=4&transport=polling&t=t48cela7&sid=F1Aicu7-zKA7KtrcAAAA HTTP/1.1" 200 -
+2025-03-28 04:29:22,230 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:29:22] "GET /socket.io/?EIO=4&transport=polling&t=t48dc1ex&sid=F1Aicu7-zKA7KtrcAAAA HTTP/1.1" 200 -
+2025-03-28 04:29:22,229 - engineio.server - INFO - F1Aicu7-zKA7KtrcAAAA: Received request to upgrade to websocket
+2025-03-28 04:29:22,442 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:29:22] "GET /socket.io/?EIO=4&transport=polling&t=t48n8604&sid=F1Aicu7-zKA7KtrcAAAA HTTP/1.1" 200 -
+2025-03-28 04:29:22,456 - engineio.server - INFO - F1Aicu7-zKA7KtrcAAAA: Upgrade to websocket successful
+2025-03-28 04:29:46,780 - engineio.server - INFO - F1Aicu7-zKA7KtrcAAAA: Sending packet PING data None
+2025-03-28 04:29:46,783 - engineio.server - INFO - F1Aicu7-zKA7KtrcAAAA: Received packet PONG data 
+2025-03-28 04:30:06,613 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:06] "GET /socket.io/?EIO=4&transport=websocket&sid=F1Aicu7-zKA7KtrcAAAA HTTP/1.1" 200 -
+2025-03-28 04:30:07,494 - engineio.server - INFO - 0QfF7s9IGblmG7P4AAAC: Sending packet OPEN data {'sid': '0QfF7s9IGblmG7P4AAAC', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-03-28 04:30:07,496 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:07] "GET /socket.io/?EIO=4&transport=polling&t=t57bjvax HTTP/1.1" 200 -
+2025-03-28 04:30:07,524 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet OPEN data {'sid': '7No3PzxOnnHzYpVOAAAD', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-03-28 04:30:07,529 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:07] "GET /socket.io/?EIO=4&transport=polling&t=t57c5ciu HTTP/1.1" 200 -
+2025-03-28 04:30:07,759 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet MESSAGE data 0
+2025-03-28 04:30:07,761 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet MESSAGE data 0{"sid":"Ifrktf-6t-9B701YAAAE"}
+2025-03-28 04:30:07,762 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:07] "POST /socket.io/?EIO=4&transport=polling&t=t57lbq3k&sid=7No3PzxOnnHzYpVOAAAD HTTP/1.1" 200 -
+2025-03-28 04:30:07,855 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:07] "GET /socket.io/?EIO=4&transport=polling&t=t57leqf4&sid=7No3PzxOnnHzYpVOAAAD HTTP/1.1" 200 -
+2025-03-28 04:30:07,856 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received request to upgrade to websocket
+2025-03-28 04:30:07,875 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Upgrade to websocket successful
+2025-03-28 04:30:12,275 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:12] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:30:13,218 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:13] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:30:18,050 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:18] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:30:18,104 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:18] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:30:22,286 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:22] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:30:27,250 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:27] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:30:27,293 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:27] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:30:32,265 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:32] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:30:32,497 - engineio.server - INFO - 0QfF7s9IGblmG7P4AAAC: Sending packet PING data None
+2025-03-28 04:30:32,529 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:30:32,530 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:30:37,282 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:37] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:30:37,319 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:37] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:30:42,262 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:42] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:30:48,134 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:48] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:30:48,167 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:48] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:30:53,151 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:53] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:30:57,534 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:30:57,535 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:30:58,127 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:58] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:30:58,163 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:30:58] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:01,824 - engineio.server - INFO - 0QfF7s9IGblmG7P4AAAC: Client is gone, closing socket
+2025-03-28 04:31:01,824 - engineio.server - INFO - 0QfF7s9IGblmG7P4AAAC: Client is gone, closing socket
+2025-03-28 04:31:02,260 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:02] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:07,251 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:07] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:31:07,316 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:07] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:12,281 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:12] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:17,235 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:17] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:31:17,296 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:17] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:22,261 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:22] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:22,537 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:31:22,539 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:31:27,252 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:27] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:31:27,318 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:27] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:32,253 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:32] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:37,237 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:37] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:31:37,293 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:37] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:42,254 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:42] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:31:42,289 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:42] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:47,265 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:47] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:47,542 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:31:47,544 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:31:52,253 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:52] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:31:52,292 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:52] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:31:57,286 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:31:57] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:02,238 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:02] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:32:02,271 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:02] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:07,245 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:07] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:32:07,277 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:07] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:12,267 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:12] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:12,547 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:32:12,548 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:32:17,240 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:17] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:32:17,272 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:17] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:22,264 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:22] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:27,247 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:27] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:32:27,277 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:27] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:32,268 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:32] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:37,231 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:37] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:32:37,268 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:37] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:37,550 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:32:37,551 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:32:42,265 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:42] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:32:42,295 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:42] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:47,259 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:47] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:52,237 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:52] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:32:52,271 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:52] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:32:57,264 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:32:57] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:33:02,231 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:02] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:33:02,264 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:02] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:33:02,554 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:33:02,555 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:33:07,247 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:07] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:33:07,278 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:07] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:33:12,266 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:12] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:33:17,233 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:17] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:33:17,265 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:17] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:33:22,248 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:22] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:33:22,272 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:22] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:33:27,259 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:27] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 04:33:27,557 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:33:27,558 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:33:32,244 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:32] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:33:32,271 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:33:32] "POST /calculate-distance HTTP/1.1" 200 -
+2025-03-28 04:33:52,561 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:33:52,562 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:34:17,565 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:34:17,566 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:34:42,569 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:34:42,572 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:35:07,574 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:35:07,576 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:35:32,579 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:35:32,580 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:35:57,583 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:35:57,584 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:36:22,587 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:36:22,589 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:36:47,591 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:36:47,592 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:37:12,595 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:37:12,596 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:37:37,602 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:37:37,603 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:38:02,605 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:38:02,607 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:38:27,610 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:38:27,612 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:38:52,615 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:38:52,616 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:39:17,618 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:39:17,619 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:39:42,622 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:39:42,625 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:40:07,629 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:40:07,630 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:40:32,634 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:40:32,637 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:40:57,640 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:40:57,641 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:41:22,643 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:41:22,644 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:41:47,647 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:41:47,648 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:42:12,650 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:42:12,651 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:42:37,654 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:42:37,655 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:43:02,657 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:43:02,658 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:43:27,659 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:43:27,660 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:43:52,662 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:43:52,663 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:44:17,666 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:44:17,667 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:44:42,669 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:44:42,670 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:45:07,706 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:45:07,707 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:45:32,709 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:45:32,711 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:45:57,714 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:45:57,716 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:46:22,718 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:46:22,719 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:46:47,721 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:46:47,722 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:47:12,724 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:47:12,724 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:47:37,727 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:47:37,727 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:48:02,730 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:48:02,731 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:48:27,733 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:48:27,734 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:48:52,736 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:48:52,736 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:49:17,739 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:49:17,740 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:49:42,742 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:49:42,746 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:50:07,748 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:50:07,748 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:50:32,751 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:50:32,752 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:50:57,756 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:50:57,757 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:51:22,759 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:51:22,760 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:51:47,762 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Sending packet PING data None
+2025-03-28 04:51:47,762 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet PONG data 
+2025-03-28 04:51:56,457 - engineio.server - INFO - 7No3PzxOnnHzYpVOAAAD: Received packet MESSAGE data 1
+2025-03-28 04:51:56,474 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 04:51:56] "GET /socket.io/?EIO=4&transport=websocket&sid=7No3PzxOnnHzYpVOAAAD HTTP/1.1" 200 -
+2025-03-28 04:58:57,457 - werkzeug - INFO -  * Detected change in 'C:\\Users\\morit\\Desktop\\3RD YR PROJECTS\\2nd\\SIA2_System\\machinelearning\\app.py', reloading
+2025-03-28 04:58:59,949 - werkzeug - INFO -  * Restarting with stat
+2025-03-28 04:59:09,011 - engineio.server - INFO - Server initialized for threading.
+2025-03-28 04:59:10,305 - absl - WARNING - Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+2025-03-28 04:59:10,333 - __main__ - INFO - Face shape model loaded successfully
+2025-03-28 04:59:10,340 - werkzeug - WARNING -  * Debugger is active!
+2025-03-28 04:59:10,348 - werkzeug - INFO -  * Debugger PIN: 105-902-128
+2025-03-28 04:59:48,101 - werkzeug - INFO -  * Detected change in 'C:\\Users\\morit\\Desktop\\3RD YR PROJECTS\\2nd\\SIA2_System\\machinelearning\\app.py', reloading
+2025-03-28 04:59:48,776 - werkzeug - INFO -  * Restarting with stat
+2025-03-28 04:59:54,034 - engineio.server - INFO - Server initialized for threading.
+2025-03-28 04:59:55,276 - absl - WARNING - Compiled the loaded model, but the compiled metrics have yet to be built. `model.compile_metrics` will be empty until you train or evaluate the model.
+2025-03-28 04:59:55,301 - __main__ - INFO - Face shape model loaded successfully
+2025-03-28 04:59:55,308 - werkzeug - WARNING -  * Debugger is active!
+2025-03-28 04:59:55,317 - werkzeug - INFO -  * Debugger PIN: 105-902-128
+2025-03-28 05:00:42,407 - engineio.server - INFO - eV0jDyJrJNe9JSZnAAAA: Sending packet OPEN data {'sid': 'eV0jDyJrJNe9JSZnAAAA', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-03-28 05:00:42,409 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet OPEN data {'sid': '7spRCiTe2r0aerAoAAAB', 'upgrades': ['websocket'], 'pingTimeout': 20000, 'pingInterval': 25000, 'maxPayload': 1000000}
+2025-03-28 05:00:42,415 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:00:42] "GET /socket.io/?EIO=4&transport=polling&t=u8j4lsuj HTTP/1.1" 200 -
+2025-03-28 05:00:42,416 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:00:42] "GET /socket.io/?EIO=4&transport=polling&t=u8j4uqub HTTP/1.1" 200 -
+2025-03-28 05:00:42,646 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Received packet MESSAGE data 0
+2025-03-28 05:00:42,650 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 0{"sid":"RBlDe44g5-UP-hilAAAC"}
+2025-03-28 05:00:42,650 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:00:42] "POST /socket.io/?EIO=4&transport=polling&t=u8jedabo&sid=7spRCiTe2r0aerAoAAAB HTTP/1.1" 200 -
+2025-03-28 05:00:42,740 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:00:42] "GET /socket.io/?EIO=4&transport=polling&t=u8jei0ni&sid=7spRCiTe2r0aerAoAAAB HTTP/1.1" 200 -
+2025-03-28 05:00:42,741 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Received request to upgrade to websocket
+2025-03-28 05:00:42,759 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:00:42] "GET /socket.io/?EIO=4&transport=polling&t=u8jnn9lt&sid=7spRCiTe2r0aerAoAAAB HTTP/1.1" 200 -
+2025-03-28 05:00:42,766 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Upgrade to websocket successful
+2025-03-28 05:00:47,126 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:00:47] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 05:00:47,900 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:00:47] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 05:00:52,115 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:00:52] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 05:00:57,111 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:00:57] "OPTIONS /calculate-distance HTTP/1.1" 200 -
+2025-03-28 05:00:57,131 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:00:57] "[31m[1mPOST /calculate-distance HTTP/1.1[0m" 400 -
+2025-03-28 05:01:02,128 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:01:02] "POST /calculate-distance HTTP/1.1" 200 -
+2025-03-28 05:01:04,544 - werkzeug - INFO - 127.0.0.1 - - [28/Mar/2025 05:01:04] "OPTIONS /vision-test/both-eyes HTTP/1.1" 200 -
+2025-03-28 05:01:05,220 - __main__ - INFO - Starting Both Eyes test
+2025-03-28 05:01:07,240 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:07,242 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"status","message":"Test starting..."}]
+2025-03-28 05:01:07,243 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:07,243 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"row_start","row_label":"20/200","letters":"E"}]
+2025-03-28 05:01:07,244 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:07,245 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"countdown","count":3}]
+2025-03-28 05:01:07,414 - engineio.server - INFO - eV0jDyJrJNe9JSZnAAAA: Sending packet PING data None
+2025-03-28 05:01:07,416 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet PING data None
+2025-03-28 05:01:07,416 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Received packet PONG data 
+2025-03-28 05:01:08,246 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:08,246 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"countdown","count":2}]
+2025-03-28 05:01:09,248 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:09,248 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"countdown","count":1}]
+2025-03-28 05:01:10,250 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:10,250 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"listening","attempt":1}]
+2025-03-28 05:01:13,934 - __main__ - WARNING - Recognition attempt 1 failed: 
+2025-03-28 05:01:13,935 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:13,935 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"listening","attempt":2}]
+2025-03-28 05:01:20,008 - __main__ - WARNING - Recognition attempt 2 failed: 
+2025-03-28 05:01:20,008 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:20,010 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"listening","attempt":3}]
+2025-03-28 05:01:25,973 - __main__ - WARNING - Recognition attempt 3 failed: 
+2025-03-28 05:01:25,974 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:25,974 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"row_skipped","row_label":"20/200","reason":"timeout"}]
+2025-03-28 05:01:25,975 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:25,975 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"row_start","row_label":"20/100","letters":"FP"}]
+2025-03-28 05:01:25,976 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:25,976 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"countdown","count":3}]
+2025-03-28 05:01:26,978 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:26,978 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"countdown","count":2}]
+2025-03-28 05:01:27,980 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:27,980 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"countdown","count":1}]
+2025-03-28 05:01:28,981 - socketio.server - INFO - emitting event "vision_test_update" to all [/]
+2025-03-28 05:01:28,981 - engineio.server - INFO - 7spRCiTe2r0aerAoAAAB: Sending packet MESSAGE data 2["vision_test_update",{"type":"listening","attempt":1}]

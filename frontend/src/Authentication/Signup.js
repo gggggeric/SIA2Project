@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './Login.css'; // Reuse the same CSS file
 import { Link, useNavigate } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
 import Navbar from '../Navigation/Navbar';
 import { toast } from 'react-toastify'; // Import toast (not ToastContainer)
 import loginGif from '../assets/GIF/login3.gif';
@@ -12,6 +11,8 @@ const SignUpPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [gender, setGender] = useState(''); // Selected gender
+  const [customGender, setCustomGender] = useState(''); // Custom gender input
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -30,11 +31,15 @@ const SignUpPage = () => {
       return;
     }
 
+    // Determine the final gender value
+    const finalGender = gender === 'Other' ? customGender : gender;
+
     try {
       const response = await axios.post('http://localhost:5001/auth/register', {
         name,
         email,
         password,
+        gender: finalGender, // Send the final gender value
       });
 
       toast.success('Account created! Check your email to verify.', {
@@ -47,10 +52,13 @@ const SignUpPage = () => {
         theme: 'colored',
       });
 
+      // Reset form fields
       setName('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
+      setGender('');
+      setCustomGender('');
 
       setTimeout(() => {
         navigate('/login');
@@ -141,6 +149,35 @@ const SignUpPage = () => {
                   required
                 />
               </div>
+
+              <div className="input-group">
+  <label htmlFor="gender">Gender</label>
+  <select
+    id="gender"
+    className="gender-dropdown" // Add a class name
+    value={gender}
+    onChange={(e) => setGender(e.target.value)}
+    required
+  >
+    <option value="" disabled>Select your gender</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="Other">Other</option>
+  </select>
+</div>
+              {/* Show custom gender input if "Other" is selected */}
+              {gender === 'Other' && (
+                <div className="input-group">
+                  <label htmlFor="customGender">Specify your gender</label>
+                  <input
+                    type="text"
+                    id="customGender"
+                    value={customGender}
+                    onChange={(e) => setCustomGender(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
 
               <button type="submit" className="login-btn">
                 Sign Up

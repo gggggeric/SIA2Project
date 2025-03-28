@@ -50,10 +50,9 @@ router.get("/verify-email", async (req, res) => {
         res.status(500).json({ error: "An error occurred. Please try again." });
     }
 });
-
 router.post("/register", async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, gender } = req.body; // Add gender here
 
         // Check if email already exists
         const existingUser = await User.findOne({ email });
@@ -73,6 +72,7 @@ router.post("/register", async (req, res) => {
             name,
             email,
             password: hashedPassword,
+            gender, // Add gender here
             emailVerificationToken,
             isVerified: false,
             isActivate: "Deactivated" // Default to Deactivated

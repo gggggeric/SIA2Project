@@ -120,6 +120,35 @@
   background: white;
 }
 
+/* Gender Dropdown */
+.login-container .input-group .gender-dropdown {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 2px solid #6a5acd;
+  border-radius: 6px;
+  background: #f8f8ff;
+  color: #352e4b;
+  outline: none;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+}
+
+.login-container .input-group .gender-dropdown:focus {
+  border-color: #483d8b;
+  box-shadow: 0px 0px 8px rgba(72, 61, 139, 0.4);
+  background: white;
+}
+
+.login-container .input-group .gender-dropdown option {
+  color: #352e4b;
+  background: #fff;
+}
+
+.login-container .input-group .gender-dropdown option:disabled {
+  color: #aaa; /* Light gray for the disabled option */
+}
+
 /* Remember Me */
 .login-container .remember-me {
   display: flex;

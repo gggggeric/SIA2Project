@@ -410,66 +410,35 @@ def astigmatism_test():
     
 
 
-
-
-#color blindess
-# Correct answers for each image
+# Correct answers for 20 images (removed 39, 53, 59, 21, and 12 (2))
 correct_answers = {
-    "2 (1).png": "2",
     "2 (2).png": "2",
     "2 (3).png": "2",
     "2 (4).png": "2",
     "2 (5).png": "2",
     "2 (6).png": "2",
-    "3.png": "3",
     "5 (2).png": "5",
     "5.png": "5",
-    "6.png": "6",
     "7 (2).png": "7",
     "7 (3).png": "7",
     "7.png": "7",
     "8.png": "8",
-    "9.png": "9",
     "10.png": "10",
-    "12 (2).png": "12",
     "12.png": "12",
     "14.png": "14",
     "16.png": "16",
-    "18.png": "18",
-    "21.png": "21",
-    "26 (2).png": "26",
     "26.png": "26",
-    "53.png": "53",
     "27.png": "27",
     "29.png": "29",
-    "39.png": "39",
-    "42 (2).png": "42",
-    "42 (3).png": "42",
-    "42.png": "42",
-    "45 (2).png": "45",
-    "45.png": "45",
-    "53.png": "53",
     "56.png": "56",
-    "57.png": "57",
-    "59.png": "59",
-    "70.png": "70",
-    "71 (2).png": "71",
-    "71.png": "71",
-    "74 (2).png": "74",
-    "74.png": "74",
-    "83.png": "83",
-    "96.png": "96",
-    "97.png": "97",
+    "57.png": "57"
 }
 
 @app.route('/color-blindness-test', methods=['POST'])
 def color_blindness_test():
     data = request.json.get('answers', [])
-    if not data or len(data) != 45:
-        return jsonify({"error": "Please provide 45 answers."}), 400
-
-    # Log incoming data for debugging
-    print("Incoming data:", data)
+    if not data or len(data) != 20:  # Now expecting 20 answers
+        return jsonify({"error": "Please provide 20 answers."}), 400
 
     score = 0
     for answer in data:
@@ -479,22 +448,19 @@ def color_blindness_test():
         # Normalize the image name by removing the hash part
         normalized_image_name = re.sub(r'\.[a-f0-9]+\.png$', '.png', image_name)
 
-        print(f"Checking: {normalized_image_name} -> User Answer: {user_answer}, Correct Answer: {correct_answers.get(normalized_image_name)}")
-
         if normalized_image_name in correct_answers and str(user_answer).strip() == str(correct_answers[normalized_image_name]).strip():
             score += 1
 
-    print("Total correct answers:", score)
-
-    if score >= 40:
-        result = "normal"  # Simplified result string
-    elif score >= 30:
-        result = "mild"    # Simplified result string
-    elif score >= 20:
-        result = "moderate"  # Simplified result string
+    # Adjusted thresholds for 20 images
+    if score >= 18:  # ~90% correct
+        result = "normal"
+    elif score >= 14:  # ~70% correct
+        result = "mild"
+    elif score >= 8:   # ~40% correct
+        result = "moderate"
     else:
-        result = "severe"  # Simplified result string
+        result = "severe"
+        
     return jsonify({"result": result, "correctCount": score})
-
 if __name__ == "__main__":
     socketio.run(app, port=5000, debug=True, use_reloader=False)

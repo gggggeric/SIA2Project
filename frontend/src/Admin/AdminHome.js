@@ -38,6 +38,7 @@ const AdminHome = () => {
     moderate: 0,
     severe: 0,
   });
+  const [genderData, setGenderData] = useState({ male: 0, female: 0, other: 0 }); // Add gender data state
   const [reviews, setReviews] = useState([]); // Initialize reviews as an empty array
   const [sentimentResults, setSentimentResults] = useState({ positive: 0, neutral: 0, negative: 0 }); // State for sentiment analysis results
 
@@ -100,182 +101,188 @@ const AdminHome = () => {
       }
     };
 
+    const fetchGenderData = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/admin/gender-distribution");
+        setGenderData(response.data.data); // Assuming the response is { male: X, female: Y, other: Z }
+      } catch (error) {
+        console.error("Error fetching gender data:", error);
+      }
+    };
+
     fetchUsers();
     fetchReviews();
     fetchDiagnosisCounts();
     fetchAstigmatismCounts();
     fetchColorBlindnessCounts();
+    fetchGenderData(); // Fetch gender data
   }, []);
-// Function to export a single chart as PDF
-const exportChartToPDF = (chartId, chartTitle, chartDescription, summaryAndAnalysis) => {
-  // Add sentiment analysis to the summary if the chart is the sentiment donut chart
-  if (chartId === "sentimentDonutChart" && sentimentResults) {
-    summaryAndAnalysis += `\n\n**Sentiment Analysis:** Positive: ${sentimentResults.positive}, Neutral: ${sentimentResults.neutral}, Negative: ${sentimentResults.negative}`;
-  }
 
-  const chartElement = document.getElementById(chartId);
-  if (!chartElement) {
-    console.error("Chart element not found!");
-    return;
-  }
+  // Function to export a single chart as PDF
+  const exportChartToPDF = (chartId, chartTitle, chartDescription, summaryAndAnalysis) => {
+    const chartElement = document.getElementById(chartId);
+    if (!chartElement) {
+      console.error("Chart element not found!");
+      return;
+    }
 
-  // Create PDF with A4 format and better settings
-  const doc = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4",
-  });
+    // Create PDF with A4 format and better settings
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
 
-  // Set document properties
-  doc.setProperties({
-    title: `${chartTitle} - Optic AI Report`,
-    subject: "Chart Analysis",
-    author: "TUP-Taguig",
-    creator: "Optic AI",
-  });
+    // Set document properties
+    doc.setProperties({
+      title: `${chartTitle} - Optic AI Report`,
+      subject: "Chart Analysis",
+      author: "TUP-Taguig",
+      creator: "Optic AI",
+    });
 
-  // Generate high-quality chart image
-  html2canvas(chartElement, { scale: 3 }).then((canvas) => {
-    const imgData = canvas.toDataURL("image/png");
+    // Generate high-quality chart image
+    html2canvas(chartElement, { scale: 3 }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
 
-    // Convert the logo to a data URL
-    const img = new Image();
-    img.src = tuplogo;
-    img.onload = () => {
-      const logoCanvas = document.createElement("canvas");
-      logoCanvas.width = img.width;
-      logoCanvas.height = img.height;
-      const ctx = logoCanvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
-      const logoDataUrl = logoCanvas.toDataURL("image/png");
+      // Convert the logo to a data URL
+      const img = new Image();
+      img.src = tuplogo;
+      img.onload = () => {
+        const logoCanvas = document.createElement("canvas");
+        logoCanvas.width = img.width;
+        logoCanvas.height = img.height;
+        const ctx = logoCanvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        const logoDataUrl = logoCanvas.toDataURL("image/png");
 
-      // ===== HEADER SECTION =====
-      // Add the logo
-      doc.addImage(logoDataUrl, "PNG", 15, 15, 25, 25);
+        // ===== HEADER SECTION =====
+        // Add the logo
+        doc.addImage(logoDataUrl, "PNG", 15, 15, 25, 25);
 
-      // Add header text with right alignment
-      doc.setFontSize(16).setFont("helvetica", "bold");
-      doc.text("Technological University of the Philippines - Taguig", 195, 20, { align: "right" });
+        // Add header text with right alignment
+        doc.setFontSize(16).setFont("helvetica", "bold");
+        doc.text("Technological University of the Philippines - Taguig", 195, 20, { align: "right" });
 
-      doc.setFontSize(14).setFont("helvetica", "bold");
-      doc.text("Optic AI - Vision Testing System", 195, 28, { align: "right" });
+        doc.setFontSize(14).setFont("helvetica", "bold");
+        doc.text("Optic AI - Vision Testing System", 195, 28, { align: "right" });
 
-      // Add date with right alignment
-      const today = new Date();
-      doc.setFontSize(10).setFont("helvetica", "normal");
-      doc.text(`Report Date: ${today.toLocaleDateString()}`, 195, 35, { align: "right" });
+        // Add date with right alignment
+        const today = new Date();
+        doc.setFontSize(10).setFont("helvetica", "normal");
+        doc.text(`Report Date: ${today.toLocaleDateString()}`, 195, 35, { align: "right" });
 
-      // Add decorative header line
-      doc.setDrawColor(204, 0, 0); // Red line
-      doc.setLineWidth(0.8);
-      doc.line(15, 42, 195, 42);
+        // Add decorative header line
+        doc.setDrawColor(204, 0, 0); // Red line
+        doc.setLineWidth(0.8);
+        doc.line(15, 42, 195, 42);
 
-      // ===== TEAM MEMBERS SECTION =====
-      doc.setFontSize(12).setFont("helvetica", "bold");
-      doc.text("Team Members:", 15, 50);
+        // ===== TEAM MEMBERS SECTION =====
+        doc.setFontSize(12).setFont("helvetica", "bold");
+        doc.text("Team Members:", 15, 50);
 
-      doc.setFontSize(11).setFont("helvetica", "normal");
-      const teamMembers = ["Morit Geric T.", "Bacala Nicole", "Gone Krizel", "Giana Mico"];
+        doc.setFontSize(11).setFont("helvetica", "normal");
+        const teamMembers = ["Morit Geric T.", "Bacala Nicole", "Gone Krizel", "Giana Mico"];
 
-      // Create two-column layout for team members
-      const leftCol = teamMembers.slice(0, 2);
-      const rightCol = teamMembers.slice(2);
+        // Create two-column layout for team members
+        const leftCol = teamMembers.slice(0, 2);
+        const rightCol = teamMembers.slice(2);
 
-      leftCol.forEach((member, idx) => {
-        doc.text(`• ${member}`, 20, 58 + idx * 7);
-      });
+        leftCol.forEach((member, idx) => {
+          doc.text(`• ${member}`, 20, 58 + idx * 7);
+        });
 
-      rightCol.forEach((member, idx) => {
-        doc.text(`• ${member}`, 90, 58 + idx * 7);
-      });
+        rightCol.forEach((member, idx) => {
+          doc.text(`• ${member}`, 90, 58 + idx * 7);
+        });
 
-      // Add section divider
-      doc.setDrawColor(204, 0, 0); // Red line
-      doc.setLineWidth(0.3);
-      doc.line(15, 75, 195, 75);
+        // Add section divider
+        doc.setDrawColor(204, 0, 0); // Red line
+        doc.setLineWidth(0.3);
+        doc.line(15, 75, 195, 75);
 
-      // ===== CHART TITLE SECTION =====
-      // Add chart title with decorative line
-      doc.setFontSize(14).setFont("helvetica", "bold");
-      doc.text(chartTitle, 15, 85);
+        // ===== CHART TITLE SECTION =====
+        // Add chart title with decorative line
+        doc.setFontSize(14).setFont("helvetica", "bold");
+        doc.text(chartTitle, 15, 85);
 
-      doc.setDrawColor(204, 0, 0); // Red line under title
-      doc.setLineWidth(0.5);
-      doc.line(15, 87, 80, 87);
+        doc.setDrawColor(204, 0, 0); // Red line under title
+        doc.setLineWidth(0.5);
+        doc.line(15, 87, 80, 87);
 
-      // ===== DESCRIPTION SECTION =====
-      // Add the description with proper formatting
-      doc.setFontSize(11).setFont("helvetica", "italic");
-      doc.setTextColor(60, 60, 60); // Dark gray text
-      const descriptionLines = doc.splitTextToSize(chartDescription, 170); // Wrap text to fit width
-      doc.text(descriptionLines, 15, 95);
+        // ===== DESCRIPTION SECTION =====
+        // Add the description with proper formatting
+        doc.setFontSize(11).setFont("helvetica", "italic");
+        doc.setTextColor(60, 60, 60); // Dark gray text
+        const descriptionLines = doc.splitTextToSize(chartDescription, 170); // Wrap text to fit width
+        doc.text(descriptionLines, 15, 95);
 
-      // Calculate vertical position after description
-      const descriptionHeight = descriptionLines.length * 5;
-      let currentY = 95 + descriptionHeight + 8;
+        // Calculate vertical position after description
+        const descriptionHeight = descriptionLines.length * 5;
+        let currentY = 95 + descriptionHeight + 8;
 
-      // ===== CHART IMAGE SECTION =====
-      // Add the chart image (centered with border)
-      const imgWidth = 160; // Width for chart
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      const chartX = (210 - imgWidth) / 2; // Center the chart
+        // ===== CHART IMAGE SECTION =====
+        // Add the chart image (centered with border)
+        const imgWidth = 160; // Width for chart
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        const chartX = (210 - imgWidth) / 2; // Center the chart
 
-      // Add light gray background for chart
-      doc.setFillColor(248, 248, 248); // Very light gray
-      doc.roundedRect(chartX - 2, currentY - 2, imgWidth + 4, imgHeight + 4, 1, 1, "F");
+        // Add light gray background for chart
+        doc.setFillColor(248, 248, 248); // Very light gray
+        doc.roundedRect(chartX - 2, currentY - 2, imgWidth + 4, imgHeight + 4, 1, 1, "F");
 
-      // Add subtle border around chart
-      doc.setDrawColor(200, 200, 200); // Light gray border
-      doc.setLineWidth(0.3);
-      doc.roundedRect(chartX - 2, currentY - 2, imgWidth + 4, imgHeight + 4, 1, 1, "S");
+        // Add subtle border around chart
+        doc.setDrawColor(200, 200, 200); // Light gray border
+        doc.setLineWidth(0.3);
+        doc.roundedRect(chartX - 2, currentY - 2, imgWidth + 4, imgHeight + 4, 1, 1, "S");
 
-      // Add the chart image
-      doc.addImage(imgData, "PNG", chartX, currentY, imgWidth, imgHeight);
+        // Add the chart image
+        doc.addImage(imgData, "PNG", chartX, currentY, imgWidth, imgHeight);
 
-      // Update Y position for the summary section
-      currentY += imgHeight + 15;
+        // Update Y position for the summary section
+        currentY += imgHeight + 15;
 
-      // ===== SUMMARY & ANALYSIS SECTION =====
-      // Create a highlighted heading for summary
-      doc.setFillColor(240, 240, 240); // Light gray background
-      doc.roundedRect(15, currentY, 180, 8, 1, 1, "F");
+        // ===== SUMMARY & ANALYSIS SECTION =====
+        // Create a highlighted heading for summary
+        doc.setFillColor(240, 240, 240); // Light gray background
+        doc.roundedRect(15, currentY, 180, 8, 1, 1, "F");
 
-      doc.setDrawColor(204, 0, 0); // Red line
-      doc.setLineWidth(0.3);
-      doc.roundedRect(15, currentY, 180, 8, 1, 1, "S");
+        doc.setDrawColor(204, 0, 0); // Red line
+        doc.setLineWidth(0.3);
+        doc.roundedRect(15, currentY, 180, 8, 1, 1, "S");
 
-      doc.setFontSize(12).setFont("helvetica", "bold");
-      doc.setTextColor(204, 0, 0); // Red text
-      doc.text("Summary and Analysis", 105, currentY + 5.5, { align: "center" });
-      doc.setTextColor(0); // Reset to black
+        doc.setFontSize(12).setFont("helvetica", "bold");
+        doc.setTextColor(204, 0, 0); // Red text
+        doc.text("Summary and Analysis", 105, currentY + 5.5, { align: "center" });
+        doc.setTextColor(0); // Reset to black
 
-      // Add the summary text
-      currentY += 12;
-      doc.setFontSize(11).setFont("helvetica", "normal");
-      const summaryLines = doc.splitTextToSize(summaryAndAnalysis, 175);
-      doc.text(summaryLines, 15, currentY);
+        // Add the summary text
+        currentY += 12;
+        doc.setFontSize(11).setFont("helvetica", "normal");
+        const summaryLines = doc.splitTextToSize(summaryAndAnalysis, 175);
+        doc.text(summaryLines, 15, currentY);
 
-      // ===== FOOTER SECTION =====
-      // Add decorative footer line
-      doc.setDrawColor(204, 0, 0); // Red line
-      doc.setLineWidth(0.5);
-      doc.line(15, 280, 195, 280);
+        // ===== FOOTER SECTION =====
+        // Add decorative footer line
+        doc.setDrawColor(204, 0, 0); // Red line
+        doc.setLineWidth(0.5);
+        doc.line(15, 280, 195, 280);
 
-      // Add footer text with date and time
-      doc.setFontSize(8).setFont("helvetica", "italic");
-      doc.text("Generated by Optic AI - Vision Testing System", 15, 286);
+        // Add footer text with date and time
+        doc.setFontSize(8).setFont("helvetica", "italic");
+        doc.text("Generated by Optic AI - Vision Testing System", 15, 286);
 
-      doc.setFontSize(8).setFont("helvetica", "normal");
-      doc.text(`Generated on: ${today.toLocaleDateString()} at ${today.toLocaleTimeString()}`, 195, 286, { align: "right" });
+        doc.setFontSize(8).setFont("helvetica", "normal");
+        doc.text(`Generated on: ${today.toLocaleDateString()} at ${today.toLocaleTimeString()}`, 195, 286, { align: "right" });
 
-      // Save the PDF with a clean filename
-      const cleanFileName = chartTitle.replace(/[^\w\s]/gi, "").replace(/\s+/g, "_");
-      doc.save(`${cleanFileName}_Report.pdf`);
-    };
-  });
-};
+        // Save the PDF with a clean filename
+        const cleanFileName = chartTitle.replace(/[^\w\s]/gi, "").replace(/\s+/g, "_");
+        doc.save(`${cleanFileName}_Report.pdf`);
+      };
+    });
+  };
 
-// Function to export all charts as a single PDF
+ // Function to export all charts as a single PDF
 const exportAllChartsToPDF = async () => {
   const doc = new jsPDF({
     orientation: "portrait",
@@ -359,7 +366,8 @@ const exportAllChartsToPDF = async () => {
       "diagnosisChart",
       "astigmatismChart",
       "colorBlindnessChart",
-      "sentimentDonutChart", // Add sentiment donut chart
+      "sentimentDonutChart",
+      "genderChart", // Add gender chart
     ];
 
     let currentY = 85; // Starting Y position for the first chart
@@ -394,18 +402,18 @@ const exportAllChartsToPDF = async () => {
 
       doc.setTextColor(0); // Reset to black for normal text
 
-      // For sentiment chart, we'll use fixed dimensions without calculating aspect ratio
+      // For sentiment chart, adjust dimensions to fit the PDF
       if (chartId === "sentimentDonutChart") {
-        const imgWidth = 800; // Increased width for better visibility
-        const imgHeight = 100; // Slightly taller for improved readability
+        const imgWidth = 300; // Adjusted width for better fit
+        const imgHeight = 80; // Adjusted height for better fit
 
-        const canvas = await html2canvas(chartElement, { scale: 4 }); // Higher scale for better quality
+        const canvas = await html2canvas(chartElement, { scale: 3 }); // Higher scale for better quality
         const imgData = canvas.toDataURL("image/png");
 
-        const centerX = (210 - imgWidth) / 2;
+        const centerX = (210 - imgWidth) / 2; // Center the chart horizontally
         doc.addImage(imgData, "PNG", centerX, currentY + 6, imgWidth, imgHeight);
 
-        currentY += imgHeight + 30; // Extra spacing for better layout
+        currentY += imgHeight + 20; // Extra spacing for better layout
       } else {
         // For other charts, use proportional dimensions
         const imgWidth = 160;
@@ -462,6 +470,10 @@ const exportAllChartsToPDF = async () => {
       {
         title: "Sentiment Analysis",
         content: `The sentiment analysis shows ${sentimentResults.positive} positive, ${sentimentResults.neutral} neutral, and ${sentimentResults.negative} negative sentiments. The majority of sentiments are positive, indicating overall user satisfaction with the system.`,
+      },
+      {
+        title: "Gender Distribution",
+        content: `The gender distribution shows ${genderData.male} male users, ${genderData.female} female users, and ${genderData.other} users who identify as other. This indicates a diverse user base with balanced representation.`,
       },
     ];
 
@@ -521,7 +533,6 @@ const exportAllChartsToPDF = async () => {
     doc.save("Optic_AI_Vision_Testing_Report.pdf");
   };
 };
-
   // Chart Data for User Types (Bar Chart)
   const userTypeChartData = {
     labels: ["Users", "Admins"],
@@ -618,6 +629,20 @@ const exportAllChartsToPDF = async () => {
         data: [sentimentResults.positive, sentimentResults.neutral, sentimentResults.negative],
         backgroundColor: ["#4CAF50", "#FFC107", "#F44336"], // Green, Yellow, Red
         borderColor: ["#4CAF50", "#FFC107", "#F44336"], // Green, Yellow, Red
+        borderWidth: 2,
+      },
+    ],
+  };
+
+  // Chart Data for Gender Distribution (Bar Chart)
+  const genderChartData = {
+    labels: ["Male", "Female", "Other"],
+    datasets: [
+      {
+        label: "Gender Count",
+        data: [genderData.male, genderData.female, genderData.other],
+        backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56"], // Blue, Pink, Yellow
+        borderColor: ["#36A2EB", "#FF6384", "#FFCE56"],
         borderWidth: 2,
       },
     ],
@@ -815,6 +840,31 @@ const exportAllChartsToPDF = async () => {
                     "This donut chart shows the distribution of sentiment analysis results, including positive, neutral, and negative sentiments.",
                     `**Summary:** The chart shows that there are ${sentimentResults.positive} positive, ${sentimentResults.neutral} neutral, and ${sentimentResults.negative} negative sentiments.
           **Analysis:** The majority of sentiments are positive, indicating overall user satisfaction with the system.`
+                  )
+                }
+                className="export-button"
+              >
+                Export to PDF
+              </button>
+            </div>
+
+            {/* Gender Distribution Chart */}
+            <div className="chart-item">
+              <h3>Gender Distribution</h3>
+              <div id="genderChart" className="chart-container">
+                <Bar data={genderChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+              </div>
+              <p className="chart-description">
+                This bar chart shows the distribution of users by gender, including Male, Female, and Other.
+              </p>
+              <button
+                onClick={() =>
+                  exportChartToPDF(
+                    "genderChart",
+                    "Gender Distribution",
+                    "This bar chart shows the distribution of users by gender, including Male, Female, and Other.",
+                    `**Summary:** The chart shows that there are ${genderData.male} male users, ${genderData.female} female users, and ${genderData.other} users who identify as other.
+                    **Analysis:** The distribution indicates the diversity of the user base, with a balanced representation of genders.`
                   )
                 }
                 className="export-button"

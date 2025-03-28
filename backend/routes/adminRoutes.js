@@ -11,6 +11,35 @@ const { LanguageServiceClient } = require("@google-cloud/language");
 const client = new LanguageServiceClient();
 const sendMail = require("../config/mailer"); // Import the sendMail function
 
+// Route to fetch gender data
+router.get('/gender-distribution', async (req, res) => {
+  try {
+    // Fetch all users from the database
+    const users = await User.find({}, { gender: 1 }); // Only fetch the gender field
+
+    // Count the number of users for each gender
+    const maleCount = users.filter(user => user.gender === 'Male').length;
+    const femaleCount = users.filter(user => user.gender === 'Female').length;
+    const otherCount = users.filter(user => user.gender === 'Other').length;
+
+    // Send the gender counts as a response
+    res.status(200).json({
+      success: true,
+      data: {
+        male: maleCount,
+        female: femaleCount,
+        other: otherCount,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching gender data:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch gender data',
+    });
+  }
+});
+
 // Fetch all test results grouped by result type
 router.get("/color-blindness-counts", async (req, res) => {
   try {
