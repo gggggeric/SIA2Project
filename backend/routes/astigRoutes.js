@@ -28,7 +28,7 @@ router.post('/astigmatism-test', async (req, res) => {
   }
 });
 
-// Get user's test result
+// Updated route to return the correct timestamp field
 router.get("/astigmatism-test/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -39,7 +39,10 @@ router.get("/astigmatism-test/:userId", async (req, res) => {
       return res.status(404).json({ message: "No previous test found." });
     }
 
-    res.status(200).json({ result: userTest.result, date: userTest.date });
+    res.status(200).json({ 
+      result: userTest.result, 
+      timestamp: userTest.timestamp // Changed from date to timestamp
+    });
   } catch (error) {
     res.status(500).json({ error: "Error fetching previous test data." });
   }

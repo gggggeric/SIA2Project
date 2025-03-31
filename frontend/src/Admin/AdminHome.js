@@ -8,7 +8,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, P
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import tuplogo from "../assets/tuplogo.png"; // Import the logo
+import tuplogo from "../assets/tuplogo.png";
 
 // Register Chart.js components
 ChartJS.register(
@@ -30,7 +30,23 @@ const AdminHome = () => {
   const [userTypeCount, setUserTypeCount] = useState({ users: 0, admins: 0 });
   const [activationStatusCount, setActivationStatusCount] = useState({ activated: 0, deactivated: 0 });
   const [reviewsCount, setReviewsCount] = useState({ anonymous: 0, nonAnonymous: 0 });
-  const [diagnosisCounts, setDiagnosisCounts] = useState({ Nearsighted: 0, Farsighted: 0, NormalVision: 0 });
+  const [diagnosisCounts, setDiagnosisCounts] = useState({
+    "Normal vision": 0,
+    "Very mild nearsightedness": 0,
+    "Mild nearsightedness": 0,
+    "Moderate nearsightedness": 0,
+    "Significant nearsightedness": 0,
+    "Very mild farsightedness": 0,
+    "Mild farsightedness": 0,
+    "Moderate farsightedness": 0,
+    "Significant farsightedness": 0,
+    "Very mild vision impairment": 0,
+    "Mild vision impairment": 0,
+    "Moderate vision impairment": 0,
+    "Moderate to significant impairment": 0,
+    "Significant vision impairment": 0,
+    "Very severe impairment": 0
+  });
   const [astigmatismCounts, setAstigmatismCounts] = useState({ leftEye: 0, rightEye: 0, bothEyes: 0, noAstigmatism: 0 });
   const [colorBlindnessCounts, setColorBlindnessCounts] = useState({
     normal: 0,
@@ -38,9 +54,9 @@ const AdminHome = () => {
     moderate: 0,
     severe: 0,
   });
-  const [genderData, setGenderData] = useState({ male: 0, female: 0, other: 0 }); // Add gender data state
-  const [reviews, setReviews] = useState([]); // Initialize reviews as an empty array
-  const [sentimentResults, setSentimentResults] = useState({ positive: 0, neutral: 0, negative: 0 }); // State for sentiment analysis results
+  const [genderData, setGenderData] = useState({ male: 0, female: 0, other: 0 });
+  const [reviews, setReviews] = useState([]);
+  const [sentimentResults, setSentimentResults] = useState({ positive: 0, neutral: 0, negative: 0 });
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -61,14 +77,12 @@ const AdminHome = () => {
     const fetchReviews = async () => {
       try {
         const response = await axios.get("http://localhost:5001/admin/reviewsDashboard");
-        console.log("Backend Response:", response.data); // Log the entire response
-
         setReviewsCount({
           anonymous: response.data.anonymousCount,
           nonAnonymous: response.data.nonAnonymousCount,
         });
-        setReviews(response.data.reviews || []); // Ensure reviews is an array
-        setSentimentResults(response.data.sentiment || { positive: 0, neutral: 0, negative: 0 }); // Set sentiment results
+        setReviews(response.data.reviews || []);
+        setSentimentResults(response.data.sentiment || { positive: 0, neutral: 0, negative: 0 });
       } catch (error) {
         console.error("Error fetching reviews:", error);
       }
@@ -77,7 +91,11 @@ const AdminHome = () => {
     const fetchDiagnosisCounts = async () => {
       try {
         const response = await axios.get("http://localhost:5001/admin/diagnosis-counts");
-        setDiagnosisCounts(response.data);
+        // Merge the backend counts with our initialized categories
+        setDiagnosisCounts(prev => ({
+          ...prev,
+          ...response.data
+        }));
       } catch (error) {
         console.error("Error fetching diagnosis counts:", error);
       }
@@ -104,7 +122,7 @@ const AdminHome = () => {
     const fetchGenderData = async () => {
       try {
         const response = await axios.get("http://localhost:5001/admin/gender-distribution");
-        setGenderData(response.data.data); // Assuming the response is { male: X, female: Y, other: Z }
+        setGenderData(response.data.data);
       } catch (error) {
         console.error("Error fetching gender data:", error);
       }
@@ -115,8 +133,13 @@ const AdminHome = () => {
     fetchDiagnosisCounts();
     fetchAstigmatismCounts();
     fetchColorBlindnessCounts();
-    fetchGenderData(); // Fetch gender data
+    fetchGenderData();
   }, []);
+
+  // Filter diagnosis counts to only include categories with counts > 0
+  const filteredDiagnosisCounts = Object.fromEntries(
+    Object.entries(diagnosisCounts).filter(([_, count]) => count > 0)
+  );
 
   // Function to export a single chart as PDF
   const exportChartToPDF = (chartId, chartTitle, chartDescription, summaryAndAnalysis) => {
@@ -126,14 +149,12 @@ const AdminHome = () => {
       return;
     }
 
-    // Create PDF with A4 format and better settings
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
       format: "a4",
     });
 
-    // Set document properties
     doc.setProperties({
       title: `${chartTitle} - Optic AI Report`,
       subject: "Chart Analysis",
@@ -141,11 +162,8 @@ const AdminHome = () => {
       creator: "Optic AI",
     });
 
-    // Generate high-quality chart image
     html2canvas(chartElement, { scale: 3 }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
-
-      // Convert the logo to a data URL
       const img = new Image();
       img.src = tuplogo;
       img.onload = () => {
@@ -156,383 +174,295 @@ const AdminHome = () => {
         ctx.drawImage(img, 0, 0);
         const logoDataUrl = logoCanvas.toDataURL("image/png");
 
-        // ===== HEADER SECTION =====
-        // Add the logo
+        // Header Section
         doc.addImage(logoDataUrl, "PNG", 15, 15, 25, 25);
-
-        // Add header text with right alignment
         doc.setFontSize(16).setFont("helvetica", "bold");
         doc.text("Technological University of the Philippines - Taguig", 195, 20, { align: "right" });
-
         doc.setFontSize(14).setFont("helvetica", "bold");
         doc.text("Optic AI - Vision Testing System", 195, 28, { align: "right" });
-
-        // Add date with right alignment
         const today = new Date();
         doc.setFontSize(10).setFont("helvetica", "normal");
         doc.text(`Report Date: ${today.toLocaleDateString()}`, 195, 35, { align: "right" });
-
-        // Add decorative header line
-        doc.setDrawColor(204, 0, 0); // Red line
+        doc.setDrawColor(204, 0, 0);
         doc.setLineWidth(0.8);
         doc.line(15, 42, 195, 42);
 
-        // ===== TEAM MEMBERS SECTION =====
+        // Team Members Section
         doc.setFontSize(12).setFont("helvetica", "bold");
         doc.text("Team Members:", 15, 50);
-
         doc.setFontSize(11).setFont("helvetica", "normal");
         const teamMembers = ["Morit Geric T.", "Bacala Nicole", "Gone Krizel", "Giana Mico"];
-
-        // Create two-column layout for team members
         const leftCol = teamMembers.slice(0, 2);
         const rightCol = teamMembers.slice(2);
-
         leftCol.forEach((member, idx) => {
           doc.text(`• ${member}`, 20, 58 + idx * 7);
         });
-
         rightCol.forEach((member, idx) => {
           doc.text(`• ${member}`, 90, 58 + idx * 7);
         });
-
-        // Add section divider
-        doc.setDrawColor(204, 0, 0); // Red line
+        doc.setDrawColor(204, 0, 0);
         doc.setLineWidth(0.3);
         doc.line(15, 75, 195, 75);
 
-        // ===== CHART TITLE SECTION =====
-        // Add chart title with decorative line
+        // Chart Title Section
         doc.setFontSize(14).setFont("helvetica", "bold");
         doc.text(chartTitle, 15, 85);
-
-        doc.setDrawColor(204, 0, 0); // Red line under title
+        doc.setDrawColor(204, 0, 0);
         doc.setLineWidth(0.5);
         doc.line(15, 87, 80, 87);
 
-        // ===== DESCRIPTION SECTION =====
-        // Add the description with proper formatting
+        // Description Section
         doc.setFontSize(11).setFont("helvetica", "italic");
-        doc.setTextColor(60, 60, 60); // Dark gray text
-        const descriptionLines = doc.splitTextToSize(chartDescription, 170); // Wrap text to fit width
+        doc.setTextColor(60, 60, 60);
+        const descriptionLines = doc.splitTextToSize(chartDescription, 170);
         doc.text(descriptionLines, 15, 95);
-
-        // Calculate vertical position after description
         const descriptionHeight = descriptionLines.length * 5;
         let currentY = 95 + descriptionHeight + 8;
 
-        // ===== CHART IMAGE SECTION =====
-        // Add the chart image (centered with border)
-        const imgWidth = 160; // Width for chart
+        // Chart Image Section
+        const imgWidth = 160;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const chartX = (210 - imgWidth) / 2; // Center the chart
-
-        // Add light gray background for chart
-        doc.setFillColor(248, 248, 248); // Very light gray
+        const chartX = (210 - imgWidth) / 2;
+        doc.setFillColor(248, 248, 248);
         doc.roundedRect(chartX - 2, currentY - 2, imgWidth + 4, imgHeight + 4, 1, 1, "F");
-
-        // Add subtle border around chart
-        doc.setDrawColor(200, 200, 200); // Light gray border
+        doc.setDrawColor(200, 200, 200);
         doc.setLineWidth(0.3);
         doc.roundedRect(chartX - 2, currentY - 2, imgWidth + 4, imgHeight + 4, 1, 1, "S");
-
-        // Add the chart image
         doc.addImage(imgData, "PNG", chartX, currentY, imgWidth, imgHeight);
-
-        // Update Y position for the summary section
         currentY += imgHeight + 15;
 
-        // ===== SUMMARY & ANALYSIS SECTION =====
-        // Create a highlighted heading for summary
-        doc.setFillColor(240, 240, 240); // Light gray background
+        // Summary & Analysis Section
+        doc.setFillColor(240, 240, 240);
         doc.roundedRect(15, currentY, 180, 8, 1, 1, "F");
-
-        doc.setDrawColor(204, 0, 0); // Red line
+        doc.setDrawColor(204, 0, 0);
         doc.setLineWidth(0.3);
         doc.roundedRect(15, currentY, 180, 8, 1, 1, "S");
-
         doc.setFontSize(12).setFont("helvetica", "bold");
-        doc.setTextColor(204, 0, 0); // Red text
+        doc.setTextColor(204, 0, 0);
         doc.text("Summary and Analysis", 105, currentY + 5.5, { align: "center" });
-        doc.setTextColor(0); // Reset to black
-
-        // Add the summary text
+        doc.setTextColor(0);
         currentY += 12;
         doc.setFontSize(11).setFont("helvetica", "normal");
         const summaryLines = doc.splitTextToSize(summaryAndAnalysis, 175);
         doc.text(summaryLines, 15, currentY);
 
-        // ===== FOOTER SECTION =====
-        // Add decorative footer line
-        doc.setDrawColor(204, 0, 0); // Red line
+        // Footer Section
+        doc.setDrawColor(204, 0, 0);
         doc.setLineWidth(0.5);
         doc.line(15, 280, 195, 280);
-
-        // Add footer text with date and time
         doc.setFontSize(8).setFont("helvetica", "italic");
         doc.text("Generated by Optic AI - Vision Testing System", 15, 286);
-
         doc.setFontSize(8).setFont("helvetica", "normal");
         doc.text(`Generated on: ${today.toLocaleDateString()} at ${today.toLocaleTimeString()}`, 195, 286, { align: "right" });
 
-        // Save the PDF with a clean filename
         const cleanFileName = chartTitle.replace(/[^\w\s]/gi, "").replace(/\s+/g, "_");
         doc.save(`${cleanFileName}_Report.pdf`);
       };
     });
   };
 
- // Function to export all charts as a single PDF
-const exportAllChartsToPDF = async () => {
-  const doc = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4",
-  });
-
-  // Set document properties
-  doc.setProperties({
-    title: "Optic AI - Vision Testing System Report",
-    subject: "Analytics Report",
-    author: "TUP-Taguig",
-    creator: "Optic AI",
-  });
-
-  // Convert the logo to a data URL
-  const img = new Image();
-  img.src = tuplogo;
-  img.onload = async () => {
-    const logoCanvas = document.createElement("canvas");
-    logoCanvas.width = img.width;
-    logoCanvas.height = img.height;
-    const ctx = logoCanvas.getContext("2d");
-    ctx.drawImage(img, 0, 0);
-    const logoDataUrl = logoCanvas.toDataURL("image/png");
-
-    // ===== HEADER SECTION =====
-    // Add the logo
-    doc.addImage(logoDataUrl, "PNG", 15, 15, 25, 25);
-
-    // Add header text with right alignment
-    doc.setFontSize(16).setFont("helvetica", "bold");
-    doc.setTextColor(204, 0, 0); // Red color for main header
-    doc.text("Technological University of the Philippines - Taguig", 195, 20, { align: "right" });
-
-    doc.setFontSize(14).setFont("helvetica", "bold");
-    doc.text("Optic AI - Vision Testing System", 195, 28, { align: "right" });
-
-    // Add date with right alignment
-    const today = new Date();
-    doc.setFontSize(10).setFont("helvetica", "normal");
-    doc.setTextColor(0); // Reset to black for normal text
-    doc.text(`Report Date: ${today.toLocaleDateString()}`, 195, 35, { align: "right" });
-
-    // Add decorative header line
-    doc.setDrawColor(204, 0, 0); // Red line
-    doc.setLineWidth(0.8);
-    doc.line(15, 42, 195, 42);
-
-    // ===== TEAM MEMBERS SECTION =====
-    doc.setFontSize(12).setFont("helvetica", "bold");
-    doc.setTextColor(0); // Black color for "Team Members:"
-    doc.text("Team Members:", 15, 50);
-
-    doc.setFontSize(11).setFont("helvetica", "normal");
-    doc.setTextColor(0); // Reset to black for normal text
-    const teamMembers = ["Morit Geric T.", "Bacala Nicole", "Gone Krizel", "Giana Mico"];
-
-    // Create two-column layout for team members
-    const leftCol = teamMembers.slice(0, 2);
-    const rightCol = teamMembers.slice(2);
-
-    leftCol.forEach((member, idx) => {
-      doc.text(`• ${member}`, 20, 58 + idx * 7);
+  // Function to export all charts as a single PDF
+  const exportAllChartsToPDF = async () => {
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
     });
 
-    rightCol.forEach((member, idx) => {
-      doc.text(`• ${member}`, 90, 58 + idx * 7);
+    doc.setProperties({
+      title: "Optic AI - Vision Testing System Report",
+      subject: "Analytics Report",
+      author: "TUP-Taguig",
+      creator: "Optic AI",
     });
 
-    // Add section divider
-    doc.setDrawColor(204, 0, 0); // Red for divider
-    doc.setLineWidth(0.3);
-    doc.line(15, 75, 195, 75);
+    const img = new Image();
+    img.src = tuplogo;
+    img.onload = async () => {
+      const logoCanvas = document.createElement("canvas");
+      logoCanvas.width = img.width;
+      logoCanvas.height = img.height;
+      const ctx = logoCanvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      const logoDataUrl = logoCanvas.toDataURL("image/png");
 
-    // ===== CHARTS SECTION =====
-    const chartIds = [
-      "userTypeChart",
-      "activationStatusChart",
-      "reviewsChart",
-      "diagnosisChart",
-      "astigmatismChart",
-      "colorBlindnessChart",
-      "sentimentDonutChart",
-      "genderChart", // Add gender chart
-    ];
+      // Header Section
+      doc.addImage(logoDataUrl, "PNG", 15, 15, 25, 25);
+      doc.setFontSize(16).setFont("helvetica", "bold");
+      doc.setTextColor(204, 0, 0);
+      doc.text("Technological University of the Philippines - Taguig", 195, 20, { align: "right" });
+      doc.setFontSize(14).setFont("helvetica", "bold");
+      doc.text("Optic AI - Vision Testing System", 195, 28, { align: "right" });
+      const today = new Date();
+      doc.setFontSize(10).setFont("helvetica", "normal");
+      doc.setTextColor(0);
+      doc.text(`Report Date: ${today.toLocaleDateString()}`, 195, 35, { align: "right" });
+      doc.setDrawColor(204, 0, 0);
+      doc.setLineWidth(0.8);
+      doc.line(15, 42, 195, 42);
 
-    let currentY = 85; // Starting Y position for the first chart
-    let chartCount = 0;
-
-    for (const chartId of chartIds) {
-      const chartElement = document.getElementById(chartId);
-      if (!chartElement) {
-        console.error(`Chart element ${chartId} not found!`);
-        continue;
-      }
-
-      // Add a new page if necessary (after 2 charts)
-      if (chartCount > 0 && chartCount % 2 === 0) {
-        doc.addPage();
-        currentY = 25; // Reset Y position for the new page
-      }
-
-      // Increase the DPI for better quality
-      const canvas = await html2canvas(chartElement, { scale: 3 }); // Higher scale for better quality
-      const imgData = canvas.toDataURL("image/png");
-
-      // Add chart title with decorative line
-      const chartTitle = chartElement.parentElement.querySelector("h3").innerText;
-      doc.setFontSize(13).setFont("helvetica", "bold");
-      doc.setTextColor(0); // Black color for chart titles
-      doc.text(chartTitle, 15, currentY);
-
-      doc.setDrawColor(204, 0, 0); // Red line under title
-      doc.setLineWidth(0.5);
-      doc.line(15, currentY + 2, 80, currentY + 2);
-
-      doc.setTextColor(0); // Reset to black for normal text
-
-      // For sentiment chart, adjust dimensions to fit the PDF
-      if (chartId === "sentimentDonutChart") {
-        const imgWidth = 300; // Adjusted width for better fit
-        const imgHeight = 80; // Adjusted height for better fit
-
-        const canvas = await html2canvas(chartElement, { scale: 3 }); // Higher scale for better quality
-        const imgData = canvas.toDataURL("image/png");
-
-        const centerX = (210 - imgWidth) / 2; // Center the chart horizontally
-        doc.addImage(imgData, "PNG", centerX, currentY + 6, imgWidth, imgHeight);
-
-        currentY += imgHeight + 20; // Extra spacing for better layout
-      } else {
-        // For other charts, use proportional dimensions
-        const imgWidth = 160;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        const centerX = (210 - imgWidth) / 2;
-        doc.addImage(imgData, "PNG", centerX, currentY + 6, imgWidth, imgHeight);
-
-        // Update the Y position for the next chart
-        currentY += imgHeight + 25;
-      }
-
-      chartCount++;
-    }
-
-    // ===== SUMMARY PAGE =====
-    doc.addPage();
-
-    // Add summary title with decorative elements
-    doc.setFillColor(204, 0, 0); // Red background
-    doc.rect(15, 15, 180, 10, "F");
-    doc.setTextColor(255); // White text on red background
-    doc.setFontSize(14).setFont("helvetica", "bold");
-    doc.text("OVERALL SUMMARY AND ANALYSIS", 105, 22, { align: "center" });
-    doc.setTextColor(0); // Reset to black
-
-    let summaryY = 35;
-
-    // Summary sections with better formatting
-    const sections = [
-      {
-        title: "User Types",
-        content: `The system currently has ${userTypeCount.users} regular users and ${userTypeCount.admins} administrators. This indicates a healthy user base with a smaller number of administrators managing the system.`,
-      },
-      {
-        title: "Activation Status",
-        content: `Out of the total accounts, ${activationStatusCount.activated} are activated, while ${activationStatusCount.deactivated} are deactivated. This suggests that most users are actively using the system.`,
-      },
-      {
-        title: "Reviews",
-        content: `There are ${reviewsCount.anonymous} anonymous reviews and ${reviewsCount.nonAnonymous} non-anonymous reviews. The higher number of anonymous reviews suggests users prefer to remain anonymous when providing feedback.`,
-      },
-      {
-        title: "Diagnosis",
-        content: `The diagnosis distribution shows ${diagnosisCounts.Nearsighted} users with nearsightedness, ${diagnosisCounts.Farsighted} with farsightedness, and ${diagnosisCounts.NormalVision} with normal vision.`,
-      },
-      {
-        title: "Astigmatism",
-        content: `The astigmatism distribution reveals ${astigmatismCounts.leftEye} cases in the left eye, ${astigmatismCounts.rightEye} in the right eye, ${astigmatismCounts.bothEyes} in both eyes, and ${astigmatismCounts.noAstigmatism} with no astigmatism.`,
-      },
-      {
-        title: "Color Blindness",
-        content: `The color blindness distribution shows ${colorBlindnessCounts.normal} users with normal vision, ${colorBlindnessCounts.mild} with mild color blindness, ${colorBlindnessCounts.moderate} with moderate color blindness, and ${colorBlindnessCounts.severe} with severe color blindness.`,
-      },
-      {
-        title: "Sentiment Analysis",
-        content: `The sentiment analysis shows ${sentimentResults.positive} positive, ${sentimentResults.neutral} neutral, and ${sentimentResults.negative} negative sentiments. The majority of sentiments are positive, indicating overall user satisfaction with the system.`,
-      },
-      {
-        title: "Gender Distribution",
-        content: `The gender distribution shows ${genderData.male} male users, ${genderData.female} female users, and ${genderData.other} users who identify as other. This indicates a diverse user base with balanced representation.`,
-      },
-    ];
-
-    // Add each section with nice formatting
-    sections.forEach((section) => {
+      // Team Members Section
       doc.setFontSize(12).setFont("helvetica", "bold");
-      doc.setTextColor(0); // Black for section titles
-      doc.text(`• ${section.title}:`, 20, summaryY);
+      doc.setTextColor(0);
+      doc.text("Team Members:", 15, 50);
+      doc.setFontSize(11).setFont("helvetica", "normal");
+      doc.setTextColor(0);
+      const teamMembers = ["Morit Geric T.", "Bacala Nicole", "Gone Krizel", "Giana Mico"];
+      const leftCol = teamMembers.slice(0, 2);
+      const rightCol = teamMembers.slice(2);
+      leftCol.forEach((member, idx) => {
+        doc.text(`• ${member}`, 20, 58 + idx * 7);
+      });
+      rightCol.forEach((member, idx) => {
+        doc.text(`• ${member}`, 90, 58 + idx * 7);
+      });
+      doc.setDrawColor(204, 0, 0);
+      doc.setLineWidth(0.3);
+      doc.line(15, 75, 195, 75);
 
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(0); // Black for content text
-      const contentLines = doc.splitTextToSize(section.content, 170);
-      doc.text(contentLines, 25, summaryY + 7);
+      // Charts Section
+      const chartIds = [
+        "userTypeChart",
+        "activationStatusChart",
+        "reviewsChart",
+        "diagnosisChart",
+        "astigmatismChart",
+        "colorBlindnessChart",
+        "sentimentDonutChart",
+        "genderChart",
+      ];
 
-      summaryY += 7 + contentLines.length * 6 + 5; // Title height + content height + spacing
-    });
+      let currentY = 85;
+      let chartCount = 0;
 
-    // Add analysis title with similar styling
-    summaryY += 5;
-    doc.setFillColor(204, 0, 0); // Red background
-    doc.rect(15, summaryY, 180, 10, "F");
-    doc.setTextColor(255); // White text on red background
-    doc.setFontSize(14).setFont("helvetica", "bold");
-    doc.text("ANALYSIS", 105, summaryY + 7, { align: "center" });
-    doc.setTextColor(0); // Reset to black
+      for (const chartId of chartIds) {
+        const chartElement = document.getElementById(chartId);
+        if (!chartElement) {
+          console.error(`Chart element ${chartId} not found!`);
+          continue;
+        }
 
-    summaryY += 20;
+        if (chartCount > 0 && chartCount % 2 === 0) {
+          doc.addPage();
+          currentY = 25;
+        }
 
-    // Analysis text
-    doc.setFontSize(11).setFont("helvetica", "normal");
-    const analysis = `The data indicates that the Optic AI system is serving a diverse user base with various vision conditions. The majority of users have normal vision, but significant numbers experience vision issues that require attention. The prevalence of astigmatism and color blindness highlights the importance of comprehensive vision testing. The system's user engagement appears healthy with most accounts remaining active. The preference for anonymous reviews suggests users value privacy when providing feedback about their vision health experiences.`;
+        const canvas = await html2canvas(chartElement, { scale: 3 });
+        const imgData = canvas.toDataURL("image/png");
+        const chartTitle = chartElement.parentElement.querySelector("h3").innerText;
+        doc.setFontSize(13).setFont("helvetica", "bold");
+        doc.setTextColor(0);
+        doc.text(chartTitle, 15, currentY);
+        doc.setDrawColor(204, 0, 0);
+        doc.setLineWidth(0.5);
+        doc.line(15, currentY + 2, 80, currentY + 2);
+        doc.setTextColor(0);
 
-    const analysisLines = doc.splitTextToSize(analysis, 175);
-    doc.text(analysisLines, 15, summaryY);
+        if (chartId === "sentimentDonutChart") {
+          const imgWidth = 300;
+          const imgHeight = 80;
+          const canvas = await html2canvas(chartElement, { scale: 3 });
+          const imgData = canvas.toDataURL("image/png");
+          const centerX = (210 - imgWidth) / 2;
+          doc.addImage(imgData, "PNG", centerX, currentY + 6, imgWidth, imgHeight);
+          currentY += imgHeight + 20;
+        } else {
+          const imgWidth = 160;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          const centerX = (210 - imgWidth) / 2;
+          doc.addImage(imgData, "PNG", centerX, currentY + 6, imgWidth, imgHeight);
+          currentY += imgHeight + 25;
+        }
 
-    // ===== FOOTER SECTION =====
-    // Add footer to all pages
-    const pageCount = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-      doc.setPage(i);
+        chartCount++;
+      }
 
-      // Add decorative footer line
-      doc.setDrawColor(204, 0, 0); // Red line
-      doc.setLineWidth(0.5);
-      doc.line(15, 280, 195, 280);
+      // Summary Page
+      doc.addPage();
+      doc.setFillColor(204, 0, 0);
+      doc.rect(15, 15, 180, 10, "F");
+      doc.setTextColor(255);
+      doc.setFontSize(14).setFont("helvetica", "bold");
+      doc.text("OVERALL SUMMARY AND ANALYSIS", 105, 22, { align: "center" });
+      doc.setTextColor(0);
 
-      // Add footer text
-      doc.setFontSize(8).setFont("helvetica", "italic");
-      doc.text("Generated by Optic AI - Vision Testing System", 15, 286);
+      let summaryY = 35;
+      const sections = [
+        {
+          title: "User Types",
+          content: `The system currently has ${userTypeCount.users} regular users and ${userTypeCount.admins} administrators. This indicates a healthy user base with a smaller number of administrators managing the system.`,
+        },
+        {
+          title: "Activation Status",
+          content: `Out of the total accounts, ${activationStatusCount.activated} are activated, while ${activationStatusCount.deactivated} are deactivated. This suggests that most users are actively using the system.`,
+        },
+        {
+          title: "Reviews",
+          content: `There are ${reviewsCount.anonymous} anonymous reviews and ${reviewsCount.nonAnonymous} non-anonymous reviews. The higher number of anonymous reviews suggests users prefer to remain anonymous when providing feedback.`,
+        },
+        {
+          title: "Diagnosis",
+          content: `The diagnosis distribution shows: ${Object.entries(filteredDiagnosisCounts).map(([key, value]) => `${value} ${key}`).join(', ')}.`,
+        },
+        {
+          title: "Astigmatism",
+          content: `The astigmatism distribution reveals ${astigmatismCounts.leftEye} cases in the left eye, ${astigmatismCounts.rightEye} in the right eye, ${astigmatismCounts.bothEyes} in both eyes, and ${astigmatismCounts.noAstigmatism} with no astigmatism.`,
+        },
+        {
+          title: "Color Blindness",
+          content: `The color blindness distribution shows ${colorBlindnessCounts.normal} users with normal vision, ${colorBlindnessCounts.mild} with mild color blindness, ${colorBlindnessCounts.moderate} with moderate color blindness, and ${colorBlindnessCounts.severe} with severe color blindness.`,
+        },
+        {
+          title: "Sentiment Analysis",
+          content: `The sentiment analysis shows ${sentimentResults.positive} positive, ${sentimentResults.neutral} neutral, and ${sentimentResults.negative} negative sentiments. The majority of sentiments are positive, indicating overall user satisfaction with the system.`,
+        },
+        {
+          title: "Gender Distribution",
+          content: `The gender distribution shows ${genderData.male} male users, ${genderData.female} female users, and ${genderData.other} users who identify as other. This indicates a diverse user base with balanced representation.`,
+        },
+      ];
 
-      // Add page numbers
-      doc.setFontSize(9).setFont("helvetica", "normal");
-      doc.text(`Page ${i} of ${pageCount}`, 195, 286, { align: "right" });
-    }
+      sections.forEach((section) => {
+        doc.setFontSize(12).setFont("helvetica", "bold");
+        doc.setTextColor(0);
+        doc.text(`• ${section.title}:`, 20, summaryY);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(0);
+        const contentLines = doc.splitTextToSize(section.content, 170);
+        doc.text(contentLines, 25, summaryY + 7);
+        summaryY += 7 + contentLines.length * 6 + 5;
+      });
 
-    // Save the PDF
-    doc.save("Optic_AI_Vision_Testing_Report.pdf");
+      summaryY += 5;
+      doc.setFillColor(204, 0, 0);
+      doc.rect(15, summaryY, 180, 10, "F");
+      doc.setTextColor(255);
+      doc.setFontSize(14).setFont("helvetica", "bold");
+      doc.text("ANALYSIS", 105, summaryY + 7, { align: "center" });
+      doc.setTextColor(0);
+      summaryY += 20;
+      doc.setFontSize(11).setFont("helvetica", "normal");
+      const analysis = `The data indicates that the Optic AI system is serving a diverse user base with various vision conditions. The comprehensive diagnosis data shows a range of vision issues from mild to severe. The prevalence of astigmatism and color blindness highlights the importance of comprehensive vision testing. The system's user engagement appears healthy with most accounts remaining active. The preference for anonymous reviews suggests users value privacy when providing feedback about their vision health experiences.`;
+      const analysisLines = doc.splitTextToSize(analysis, 175);
+      doc.text(analysisLines, 15, summaryY);
+
+      // Footer Section
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setDrawColor(204, 0, 0);
+        doc.setLineWidth(0.5);
+        doc.line(15, 280, 195, 280);
+        doc.setFontSize(8).setFont("helvetica", "italic");
+        doc.text("Generated by Optic AI - Vision Testing System", 15, 286);
+        doc.setFontSize(9).setFont("helvetica", "normal");
+        doc.text(`Page ${i} of ${pageCount}`, 195, 286, { align: "right" });
+      }
+
+      doc.save("Optic_AI_Vision_Testing_Report.pdf");
+    };
   };
-};
+
   // Chart Data for User Types (Bar Chart)
   const userTypeChartData = {
     labels: ["Users", "Admins"],
@@ -572,21 +502,21 @@ const exportAllChartsToPDF = async () => {
         backgroundColor: ["#FF6384", "#36A2EB"],
         borderColor: ["#FF6384", "#36A2EB"],
         borderWidth: 2,
-        fill: false, // No fill for line chart
-        tension: 0.4, // Smooth line
+        fill: false,
+        tension: 0.4,
       },
     ],
   };
 
   // Chart Data for Diagnosis Distribution (Radar Chart)
   const diagnosisChartData = {
-    labels: ["Nearsighted", "Farsighted", "Normal Vision"],
+    labels: Object.keys(filteredDiagnosisCounts),
     datasets: [
       {
         label: "Diagnosis Count",
-        data: [diagnosisCounts.Nearsighted, diagnosisCounts.Farsighted, diagnosisCounts.NormalVision],
-        backgroundColor: "rgba(255, 99, 132, 0.2)",
-        borderColor: "rgba(255, 99, 132, 1)",
+        data: Object.values(filteredDiagnosisCounts),
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 2,
       },
     ],
@@ -627,8 +557,8 @@ const exportAllChartsToPDF = async () => {
       {
         label: "Sentiment Analysis",
         data: [sentimentResults.positive, sentimentResults.neutral, sentimentResults.negative],
-        backgroundColor: ["#4CAF50", "#FFC107", "#F44336"], // Green, Yellow, Red
-        borderColor: ["#4CAF50", "#FFC107", "#F44336"], // Green, Yellow, Red
+        backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
+        borderColor: ["#4CAF50", "#FFC107", "#F44336"],
         borderWidth: 2,
       },
     ],
@@ -641,7 +571,7 @@ const exportAllChartsToPDF = async () => {
       {
         label: "Gender Count",
         data: [genderData.male, genderData.female, genderData.other],
-        backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56"], // Blue, Pink, Yellow
+        backgroundColor: ["#36A2EB", "#FF6384", "#FFCE56"],
         borderColor: ["#36A2EB", "#FF6384", "#FFCE56"],
         borderWidth: 2,
       },
@@ -657,7 +587,7 @@ const exportAllChartsToPDF = async () => {
           Export All Charts
         </button>
         <div className="charts-container">
-          {/* First Row: Existing Charts */}
+          {/* First Row: User Type, Activation Status, Reviews */}
           <div className="chart-row">
             <div className="chart-item">
               <h3>User Type Statistics</h3>
@@ -735,21 +665,40 @@ const exportAllChartsToPDF = async () => {
           {/* Second Row: Diagnosis, Astigmatism, and Color Blindness Charts */}
           <div className="chart-row">
             <div className="chart-item full-width">
-              <h3>Diagnosis Distribution</h3>
+              <h3>Vision Diagnosis Distribution</h3>
               <div id="diagnosisChart" className="chart-container">
-                <Radar data={diagnosisChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+                <Radar 
+                  data={diagnosisChartData} 
+                  options={{ 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    scales: {
+                      r: {
+                        angleLines: {
+                          display: true
+                        },
+                        suggestedMin: 0,
+                        ticks: {
+                          stepSize: 1
+                        }
+                      }
+                    }
+                  }} 
+                />
               </div>
               <p className="chart-description">
-                This radar chart provides an overview of the diagnosis distribution, including nearsightedness, farsightedness, and normal vision.
+                This radar chart shows the distribution of all vision diagnoses from user tests.
               </p>
               <button
                 onClick={() =>
                   exportChartToPDF(
                     "diagnosisChart",
-                    "Diagnosis Distribution",
-                    "This radar chart provides an overview of the diagnosis distribution, including nearsightedness, farsightedness, and normal vision.",
-                    `**Summary:** The chart shows that ${diagnosisCounts.Nearsighted} users are nearsighted, ${diagnosisCounts.Farsighted} are farsighted, and ${diagnosisCounts.NormalVision} have normal vision.
-                    **Analysis:** The majority of users have normal vision, with a significant number of users experiencing nearsightedness and farsightedness. This highlights the importance of vision testing and corrective measures.`
+                    "Vision Diagnosis Distribution",
+                    "This radar chart shows the distribution of all vision diagnoses from user tests.",
+                    `**Summary:** The chart shows the following diagnosis counts: ${Object.entries(filteredDiagnosisCounts)
+                      .map(([diagnosis, count]) => `${count} ${diagnosis}`)
+                      .join(', ')}.
+                    **Analysis:** This comprehensive view helps identify the most common vision conditions among users, with ${Object.keys(filteredDiagnosisCounts)[0]} being the most prevalent condition.`
                   )
                 }
                 className="export-button"
@@ -807,7 +756,7 @@ const exportAllChartsToPDF = async () => {
             </div>
           </div>
 
-          {/* Third Row: Sentiment Analysis Donut Chart */}
+          {/* Third Row: Sentiment Analysis and Gender Distribution */}
           <div className="chart-row">
             <div className="chart-item">
               <h3>Sentiment Analysis</h3>
@@ -817,7 +766,7 @@ const exportAllChartsToPDF = async () => {
                   options={{
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: "70%", // Makes it a donut chart
+                    cutout: "70%",
                     plugins: {
                       datalabels: {
                         color: "#fff",
@@ -839,7 +788,7 @@ const exportAllChartsToPDF = async () => {
                     "Sentiment Analysis",
                     "This donut chart shows the distribution of sentiment analysis results, including positive, neutral, and negative sentiments.",
                     `**Summary:** The chart shows that there are ${sentimentResults.positive} positive, ${sentimentResults.neutral} neutral, and ${sentimentResults.negative} negative sentiments.
-          **Analysis:** The majority of sentiments are positive, indicating overall user satisfaction with the system.`
+                    **Analysis:** The majority of sentiments are positive, indicating overall user satisfaction with the system.`
                   )
                 }
                 className="export-button"
@@ -848,7 +797,6 @@ const exportAllChartsToPDF = async () => {
               </button>
             </div>
 
-            {/* Gender Distribution Chart */}
             <div className="chart-item">
               <h3>Gender Distribution</h3>
               <div id="genderChart" className="chart-container">

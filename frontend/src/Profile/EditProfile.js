@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Navbar from "../Navigation/Navbar";
 import { toast } from "react-toastify";
-import { FaPen, FaFileExport } from "react-icons/fa"; // Added FaFileExport for the export icon
+import { FaPen, FaFileExport } from "react-icons/fa";
 import styles from "./EditProfile.module.css";
-import jsPDF from "jspdf"; // For generating PDF reports
-import tuplogo from "../assets/tuplogo.png"; // Import the logo
+import jsPDF from "jspdf";
+import tuplogo from "../assets/tuplogo.png";
 
 const EditProfile = () => {
   const [name, setName] = useState("");
@@ -14,7 +14,8 @@ const EditProfile = () => {
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const [password, setPassword] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [userData, setUserData] = useState(null); // State to store user data for export
+  const [userData, setUserData] = useState(null);
+  const [visionTestResults, setVisionTestResults] = useState([]);
 
   const userId = localStorage.getItem("userId");
 
@@ -39,32 +40,52 @@ const EditProfile = () => {
     fetchUserData();
   }, [userId]);
 
+  const fetchVisionTestResults = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5001/test/get-test-results/${userId}`);
+      setVisionTestResults(response.data.allResults || []);
+      return response.data.allResults || [];
+    } catch (error) {
+      console.error("Error fetching vision test results:", error);
+      return [];
+    }
+  };
+
   const fetchAllUserData = async () => {
     try {
-      const [userResponse, colorBlindnessResponse, astigmatismResponse, faceShapeResponse] = await Promise.all([
+      const [
+        userResponse,
+        colorBlindnessResponse,
+        astigmatismResponse,
+        faceShapeResponse,
+        visionTestsResponse
+      ] = await Promise.all([
         axios.get(`http://localhost:5001/users/users/${userId}`),
         axios.get(`http://localhost:5001/color-blindness/color-blindness-test/${userId}`),
         axios.get(`http://localhost:5001/astigmatism/astigmatism-test/${userId}`),
-        axios.get(`http://localhost:5001/face-shape/face-shape-history/${userId}`), // Fetch face shape data
+        axios.get(`http://localhost:5001/face-shape/face-shape-history/${userId}`),
+        fetchVisionTestResults()
       ]);
 
-      // Convert single objects to arrays
       const colorBlindnessTests = colorBlindnessResponse.data ? [colorBlindnessResponse.data] : [];
       const astigmatismTests = astigmatismResponse.data ? [astigmatismResponse.data] : [];
-      const faceShapeTests = faceShapeResponse.data || []; // Face shape data
+      const faceShapeTests = faceShapeResponse.data || [];
+      const visionTests = Array.isArray(visionTestsResponse) ? visionTestsResponse : [];
 
       setUserData({
         user: userResponse.data,
         colorBlindnessTests,
         astigmatismTests,
-        faceShapeTests, // Add face shape data to userData
+        faceShapeTests,
+        visionTests
       });
 
       return {
         user: userResponse.data,
         colorBlindnessTests,
         astigmatismTests,
-        faceShapeTests, // Return face shape data
+        faceShapeTests,
+        visionTests
       };
     } catch (error) {
       console.error("Error fetching user data for export", error);
@@ -95,14 +116,12 @@ const EditProfile = () => {
       return;
     }
 
-    // Create PDF with A4 format and better settings
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
       format: "a4",
     });
 
-    // Set document properties
     doc.setProperties({
       title: "User Vision Test Report - Optic AI",
       subject: "Vision Test Analysis",
@@ -110,7 +129,6 @@ const EditProfile = () => {
       creator: "Optic AI",
     });
 
-    // Convert the logo to a data URL
     const img = new Image();
     img.src = tuplogo;
     img.onload = () => {
@@ -122,10 +140,7 @@ const EditProfile = () => {
       const logoDataUrl = canvas.toDataURL("image/png");
 
       // ===== HEADER SECTION =====
-      // Add the logo
       doc.addImage(logoDataUrl, "PNG", 15, 15, 25, 25);
-
-      // Add header text with right alignment
       doc.setFontSize(16).setFont("helvetica", "bold");
       doc.text("Technological University of the Philippines - Taguig", 195, 20, {
         align: "right",
@@ -134,15 +149,13 @@ const EditProfile = () => {
       doc.setFontSize(14).setFont("helvetica", "bold");
       doc.text("Optic AI - Vision Testing System", 195, 28, { align: "right" });
 
-      // Add date with right alignment
       const today = new Date();
       doc.setFontSize(10).setFont("helvetica", "normal");
       doc.text(`Report Date: ${today.toLocaleDateString()}`, 195, 35, {
         align: "right",
       });
 
-      // Add decorative header line
-      doc.setDrawColor(0, 51, 102); // Dark blue
+      doc.setDrawColor(0, 51, 102);
       doc.setLineWidth(0.8);
       doc.line(15, 42, 195, 42);
 
@@ -158,7 +171,6 @@ const EditProfile = () => {
         "Giana Mico",
       ];
 
-      // Create two-column layout for team members
       const leftCol = teamMembers.slice(0, 2);
       const rightCol = teamMembers.slice(2);
 
@@ -170,8 +182,7 @@ const EditProfile = () => {
         doc.text(`• ${member}`, 90, 58 + idx * 7);
       });
 
-      // Add section divider
-      doc.setDrawColor(180, 180, 180); // Light gray
+      doc.setDrawColor(180, 180, 180);
       doc.setLineWidth(0.3);
       doc.line(15, 75, 195, 75);
 
@@ -184,161 +195,272 @@ const EditProfile = () => {
       doc.text(`Email: ${userData.user.email}`, 15, 105);
       doc.text(`Address: ${userData.user.address}`, 15, 115);
 
-      // Add section divider
-      doc.setDrawColor(180, 180, 180); // Light gray
+      doc.setDrawColor(180, 180, 180);
       doc.setLineWidth(0.3);
       doc.line(15, 125, 195, 125);
 
       // ===== VISION TEST RESULTS SECTION =====
+      let currentY = 135; // Track current Y position for dynamic content placement
+
+      // Vision Diagnostic Tests
       doc.setFontSize(14).setFont("helvetica", "bold");
-      doc.text("Vision Test Results", 15, 135);
+      doc.text("Vision Test Results", 15, currentY);
+      currentY += 15;
+
+      doc.setFontSize(12).setFont("helvetica", "bold");
+      doc.text("Vision Diagnostic Tests", 15, currentY);
+      currentY += 10;
+
+      if (userData.visionTests.length > 0) {
+        // Table headers
+        doc.setFontSize(10).setFont("helvetica", "bold");
+        doc.text("Test #", 15, currentY);
+        doc.text("Test Type", 30, currentY);
+        doc.text("Diagnosis", 60, currentY);
+        doc.text("Eye Grade", 100, currentY);
+        doc.text("Date", 130, currentY);
+        currentY += 7;
+
+        doc.setFont("helvetica", "normal");
+        userData.visionTests.forEach((test, index) => {
+          // Check if we need a new page
+          if (currentY > 270) {
+            doc.addPage();
+            currentY = 20;
+            // Redraw headers on new page
+            doc.setFontSize(10).setFont("helvetica", "bold");
+            doc.text("Test #", 15, currentY);
+            doc.text("Test Type", 30, currentY);
+            doc.text("Diagnosis", 60, currentY);
+            doc.text("Eye Grade", 100, currentY);
+            doc.text("Date", 130, currentY);
+            currentY += 7;
+          }
+
+          doc.text(`${index + 1}`, 15, currentY);
+          doc.text(`${test.testType || 'N/A'}`, 30, currentY);
+
+          // Wrap diagnosis text if it's too long
+          const diagnosisLines = doc.splitTextToSize(test.diagnosis || 'N/A', 40);
+          doc.text(diagnosisLines, 60, currentY);
+
+          doc.text(`${test.estimatedEyeGrade || 'N/A'}`, 100, currentY);
+
+          // Handle different timestamp formats
+          let testDate = "N/A";
+          if (test.createdAt) {
+            if (test.createdAt.$date) {
+              testDate = new Date(parseInt(test.createdAt.$date.$numberLong)).toLocaleDateString();
+            } else {
+              testDate = new Date(test.createdAt).toLocaleDateString();
+            }
+          }
+          doc.text(testDate, 130, currentY);
+
+          // Adjust Y position based on wrapped text height
+          currentY += Math.max(10, (diagnosisLines.length - 1) * 5);
+        });
+      } else {
+        doc.text("No vision diagnostic test data available.", 15, currentY);
+        currentY += 10;
+      }
+
+      // Add space between sections
+      currentY += 10;
 
       // Color Blindness Test
-      doc.setFontSize(12).setFont("helvetica", "bold"); // Bold heading
-      doc.text("Color Blindness Test", 15, 145);
-      doc.setFont("helvetica", "normal"); // Reset font to normal
+      // Check if we need a new page before starting this section
+      if (currentY > 250) {
+        doc.addPage();
+        currentY = 20;
+      }
+
+      doc.setFontSize(12).setFont("helvetica", "bold");
+      doc.text("Color Blindness Test", 15, currentY);
+      currentY += 10;
 
       if (userData.colorBlindnessTests.length > 0) {
-        let startY = 155;
+        // Table headers
         doc.setFontSize(10).setFont("helvetica", "bold");
-        doc.text("Test #", 15, startY);
-        doc.text("Result", 40, startY);
-        doc.text("Correct Count", 80, startY);
-        doc.text("Date", 130, startY);
+        doc.text("Test #", 15, currentY);
+        doc.text("Result", 40, currentY);
+        doc.text("Correct Count", 80, currentY);
+        doc.text("Date", 130, currentY);
+        currentY += 7;
 
         doc.setFont("helvetica", "normal");
         userData.colorBlindnessTests.forEach((test, index) => {
-          startY += 10;
-          doc.text(`${index + 1}`, 15, startY);
-          doc.text(`${test.result}`, 40, startY);
-          doc.text(`${test.correctCount}`, 80, startY);
-          doc.text(`${new Date(test.timestamp).toLocaleDateString()}`, 130, startY);
+          // Check if we need a new page
+          if (currentY > 270) {
+            doc.addPage();
+            currentY = 20;
+            // Redraw headers on new page
+            doc.setFontSize(10).setFont("helvetica", "bold");
+            doc.text("Test #", 15, currentY);
+            doc.text("Result", 40, currentY);
+            doc.text("Correct Count", 80, currentY);
+            doc.text("Date", 130, currentY);
+            currentY += 7;
+          }
+
+          doc.text(`${index + 1}`, 15, currentY);
+          doc.text(`${test.result}`, 40, currentY);
+          doc.text(`${test.correctCount}`, 80, currentY);
+          doc.text(`${new Date(test.timestamp).toLocaleDateString()}`, 130, currentY);
+          currentY += 10;
         });
       } else {
-        doc.text("No color blindness test data available.", 15, 155);
+        doc.text("No color blindness test data available.", 15, currentY);
+        currentY += 10;
       }
 
+      // Add space between sections
+      currentY += 10;
+
       // Astigmatism Test
-      doc.setFontSize(12).setFont("helvetica", "bold"); // Bold heading
-      doc.text("Astigmatism Test", 15, 185);
-      doc.setFont("helvetica", "normal"); // Reset font to normal
+      // Check if we need a new page before starting this section
+      if (currentY > 250) {
+        doc.addPage();
+        currentY = 20;
+      }
+
+      doc.setFontSize(12).setFont("helvetica", "bold");
+      doc.text("Astigmatism Test", 15, currentY);
+      currentY += 10;
 
       if (userData.astigmatismTests.length > 0) {
-        let startY = 195;
+        // Table headers
         doc.setFontSize(10).setFont("helvetica", "bold");
-        doc.text("Test #", 15, startY);
-        doc.text("Result", 40, startY);
-        doc.text("Date", 130, startY);
-      
+        doc.text("Test #", 15, currentY);
+        doc.text("Result", 40, currentY);
+        doc.text("Date", 130, currentY);
+        currentY += 7;
+
         doc.setFont("helvetica", "normal");
         userData.astigmatismTests.forEach((test, index) => {
-          startY += 10;
-      
-          // Simplify astigmatism result
+          // Check if we need a new page
+          if (currentY > 270) {
+            doc.addPage();
+            currentY = 20;
+            // Redraw headers on new page
+            doc.setFontSize(10).setFont("helvetica", "bold");
+            doc.text("Test #", 15, currentY);
+            doc.text("Result", 40, currentY);
+            doc.text("Date", 130, currentY);
+            currentY += 7;
+          }
+
           const resultText =
             test.result === "invalid data"
               ? "Data Unavailable"
               : test.result.toLowerCase().includes("both")
-              ? "Both Eyes"
-              : `Astigmatism symptoms appear in ${test.result.toUpperCase()} eyes.`;
-      
-          // Wrap the result text to fit within a specific width
-          const wrappedResult = doc.splitTextToSize(resultText, 80); // Adjust width as needed
-      
-          // Parse and format the timestamp
-          let testDate = "Invalid Date";
+                ? "Both Eyes"
+                : `Astigmatism symptoms appear in ${test.result.toUpperCase()} eyes.`;
+
+          const wrappedResult = doc.splitTextToSize(resultText, 80);
+
+          // Handle the timestamp correctly
+          let testDate = "N/A";
           if (test.timestamp) {
-            // Handle nested timestamp (MongoDB format)
-            if (test.timestamp.$date && test.timestamp.$date.$numberLong) {
-              const timestamp = test.timestamp.$date.$numberLong;
-              testDate = new Date(parseInt(timestamp)).toLocaleDateString();
+            if (test.timestamp.$date) {
+              testDate = new Date(parseInt(test.timestamp.$date.$numberLong)).toLocaleDateString();
             }
-            // Handle plain number timestamp
-            else if (typeof test.timestamp === "number") {
-              testDate = new Date(test.timestamp).toLocaleDateString();
-            }
-            // Handle ISO string timestamp
-            else if (typeof test.timestamp === "string") {
-              testDate = new Date(test.timestamp).toLocaleDateString();
-            }
-            // Handle direct Date object
             else if (test.timestamp instanceof Date) {
               testDate = test.timestamp.toLocaleDateString();
             }
+            else if (typeof test.timestamp === "string") {
+              testDate = new Date(test.timestamp).toLocaleDateString();
+            }
           }
-      
-          // Add Test #
-          doc.text(`${index + 1}`, 15, startY);
-      
-          // Add Result (wrapped text)
-          doc.text(wrappedResult, 40, startY);
-      
-          // Add Date
-          doc.text(testDate, 130, startY);
-      
-          // Adjust spacing based on the number of lines in wrappedResult
-          startY += wrappedResult.length * 5; // Increase spacing for wrapped text
+
+          doc.text(`${index + 1}`, 15, currentY);
+          doc.text(wrappedResult, 40, currentY);
+          doc.text(testDate, 130, currentY);
+
+          currentY += Math.max(10, wrappedResult.length * 5);
         });
       } else {
-        doc.text("No astigmatism test data available.", 15, 195);
+        doc.text("No astigmatism test data available.", 15, currentY);
+        currentY += 10;
       }
 
-      // ===== FACE SHAPE SECTION =====
-      doc.setFontSize(14).setFont("helvetica", "bold");
-      doc.text("Face Shape Analysis", 15, 225);
+      // Add space between sections
+      currentY += 10;
+
+      // Face Shape Analysis
+      // Check if we need a new page before starting this section
+      if (currentY > 250) {
+        doc.addPage();
+        currentY = 20;
+      }
+
+      doc.setFontSize(12).setFont("helvetica", "bold");
+      doc.text("Face Shape Analysis", 15, currentY);
+      currentY += 10;
 
       if (userData.faceShapeTests.length > 0) {
-        let startY = 235;
+        // Table headers
         doc.setFontSize(10).setFont("helvetica", "bold");
-        doc.text("Test #", 15, startY);
-        doc.text("Face Shape", 40, startY);
-        doc.text("Recommended Glasses", 80, startY);
-        doc.text("Date", 130, startY);
+        doc.text("Test #", 15, currentY);
+        doc.text("Face Shape", 40, currentY);
+        doc.text("Recommended Glasses", 80, currentY);
+        doc.text("Date", 130, currentY);
+        currentY += 7;
 
         doc.setFont("helvetica", "normal");
         userData.faceShapeTests.forEach((test, index) => {
-          startY += 10;
+          // Check if we need a new page
+          if (currentY > 270) {
+            doc.addPage();
+            currentY = 20;
+            // Redraw headers on new page
+            doc.setFontSize(10).setFont("helvetica", "bold");
+            doc.text("Test #", 15, currentY);
+            doc.text("Face Shape", 40, currentY);
+            doc.text("Recommended Glasses", 80, currentY);
+            doc.text("Date", 130, currentY);
+            currentY += 7;
+          }
 
-          // Add Test #
-          doc.text(`${index + 1}`, 15, startY);
+          doc.text(`${index + 1}`, 15, currentY);
+          doc.text(`${test.faceShape}`, 40, currentY);
 
-          // Add Face Shape
-          doc.text(`${test.faceShape}`, 40, startY);
-
-          // Add Recommended Glasses (with text wrapping)
           const recommendedGlasses = test.recommendedGlasses;
-          const wrappedGlasses = doc.splitTextToSize(recommendedGlasses, 50); // Wrap text to fit within 50mm width
-          doc.text(wrappedGlasses, 80, startY);
+          const wrappedGlasses = doc.splitTextToSize(recommendedGlasses, 50);
+          doc.text(wrappedGlasses, 80, currentY);
 
-          // Add Date
-          doc.text(`${new Date(test.timestamp).toLocaleDateString()}`, 130, startY);
+          doc.text(`${new Date(test.timestamp).toLocaleDateString()}`, 130, currentY);
 
-          // Adjust spacing based on the number of lines in wrappedGlasses
-          startY += wrappedGlasses.length * 5; // Increase spacing for wrapped text
+          currentY += Math.max(10, wrappedGlasses.length * 5);
         });
       } else {
-        doc.text("No face shape data available.", 15, 235);
+        doc.text("No face shape data available.", 15, currentY);
+        currentY += 10;
       }
 
       // ===== FOOTER SECTION =====
-      // Add decorative footer line
-      doc.setDrawColor(0, 51, 102); // Dark blue
-      doc.setLineWidth(0.5);
-      doc.line(15, 280, 195, 280);
+      const pageCount = doc.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        
+        // Footer line
+        doc.setDrawColor(0, 51, 102);
+        doc.setLineWidth(0.5);
+        doc.line(15, 280, 195, 280);
 
-      // Add footer text with date and time
-      doc.setFontSize(8).setFont("helvetica", "italic");
-      doc.text("Generated by Optic AI - Vision Testing System", 15, 286);
+        // Footer text
+        doc.setFontSize(8).setFont("helvetica", "italic");
+        doc.text("Generated by Optic AI - Vision Testing System", 15, 286);
 
-      doc.setFontSize(8).setFont("helvetica", "normal");
-      doc.text(
-        `Generated on: ${today.toLocaleDateString()} at ${today.toLocaleTimeString()}`,
-        195,
-        286,
-        { align: "right" }
-      );
+        doc.setFontSize(8).setFont("helvetica", "normal");
+        doc.text(
+          `Page ${i} of ${pageCount} | Generated on: ${today.toLocaleDateString()} at ${today.toLocaleTimeString()}`,
+          195,
+          286,
+          { align: "right" }
+        );
+      }
 
-      // Save the PDF
       doc.save("user_vision_report.pdf");
     };
   };
@@ -544,7 +666,6 @@ const EditProfile = () => {
             </button>
           </form>
 
-          {/* Export Data Button */}
           <button
             onClick={handleExportData}
             className={styles.exportBtn}

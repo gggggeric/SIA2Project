@@ -11,6 +11,7 @@ from io import BytesIO
 from PIL import Image
 import time
 import re
+
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -124,57 +125,79 @@ def predict_face_shape():
 
 def diagnose_vision(results):
     """
-    Diagnose vision based on the smallest readable row and accuracy thresholds.
+    Enhanced vision diagnosis with improved myopia/hyperopia detection
+    Returns diagnosis and recommended eye grade
     """
-    # Determine the smallest readable row
-    smallest_readable_row = None
-    for row_label in chart_lines.keys():
-        if results[row_label]["accuracy"] >= LOW_ACCURACY_THRESHOLD:
-            smallest_readable_row = row_label
-        else:
-            break  # Stop at the first row where accuracy is below the threshold
+    # Determine which rows were read successfully (above low threshold)
+    readable_rows = [
+        row for row, data in results.items() 
+        if data["accuracy"] >= LOW_ACCURACY_THRESHOLD
+    ]
+    
+    if not readable_rows:
+        return "Severe vision impairment - Unable to read any chart lines", -4.00
 
-    # Diagnose vision based on the smallest readable row
-    if smallest_readable_row:
-        if smallest_readable_row == "20/20":
-            return "Vision is Normal"
-        elif smallest_readable_row in ["20/25", "20/30", "20/40", "20/50", "20/70", "20/100", "20/200"]:
-            return "Likely Nearsighted (Myopia): You have difficulty seeing objects that are far away."
-        else:
-            return "Likely Farsighted (Hyperopia): You have difficulty seeing objects that are close up."
+    # Sort rows by difficulty (easiest to hardest)
+    row_order = ["20/200", "20/100", "20/70", "20/50", "20/40", "20/30", "20/25", "20/20"]
+    readable_rows_sorted = sorted(readable_rows, key=lambda x: row_order.index(x))
+    
+    # Get smallest (most difficult) readable row
+    smallest_row = readable_rows_sorted[-1]
+    
+    # Check if user read all rows with high accuracy
+    all_rows_high_accuracy = all(
+        results[row]["accuracy"] >= HIGH_ACCURACY_THRESHOLD 
+        for row in readable_rows
+    )
+    
+    # Perfect vision case
+    if smallest_row == "20/20" and all_rows_high_accuracy:
+        return "Normal vision (20/20)", 0.00
 
-    # Unable to determine
-    return "Vision Condition Unclear: Further testing may be required."
+    # Nearsightedness (myopia) detection:
+    # - Can read small letters but struggles with large ones
+    # - Typically has difficulty with the top rows (20/200, 20/100)
+    if (smallest_row in ["20/20", "20/25", "20/30", "20/40"] and
+        any(results.get(row, {}).get("accuracy", 0) < LOW_ACCURACY_THRESHOLD 
+        for row in ["20/200", "20/100", "20/70"])):
+        
+        # Estimate degree of myopia based on smallest readable row
+        myopia_map = {
+            "20/20": ("Very mild nearsightedness", -0.25),
+            "20/25": ("Mild nearsightedness", -0.50),
+            "20/30": ("Moderate nearsightedness", -1.00),
+            "20/40": ("Significant nearsightedness", -1.50)
+        }
+        return myopia_map.get(smallest_row, ("Nearsightedness", -0.50))
 
-def estimate_eye_grade(results):
-    """
-    Estimate the eye grade based on the smallest readable row and accuracy.
-    """
-    grade_map = {
-        "20/200": -4.00,  # Severe myopia
-        "20/100": -3.00,  # Moderate myopia
-        "20/70": -2.00,   # Mild myopia
-        "20/50": -1.50,   # Mild myopia
-        "20/40": -1.00,   # Mild myopia
-        "20/30": -0.75,   # Very mild myopia
-        "20/25": -0.50,   # Very mild myopia
-        "20/20": 0.00,    # Normal vision
+    # Farsightedness (hyperopia) detection:
+    # - Can read large letters but struggles with small ones
+    # - Typically has difficulty with bottom rows (20/20, 20/25)
+    if (smallest_row in ["20/70", "20/100", "20/200"] and
+        any(results.get(row, {}).get("accuracy", 0) < LOW_ACCURACY_THRESHOLD 
+        for row in ["20/20", "20/25", "20/30"])):
+        
+        # Estimate degree of hyperopia based on smallest readable row
+        hyperopia_map = {
+            "20/70": ("Mild farsightedness", +0.75),
+            "20/100": ("Moderate farsightedness", +1.50),
+            "20/200": ("Significant farsightedness", +2.50)
+        }
+        return hyperopia_map.get(smallest_row, ("Farsightedness", +1.00))
+
+    # General classification based on smallest readable row
+    classification_map = {
+        "20/20": ("Normal or near-normal vision", 0.00),
+        "20/25": ("Very mild vision impairment", -0.25),
+        "20/30": ("Mild vision impairment", -0.50),
+        "20/40": ("Moderate vision impairment", -1.00),
+        "20/50": ("Moderate to significant impairment", -1.50),
+        "20/70": ("Significant vision impairment", -2.00),
+        "20/100": ("Severe vision impairment", -2.50),
+        "20/200": ("Very severe impairment or legal blindness", -3.00)
     }
-
-    # Determine the smallest readable row
-    smallest_readable_row = None
-    for row_label in chart_lines.keys():
-        if results[row_label]["accuracy"] >= LOW_ACCURACY_THRESHOLD:
-            smallest_readable_row = row_label
-        else:
-            break  # Stop at the first row where accuracy is below the threshold
-
-    # Estimate eye grade based on the smallest readable row
-    if smallest_readable_row:
-        return grade_map.get(smallest_readable_row, -4.00)  # Default to severe myopia if no mapping exists
-
-    # If no row meets the threshold, assume the worst case (e.g., 20/200)
-    return grade_map["20/200"]  # Default to severe myopia if no readable row is found
+    
+    return classification_map.get(smallest_row, ("Vision condition unclear", 0.00))
 
 def test_vision(recognizer, source, expected_text, test_type, row_label):
     max_attempts = 3  # Maximum number of attempts to get a valid response
@@ -182,18 +205,18 @@ def test_vision(recognizer, source, expected_text, test_type, row_label):
 
     while attempts < max_attempts:
         try:
-            logger.info(f"Expected chart letters: '{expected_text}'")  # Logs the expected text
+            logger.info(f"Expected chart letters: '{expected_text}'")
 
             # Emit the row to read and start the countdown
             socketio.emit('vision_test_update', {
                 'type': 'start',
                 'test_type': test_type,
-                'row_label': row_label,  # Emit the row label (e.g., "20/200")
-                'letters': expected_text,  # Emit the letters in the row
-                'message': f"Please read the row labeled {row_label}"  # Inform the user which row to read
+                'row_label': row_label,
+                'letters': expected_text,
+                'message': f"Please read the row labeled {row_label}"
             })
 
-            # 3-second delay before switching to another row
+            # 3-second delay before listening
             logger.info("Starting 3-second delay before listening...")
             for i in range(3, 0, -1):
                 logger.info(f"Countdown: {i} seconds remaining...")
@@ -211,25 +234,21 @@ def test_vision(recognizer, source, expected_text, test_type, row_label):
                 logger.info("User chose to skip this row.")
                 return 0, "skip"
 
-            # Log raw and cleaned user response
-            logger.info(f"User said (raw): '{spoken_text}'")
-            spoken_text_cleaned = spoken_text.replace(" ", "")
-            logger.info(f"User said (cleaned): '{spoken_text_cleaned}'")
-
-            # Split expected and spoken text into individual letters
-            expected_letters = list(expected_text)
-            spoken_letters = list(spoken_text_cleaned)
-
-            # Calculate accuracy based on correct letters
+            # Clean and compare responses
+            spoken_text_cleaned = re.sub(r'[^A-Z]', '', spoken_text)
+            expected_text_cleaned = re.sub(r'[^A-Z]', '', expected_text)
+            
             correct = 0
-            for i in range(min(len(expected_letters), len(spoken_letters))):
-                if expected_letters[i] == spoken_letters[i]:
+            min_length = min(len(expected_text_cleaned), len(spoken_text_cleaned))
+            for i in range(min_length):
+                if expected_text_cleaned[i] == spoken_text_cleaned[i]:
                     correct += 1
 
-            accuracy = (correct / len(expected_letters)) * 100 if expected_letters else 0
+            accuracy = (correct / len(expected_text_cleaned)) * 100 if expected_text_cleaned else 0
 
             logger.info(f"Result: {accuracy:.2f}% Accuracy")
             return accuracy, spoken_text_cleaned
+            
         except sr.WaitTimeoutError:
             logger.warning("No speech detected. Please try again.")
             attempts += 1
@@ -250,16 +269,10 @@ def run_vision_test(eye_type):
     try:
         with sr.Microphone() as source:
             logger.info(f"Using default microphone for {eye_type} test")
-
             recognizer.adjust_for_ambient_noise(source)
 
-            rows_to_test = [
-                "20/20", "20/25", "20/30", "20/40", "20/50", "20/70", "20/100", "20/200"
-            ]
-
             results = {}
-
-            for row_label in rows_to_test:
+            for row_label in ["20/200", "20/100", "20/70", "20/50", "20/40", "20/30", "20/25", "20/20"]:
                 expected_text = chart_lines[row_label]
                 logger.info(f"Testing row: {row_label} ({expected_text})")
 
@@ -281,23 +294,13 @@ def run_vision_test(eye_type):
                     logger.info(f"Accuracy below threshold. Moving to next row.")
                     results[row_label]["accuracy"] = 0  # Mark failed rows
 
-            # Determine the smallest readable row
-            smallest_readable_row = None
-            for row_label in rows_to_test:
-                if results[row_label]["accuracy"] >= LOW_ACCURACY_THRESHOLD:
-                    smallest_readable_row = row_label
-                else:
-                    break  # Stop at the first row where accuracy is below the threshold
-
-            # Estimate eye grade and diagnose vision
-            estimated_eye_grade = estimate_eye_grade(results)
-            diagnosis = diagnose_vision(results)
+            # Get diagnosis and eye grade
+            diagnosis, estimated_eye_grade = diagnose_vision(results)
 
             # Print results in the backend
             logger.info(f"Vision Test Results for {eye_type}:")
-            logger.info(f"Smallest Readable Row: {smallest_readable_row}")
-            logger.info(f"Estimated Eye Grade: {estimated_eye_grade}")
             logger.info(f"Diagnosis: {diagnosis}")
+            logger.info(f"Estimated Eye Grade: {estimated_eye_grade}")
             logger.info(f"Detailed Results: {results}")
 
             # Emit the final results
@@ -305,7 +308,6 @@ def run_vision_test(eye_type):
                 'type': 'result',
                 'eye': eye_type,
                 'results': results,
-                'smallest_readable_row': smallest_readable_row,
                 'estimated_eye_grade': estimated_eye_grade,
                 'diagnosis': diagnosis
             })
@@ -313,12 +315,15 @@ def run_vision_test(eye_type):
             return jsonify({
                 "eye": eye_type,
                 "results": results,
-                "smallest_readable_row": smallest_readable_row,
                 "estimated_eye_grade": estimated_eye_grade,
                 "diagnosis": diagnosis
             })
     except Exception as e:
         logger.error(f"Error in vision test: {str(e)}")
+        socketio.emit('vision_test_update', {
+            'type': 'error',
+            'message': f"Test failed: {str(e)}"
+        })
         return jsonify({"error": f"Unexpected error: {str(e)}"}), 500
 
 @app.route("/vision-test/both-eyes", methods=["POST"])
@@ -332,10 +337,6 @@ def vision_test_left():
 @app.route("/vision-test/right-eye", methods=["POST"])
 def vision_test_right():
     return run_vision_test("Right Eye")
-
-
-
-
 
 
 

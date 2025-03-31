@@ -312,32 +312,54 @@ router.delete("/users/:id", async (req, res) => {
 });
 
 
-// Endpoint to get diagnosis counts
+
+// Updated diagnosis-counts route
 router.get("/diagnosis-counts", async (req, res) => {
   try {
+    const matchStage = {};
+    if (req.query.userId) {
+      matchStage.user = mongoose.Types.ObjectId(req.query.userId);
+    }
+
     const diagnosisCounts = await Test.aggregate([
+      { $match: matchStage },
       {
         $group: {
-          _id: "$diagnosis", // Group by diagnosis
-          count: { $sum: 1 }, // Count occurrences
-        },
-      },
+          _id: "$diagnosis",
+          count: { $sum: 1 }
+        }
+      }
     ]);
 
-    // Format the data for the chart
-    const formattedData = {
-      Nearsighted: 0,
-      Farsighted: 0,
-      NormalVision: 0,
-    };
+    // Initialize all possible categories from your Python function with 0 counts
+    const categories = [
+      "Normal vision",
+      "Very mild nearsightedness",
+      "Mild nearsightedness",
+      "Moderate nearsightedness",
+      "Significant nearsightedness",
+      "Very mild farsightedness",
+      "Mild farsightedness",
+      "Moderate farsightedness",
+      "Significant farsightedness",
+      "Very mild vision impairment",
+      "Mild vision impairment",
+      "Moderate vision impairment",
+      "Moderate to significant impairment",
+      "Significant vision impairment",
+      "Very severe impairment"
+    ];
 
-    diagnosisCounts.forEach((item) => {
-      if (item._id.includes("Nearsighted")) {
-        formattedData.Nearsighted = item.count;
-      } else if (item._id.includes("Farsighted")) {
-        formattedData.Farsighted = item.count;
-      } else if (item._id.includes("Normal")) {
-        formattedData.NormalVision = item.count;
+    // Format the response with all categories
+    const formattedData = {};
+    categories.forEach(category => {
+      formattedData[category] = 0;
+    });
+
+    // Update with actual counts from database
+    diagnosisCounts.forEach(item => {
+      if (categories.includes(item._id)) {
+        formattedData[item._id] = item.count;
       }
     });
 
@@ -347,5 +369,4 @@ router.get("/diagnosis-counts", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch diagnosis counts" });
   }
 });
-
 module.exports = router;
