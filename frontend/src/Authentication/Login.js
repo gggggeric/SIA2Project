@@ -118,15 +118,6 @@ const LoginPage = () => {
                 />
               </div>
 
-              <div className="remember-me">
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  checked={rememberMe}
-                  onChange={() => setRememberMe(!rememberMe)}
-                />
-                <label htmlFor="rememberMe"> Remember me</label>
-              </div>
 
               <button type="submit" className="login-btn">
                 LOGIN

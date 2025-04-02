@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Filter } from 'bad-words'; // Correct import for the Filter class
+import { Filter } from 'bad-words';
 import './Footer.css';
 
 const Footer = () => {
@@ -148,20 +147,6 @@ const Footer = () => {
             <a href="/about">About Us</a>
             <Link to="/reviews">View Reviews</Link>
             <Link to="/terms-of-service">Terms of Service</Link>
-          </div>
-          <div className="footer-social">
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-              <FaFacebook />
-            </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-              <FaTwitter />
-            </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-              <FaInstagram />
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-              <FaLinkedin />
-            </a>
           </div>
           <p className="copyright">&copy; {new Date().getFullYear()} Optic AI </p>
         </div>
