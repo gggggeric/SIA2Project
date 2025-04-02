@@ -267,22 +267,40 @@ router.get("users/:id", async (req, res) => {
 });
 
 router.post("/users", async (req, res) => {
-    try {
-        const { name, email, password, address, userType } = req.body;
+  try {
+      const { name, email, password, address, userType, gender } = req.body;
 
-        if (await User.exists({ email })) return res.status(400).json({ message: "Email already in use" });
+      // Check if email already exists
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+          return res.status(400).json({ error: "Email already in use" });
+      }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+      // Hash the password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
 
-        const newUser = await User.create({ name, email, password: hashedPassword, address, userType });
+      // Create new user (simplified without verification tokens)
+      const newUser = await User.create({ 
+          name, 
+          email, 
+          password: hashedPassword, 
+          address, 
+          userType,
+          gender,
+          isVerified: true, // Mark as verified by default for admin-created users
+          isActivate: "Activated" // Default to Activated for admin-created users
+      });
 
-        res.status(201).json({ message: "User created successfully", id: newUser._id });
-    } catch (error) {
-        console.error("Error creating user:", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
+      res.status(201).json({ 
+          message: "User created successfully", 
+          id: newUser._id 
+      });
+  } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(500).json({ message: "Internal server error" });
+  }
 });
-
 
 router.put("/users/:id", async (req, res) => {
     try {

@@ -1,15 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Navbar from "../Navigation/Navbar"; // Import the Navbar component
-import { DataGrid } from "@mui/x-data-grid"; // Import DataGrid component from Material UI
-import Button from "@mui/material/Button"; // Import MUI Button for actions
-import { ToastContainer, toast } from "react-toastify"; // Import Toastify components
-import "react-toastify/dist/ReactToastify.css"; // Import Toastify styles
-import "./UserCrud.css"; // Import external styles
+import Navbar from "../Navigation/Navbar";
+import { DataGrid } from "@mui/x-data-grid";
+import Button from "@mui/material/Button";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./UserCrud.css";
 
 const UserCrudPage = () => {
     const [users, setUsers] = useState([]);
-    const [formData, setFormData] = useState({ name: "", email: "", password: "", address: "", userType: "user" });
+    const [formData, setFormData] = useState({ 
+        name: "", 
+        email: "", 
+        password: "", 
+        address: "", 
+        userType: "user",
+        gender: "male" // Added gender with default value
+    });
     const [editingUser, setEditingUser] = useState(null);
 
     useEffect(() => {
@@ -21,7 +28,7 @@ const UserCrudPage = () => {
             const response = await axios.get("http://localhost:5001/admin/users");
             const usersWithId = response.data.map(user => ({
                 ...user,
-                id: user._id // Adding `id` field to each user object
+                id: user._id
             }));
             setUsers(usersWithId);
         } catch (error) {
@@ -59,8 +66,8 @@ const UserCrudPage = () => {
                     theme: "colored",
                 });
             }
-            fetchUsers(); // Fetch the updated list of users
-            resetForm(); // Reset the form after submission
+            fetchUsers();
+            resetForm();
         } catch (error) {
             console.error("Error saving user:", error);
             toast.error("Error saving user!", {
@@ -81,7 +88,8 @@ const UserCrudPage = () => {
             name: user.name,
             email: user.email,
             address: user.address,
-            userType: user.userType
+            userType: user.userType,
+            gender: user.gender // Added gender to edit form
         });
     };
 
@@ -89,7 +97,7 @@ const UserCrudPage = () => {
         if (window.confirm("Are you sure you want to delete this user?")) {
             try {
                 await axios.delete(`http://localhost:5001/admin/users/${id}`);
-                fetchUsers(); // Re-fetch the user list after deletion
+                fetchUsers();
                 toast.success("User deleted successfully!", {
                     position: "bottom-right",
                     autoClose: 3000,
@@ -115,7 +123,14 @@ const UserCrudPage = () => {
     };
 
     const resetForm = () => {
-        setFormData({ name: "", email: "", password: "", address: "", userType: "user" });
+        setFormData({ 
+            name: "", 
+            email: "", 
+            password: "", 
+            address: "", 
+            userType: "user",
+            gender: "male" // Reset gender to default
+        });
         setEditingUser(null);
     };
 
@@ -124,6 +139,7 @@ const UserCrudPage = () => {
         { field: "email", headerName: "Email", width: 200 },
         { field: "address", headerName: "Address", width: 250 },
         { field: "userType", headerName: "User Type", width: 120 },
+        { field: "gender", headerName: "Gender", width: 100 }, // Added gender column
         {
             field: "actions",
             headerName: "Actions",
@@ -134,7 +150,7 @@ const UserCrudPage = () => {
                         variant="outlined"
                         color="primary"
                         size="small"
-                        onClick={() => handleEdit(params.row)} // Pass the entire user data to handleEdit
+                        onClick={() => handleEdit(params.row)}
                     >
                         Edit
                     </Button>
@@ -143,7 +159,7 @@ const UserCrudPage = () => {
                         color="secondary"
                         size="small"
                         style={{ marginLeft: "10px" }}
-                        onClick={() => handleDelete(params.row._id)} // Use _id for delete
+                        onClick={() => handleDelete(params.row._id)}
                     >
                         Delete
                     </Button>
@@ -154,14 +170,13 @@ const UserCrudPage = () => {
 
     return (
         <>
-            <Navbar /> {/* Navbar included here */}
+            <Navbar />
             <div className="user-crud-container">
-                {/* Left Side - Data Table */}
                 <div className="user-table-container">
                     <h2>User List</h2>
                     <div style={{ height: 400, width: "100%" }}>
                         <DataGrid
-                            rows={users} // Users data passed here
+                            rows={users}
                             columns={columns}
                             pageSize={5}
                             rowsPerPageOptions={[5]}
@@ -169,7 +184,6 @@ const UserCrudPage = () => {
                     </div>
                 </div>
 
-                {/* Right Side - Form */}
                 <div className="user-form-container">
                     <h2>{editingUser ? "Edit User" : "Add User"}</h2>
                     <form onSubmit={handleSubmit} className="user-form">
@@ -188,7 +202,7 @@ const UserCrudPage = () => {
                             onChange={handleChange}
                             placeholder="Email"
                             required
-                            disabled={editingUser} // Disable email input if editing
+                            disabled={editingUser}
                         />
                         {!editingUser && (
                             <input
@@ -216,6 +230,15 @@ const UserCrudPage = () => {
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
                         </select>
+                        <select
+                            name="gender"
+                            value={formData.gender}
+                            onChange={handleChange}
+                        >
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
                         <div className="form-buttons">
                             <button type="submit" className="submit-btn">
                                 {editingUser ? "Update User" : "Add User"}
@@ -233,8 +256,6 @@ const UserCrudPage = () => {
                     </form>
                 </div>
             </div>
-
-            {/* Toastify Container for Notifications */}
             <ToastContainer />
         </>
     );
